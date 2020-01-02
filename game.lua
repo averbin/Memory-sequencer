@@ -1,15 +1,53 @@
 local composer = require( "composer" )
+local widget = require( "widget" )
  
 local scene = composer.newScene()
+
+local upperLeftButton = nil
+local upperRightButton = nil
+local downLeftButton = nil
+local downRightButton = nil
  
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
- 
- 
- 
- 
+
+local function handleButtonEvent( event )
+  local target = event.target
+  if "ended" == event.phase then
+    if target.id == upperLeftButton.id then
+      print("ID: " .. target.id .. " Upper Left Button was pressed and released" )
+    elseif target.id == upperRightButton.id then
+      print("ID: " .. target.id .. " Upper Right Button was pressed and released" )
+    elseif target.id == downLeftButton.id then
+      print("ID: " .. target.id .. " Down Left Button was pressed and released" )
+    elseif target.id == downRightButton.id then
+      print("ID: " .. target.id .. " Down Right Button was pressed and released" )
+    else
+      print( "Unrecognized button was pressed and released")
+    end
+  end
+end
+
+function CreateButton(name, x, y, width, height, shape, cornerRadius)
+  local newButton = widget.newButton( 
+    { 
+      id = name,
+      shape = shape,
+      cornerRadius = cornerRadius,
+      width = width,
+      height = height,
+      fillColor = { default={0, 0, 0, 1}, over={1, 1, 1, 1} },
+      strokeColor = { default={1, 1, 1, 1}, over={0.8, 0.8, 1, 1} },
+      onEvent = handleButtonEvent,
+      strokeWidth = 2
+    } 
+  )
+  newButton.x = x
+  newButton.y = y
+  return newButton 
+end 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -18,8 +56,20 @@ local scene = composer.newScene()
 function scene:create( event )
  
     local sceneGroup = self.view
+    local radius = 70
+    local width = 100
+    local height = 100
+    local cornerRadius = 5
     -- Code here runs when the scene is first created but has not yet appeared on screen
- 
+    upperLeftButton = CreateButton("1", display.contentCenterX - radius, display.contentCenterY - radius, width, height, "roundedRect", cornerRadius)
+    upperRightButton = CreateButton("2", display.contentCenterX + radius, display.contentCenterY - radius, width, height, "roundedRect", cornerRadius)
+    downLeftButton = CreateButton("3", display.contentCenterX - radius, display.contentCenterY + radius, width, height, "roundedRect", cornerRadius)
+    downRightButton = CreateButton("4", display.contentCenterX + radius, display.contentCenterY + radius, width, height, "roundedRect", cornerRadius)
+    
+    sceneGroup:insert(upperLeftButton)
+    sceneGroup:insert(upperRightButton)
+    sceneGroup:insert(downLeftButton)
+    sceneGroup:insert(downRightButton)
 end
  
  
