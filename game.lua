@@ -1,5 +1,6 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
+math.randomseed( os.time() )
  
 local scene = composer.newScene()
 
@@ -7,6 +8,9 @@ local upperLeftButton = nil
 local upperRightButton = nil
 local downLeftButton = nil
 local downRightButton = nil
+local userSequence = {}
+local randSequence = {}
+local turn = "player"
  
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
@@ -26,6 +30,10 @@ local function handleButtonEvent( event )
       print("ID: " .. target.id .. " Down Right Button was pressed and released" )
     else
       print( "Unrecognized button was pressed and released")
+    end
+    table.insert(userSequence, target.id)
+    for i = 1, table.getn(userSequence) do
+      print(userSequence[i])
     end
   end
 end
