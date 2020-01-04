@@ -1,7 +1,7 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
 math.randomseed( os.time() )
- 
+
 local scene = composer.newScene()
 
 local upperLeftButton = nil
@@ -16,11 +16,30 @@ local userSequence = {}
 local randSequence = {}
 local turn = "player"
 local rectGroup = nil
- 
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+
+local function InsertRandomNumberToRandomSequence()
+  local var = math.random(4)
+  print("Random number is: " .. var)
+  table.insert(randSequence, var)
+end
+
+local function CheckUserSequenceWithRandSequence()
+  for i = 1, table.getn(randSequence) do
+    if randSequence[i] ~= tonumber(userSequence[i]) then
+      return false
+    end
+  end
+  return true
+end
+
+local function CleanTable( currentTable )
+  for i=1, #currentTable do currentTable[i] = nil end
+end
 
 local function handleButtonEvent( event )
   local target = event.target
@@ -37,15 +56,20 @@ local function handleButtonEvent( event )
       print( "Unrecognized button was pressed and released")
     end
     table.insert(userSequence, target.id)
-    for i = 1, table.getn(userSequence) do
-      print(userSequence[i])
+    if (CheckUserSequenceWithRandSequence()) then
+      InsertRandomNumberToRandomSequence()
+    else
+      CleanTable(userSequence)
+      CleanTable(randSequence)
+      print( "Wrong Sequence!" )
+      InsertRandomNumberToRandomSequence()
     end
   end
 end
 
 function CreateButton(name, x, y, width, height, shape, cornerRadius)
   local newButton = widget.newButton( 
-    { 
+    {
       id = name,
       shape = shape,
       cornerRadius = cornerRadius,
@@ -55,15 +79,15 @@ function CreateButton(name, x, y, width, height, shape, cornerRadius)
       strokeColor = { default={1, 1, 1, 1}, over={0.8, 0.8, 1, 1} },
       onEvent = handleButtonEvent,
       strokeWidth = 2
-    } 
+    }
   )
   newButton.x = x
   newButton.y = y
   return newButton 
-end 
+end
 
 function CreateRect( options )
-  local newRect = display.newRoundedRect( 
+  local newRect = display.newRoundedRect(
     options.group,
     options.x, options.y,
     options.width, options.height, options.cornerRadius )
@@ -71,12 +95,12 @@ function CreateRect( options )
   newRect:setFillColor( 1 , 1, 1, 1)
   newRect:setStrokeColor( 0.8, 0.8, 1, 1 )
   newRect.isVisible = false
-  return newRect 
-end 
+  return newRect
+end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
- 
+
 -- create()
 function scene:create( event )
     local sceneGroup = self.view
@@ -153,6 +177,7 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
+      InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
     end
