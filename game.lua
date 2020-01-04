@@ -13,10 +13,14 @@ local downLeftRoundedRect = nil
 local downRightButton = nil
 local downRightRoundedRect = nil
 local userSequence = {}
-local randSequence = {}
+local randSequence = { 1 , 2, 4, 3, 4, 3, 2, 1}
 local turn = "player"
 local rectGroup = nil
+local rects = {}
+local countDownTimer  = nil
 
+local clock = os.clock
+local numSequence = 1
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -26,6 +30,32 @@ local function InsertRandomNumberToRandomSequence()
   local var = math.random(4)
   print("Random number is: " .. var)
   table.insert(randSequence, var)
+end
+
+local function ShowRect ( rect )
+  rect.isVisible = true
+end
+
+local function HideRect ( rect )
+  rect.isVisible = false
+end
+
+local function UpdateTime( event )
+  if randSequence[numSequence] ~= nil then
+    ShowRect(rects[randSequence[numSequence]])
+  else
+    HideRect(rects[randSequence[numSequence - 1]])
+    numSequence = 1
+  end
+  
+  if numSequence ~= 1 then
+    HideRect(rects[randSequence[numSequence - 1]])
+  end
+  numSequence = numSequence + 1
+end
+
+local function ShowRectFromSequence()
+  countDownTimer = timer.performWithDelay( 1000, UpdateTime, #randSequence + 1 )
 end
 
 local function IsSequencesTheSame()
@@ -58,11 +88,13 @@ local function handleButtonEvent( event )
     table.insert(userSequence, target.id)
     if (IsSequencesTheSame()) then
       InsertRandomNumberToRandomSequence()
+      ShowRectFromSequence()
     else
       CleanSequence(userSequence)
       CleanSequence(randSequence)
       print( "Wrong Sequence!" )
       InsertRandomNumberToRandomSequence()
+      ShowRectFromSequence()
     end
   end
 end
@@ -162,6 +194,11 @@ function scene:create( event )
     options.y = downRightButton.y
     downRightRoundedRect = CreateRect( options )
     
+    table.insert(rects, upperLeftRoundedRect)
+    table.insert(rects, upperRightRoundedRect)
+    table.insert(rects, downLeftRoundedRect)
+    table.insert(rects, downRightRoundedRect)
+    
     sceneGroup:insert(upperLeftButton)
     sceneGroup:insert(upperRightButton)
     sceneGroup:insert(downLeftButton)
@@ -179,6 +216,7 @@ function scene:show( event )
       -- Code here runs when the scene is still off screen (but is about to come on screen)
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
+      ShowRectFromSequence()
       -- Code here runs when the scene is entirely on screen
     end
 end
