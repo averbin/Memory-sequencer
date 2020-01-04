@@ -54,7 +54,7 @@ local function UpdateTime( event )
   numSequence = numSequence + 1
 end
 
-local function ShowRectFromSequence()
+local function ShowSequence()
   countDownTimer = timer.performWithDelay( 1000, UpdateTime, #randSequence + 1 )
 end
 
@@ -88,13 +88,13 @@ local function handleButtonEvent( event )
     table.insert(userSequence, target.id)
     if (IsSequencesTheSame()) then
       InsertRandomNumberToRandomSequence()
-      ShowRectFromSequence()
+      ShowSequence()
     else
       CleanSequence(userSequence)
       CleanSequence(randSequence)
       print( "Wrong Sequence!" )
       InsertRandomNumberToRandomSequence()
-      ShowRectFromSequence()
+      ShowSequence()
     end
   end
 end
@@ -216,7 +216,7 @@ function scene:show( event )
       -- Code here runs when the scene is still off screen (but is about to come on screen)
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
-      ShowRectFromSequence()
+      ShowSequence()
       -- Code here runs when the scene is entirely on screen
     end
 end
