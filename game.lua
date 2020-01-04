@@ -28,7 +28,7 @@ local function InsertRandomNumberToRandomSequence()
   table.insert(randSequence, var)
 end
 
-local function CheckUserSequenceWithRandSequence()
+local function IsSequencesTheSame()
   for i = 1, table.getn(randSequence) do
     if randSequence[i] ~= tonumber(userSequence[i]) then
       return false
@@ -37,8 +37,8 @@ local function CheckUserSequenceWithRandSequence()
   return true
 end
 
-local function CleanTable( currentTable )
-  for i=1, #currentTable do currentTable[i] = nil end
+local function CleanSequence( sequence )
+  for i=1, #sequence do sequence[i] = nil end
 end
 
 local function handleButtonEvent( event )
@@ -56,11 +56,11 @@ local function handleButtonEvent( event )
       print( "Unrecognized button was pressed and released")
     end
     table.insert(userSequence, target.id)
-    if (CheckUserSequenceWithRandSequence()) then
+    if (IsSequencesTheSame()) then
       InsertRandomNumberToRandomSequence()
     else
-      CleanTable(userSequence)
-      CleanTable(randSequence)
+      CleanSequence(userSequence)
+      CleanSequence(randSequence)
       print( "Wrong Sequence!" )
       InsertRandomNumberToRandomSequence()
     end
@@ -176,10 +176,10 @@ function scene:show( event )
     local phase = event.phase
  
     if ( phase == "will" ) then
-        -- Code here runs when the scene is still off screen (but is about to come on screen)
+      -- Code here runs when the scene is still off screen (but is about to come on screen)
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
-        -- Code here runs when the scene is entirely on screen
+      -- Code here runs when the scene is entirely on screen
     end
 end
 
@@ -189,9 +189,9 @@ function scene:hide( event )
     local phase = event.phase
  
     if ( phase == "will" ) then
-        -- Code here runs when the scene is on screen (but is about to go off screen)
+      -- Code here runs when the scene is on screen (but is about to go off screen)
     elseif ( phase == "did" ) then
-        -- Code here runs immediately after the scene goes entirely off screen
+      -- Code here runs immediately after the scene goes entirely off screen
     end
 end
 
