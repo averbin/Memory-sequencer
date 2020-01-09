@@ -13,7 +13,7 @@ local downLeftRoundedRect = nil
 local downRightButton = nil
 local downRightRoundedRect = nil
 local userSequence = {}
-local randSequence = { 1 , 2, 4, 3, 4, 3, 2, 1}
+local randSequence = {}
 local turn = "player"
 local rectGroup = nil
 local rects = {}
@@ -30,6 +30,9 @@ local function InsertRandomNumberToRandomSequence()
   local var = math.random(4)
   print("Random number is: " .. var)
   table.insert(randSequence, var)
+  for i = 1, #randSequence do
+    print("Sequence: " .. randSequence[i])
+  end
 end
 
 local function ShowRect ( rect )
@@ -59,7 +62,7 @@ local function ShowSequence()
 end
 
 local function IsSequencesTheSame()
-  for i = 1, table.getn(randSequence) do
+  for i = 1, table.getn(userSequence) do
     if randSequence[i] ~= tonumber(userSequence[i]) then
       return false
     end
@@ -87,15 +90,18 @@ local function handleButtonEvent( event )
     end
     table.insert(userSequence, target.id)
     if (IsSequencesTheSame()) then
+      print( "correct" )
       InsertRandomNumberToRandomSequence()
       ShowSequence()
-    else
+      CleanSequence(userSequence)
+    end
+    --[[else
       CleanSequence(userSequence)
       CleanSequence(randSequence)
       print( "Wrong Sequence!" )
       InsertRandomNumberToRandomSequence()
       ShowSequence()
-    end
+    end]]
   end
 end
 
