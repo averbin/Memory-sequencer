@@ -13,11 +13,13 @@ local downLeftRoundedRect = nil
 local downRightButton = nil
 local downRightRoundedRect = nil
 local userSequence = {}
-local randSequence = {}
-local turn = "player"
+local randSequence = {} -- 1,2,3,4
+local isPlayer = false
 local rectGroup = nil
 local rects = {}
-local countDownTimer  = nil
+local activateTimer = nil
+local deActivateTimer = nil
+local count = 1
 
 local clock = os.clock
 local numSequence = 1
@@ -28,11 +30,7 @@ local numSequence = 1
 
 local function InsertRandomNumberToRandomSequence()
   local var = math.random(4)
-  print("Random number is: " .. var)
   table.insert(randSequence, var)
-  for i = 1, #randSequence do
-    print("Sequence: " .. randSequence[i])
-  end
 end
 
 local function ShowRect ( rect )
@@ -43,31 +41,33 @@ local function HideRect ( rect )
   rect.isVisible = false
 end
 
-local function UpdateTime( event )
-  if randSequence[numSequence] ~= nil then
-    ShowRect(rects[randSequence[numSequence]])
-  else
-    HideRect(rects[randSequence[numSequence - 1]])
-    numSequence = 1
-  end
-  
-  if numSequence ~= 1 then
-    HideRect(rects[randSequence[numSequence - 1]])
-  end
-  numSequence = numSequence + 1
-end
+local function ShowSequence( event )
+  if isPlayer == false then
+    local thisRect = rects[randSequence[numSequence]]
+    local switch = count % 2 
+    if thisRect ~= nil  and switch > 0 then
+      ShowRect(thisRect)
+    elseif thisRect ~= nil  and switch == 0 then
+      HideRect(thisRect)
+      numSequence = numSequence + 1
+    end
 
-local function ShowSequence()
-  countDownTimer = timer.performWithDelay( 1000, UpdateTime, #randSequence + 1 )
+    count = count + 1
+    if numSequence > #randSequence then
+      isPlayer = true
+      timer.pause( activateTimer )
+      count = 1
+      numSequence = 1
+    end
+  end
 end
 
 local function IsSequencesTheSame()
-  for i = 1, table.getn(userSequence) do
-    if randSequence[i] ~= tonumber(userSequence[i]) then
-      return false
-    end
+  if randSequence[numSequence] == tonumber(userSequence[numSequence]) then
+    return true
   end
-  return true
+
+  return false
 end
 
 local function CleanSequence( sequence )
@@ -91,17 +91,19 @@ local function handleButtonEvent( event )
     table.insert(userSequence, target.id)
     if (IsSequencesTheSame()) then
       print( "correct" )
-      InsertRandomNumberToRandomSequence()
-      ShowSequence()
-      CleanSequence(userSequence)
+      numSequence = numSequence + 1
+      if numSequence > #randSequence then
+        numSequence = 1
+        count = 1
+        isPlayer = false
+        InsertRandomNumberToRandomSequence()
+        timer.resume(activateTimer)
+      end
+      --activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
+      --CleanSequence(userSequence)
+    else
+      print( "incorrect")
     end
-    --[[else
-      CleanSequence(userSequence)
-      CleanSequence(randSequence)
-      print( "Wrong Sequence!" )
-      InsertRandomNumberToRandomSequence()
-      ShowSequence()
-    end]]
   end
 end
 
@@ -222,7 +224,7 @@ function scene:show( event )
       -- Code here runs when the scene is still off screen (but is about to come on screen)
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
-      ShowSequence()
+      activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
       -- Code here runs when the scene is entirely on screen
     end
 end
@@ -234,6 +236,7 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
       -- Code here runs when the scene is on screen (but is about to go off screen)
+      timer.cancel( activateTimer )
     elseif ( phase == "did" ) then
       -- Code here runs immediately after the scene goes entirely off screen
     end
