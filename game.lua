@@ -16,10 +16,13 @@ local userSequence = {}
 local randSequence = {} -- 1,2,3,4
 local isPlayer = false
 local rectGroup = nil
+local guiGroup = nil
 local rects = {}
 local activateTimer = nil
 local deActivateTimer = nil
 local count = 1
+local userCount = 0
+local countText = nil
 
 local clock = os.clock
 local numSequence = 1
@@ -81,6 +84,8 @@ local function handleButtonEvent( event )
     if (IsSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
       numSequence = numSequence + 1
+      userCount = userCount + 1
+      countText.text = userCount
       if numSequence > #randSequence then
         count = 1
         numSequence = 1
@@ -135,7 +140,8 @@ end
 function scene:create( event )
     local sceneGroup = self.view
     rectGroup = display.newGroup()
-    local radius = 70
+    guiGroup = display.newGroup()
+    local radius = 100
     local width = 100
     local height = 100
     local cornerRadius = 5
@@ -197,13 +203,17 @@ function scene:create( event )
     table.insert(rects, downLeftRoundedRect)
     table.insert(rects, downRightRoundedRect)
     
+    countText = display.newText( userCount, display.contentCenterX,
+      20, native.systemFont, 40 )
+    guiGroup:insert(countText)
+    
     sceneGroup:insert(upperLeftButton)
     sceneGroup:insert(upperRightButton)
     sceneGroup:insert(downLeftButton)
     sceneGroup:insert(downRightButton)
-    sceneGroup:insert( rectGroup )
+    sceneGroup:insert(rectGroup)
+    sceneGroup:insert(guiGroup)
 end
- 
  
 -- show()
 function scene:show( event )
