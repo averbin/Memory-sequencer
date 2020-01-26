@@ -62,11 +62,11 @@ local function ShowSequence( event )
   end
 end
 
-local function IsSequencesTheSame()
-  if randSequence[numSequence] == tonumber(userSequence[numSequence]) then
+local function IsSequencesTheSame( userNumber )
+  if randSequence[numSequence] == userNumber then
     return true
   end
-
+  
   return false
 end
 
@@ -77,27 +77,17 @@ end
 local function handleButtonEvent( event )
   local target = event.target
   if "ended" == event.phase then
-    if target.id == upperLeftButton.id then
-      print("ID: " .. target.id .. " Upper Left Button was pressed and released" )
-    elseif target.id == upperRightButton.id then
-      print("ID: " .. target.id .. " Upper Right Button was pressed and released" )
-    elseif target.id == downLeftButton.id then
-      print("ID: " .. target.id .. " Down Left Button was pressed and released" )
-    elseif target.id == downRightButton.id then
-      print("ID: " .. target.id .. " Down Right Button was pressed and released" )
-    else
-      print( "Unrecognized button was pressed and released")
-    end
-    table.insert(userSequence, target.id)
-    if (IsSequencesTheSame()) then
-      print( "correct" )
+    local userNumber = tonumber(target.id)
+    if (IsSequencesTheSame(userNumber)) then
+      table.insert(userSequence, userNumber)
       numSequence = numSequence + 1
       if numSequence > #randSequence then
-        numSequence = 1
         count = 1
+        numSequence = 1
         isPlayer = false
         InsertRandomNumberToRandomSequence()
         timer.resume(activateTimer)
+        CleanSequence(userSequence)
       end
       --activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
       --CleanSequence(userSequence)
