@@ -26,6 +26,7 @@ local countText = nil
 
 local clock = os.clock
 local numSequence = 1
+local text = nil -- play, stop, lose 
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -61,6 +62,7 @@ local function ShowSequence( event )
       timer.pause( activateTimer )
       count = 1
       numSequence = 1
+      text.text = "play"
     end
   end
 end
@@ -81,7 +83,7 @@ local function handleButtonEvent( event )
   local target = event.target
   if "ended" == event.phase then
     local userNumber = tonumber(target.id)
-    if (IsSequencesTheSame(userNumber)) then
+    if (isPlayer == true and IsSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
       numSequence = numSequence + 1
       userCount = userCount + 1
@@ -90,6 +92,7 @@ local function handleButtonEvent( event )
         count = 1
         numSequence = 1
         isPlayer = false
+        text.text = "sequ"
         InsertRandomNumberToRandomSequence()
         timer.resume(activateTimer)
         CleanSequence(userSequence)
@@ -98,6 +101,8 @@ local function handleButtonEvent( event )
       --CleanSequence(userSequence)
     else
       print( "incorrect")
+      timer.pause( activateTimer )
+      text.text = "lose"
     end
   end
 end
@@ -141,7 +146,7 @@ function scene:create( event )
     local sceneGroup = self.view
     rectGroup = display.newGroup()
     guiGroup = display.newGroup()
-    local radius = 100
+    local radius = 75
     local width = 100
     local height = 100
     local cornerRadius = 5
@@ -207,6 +212,11 @@ function scene:create( event )
       20, native.systemFont, 40 )
     guiGroup:insert(countText)
     
+    text = display.newText( guiGroup, "sequ", 
+      countText.x + 100,
+      countText.y,
+    native.systemFont, 40)
+    
     sceneGroup:insert(upperLeftButton)
     sceneGroup:insert(upperRightButton)
     sceneGroup:insert(downLeftButton)
@@ -224,7 +234,7 @@ function scene:show( event )
       -- Code here runs when the scene is still off screen (but is about to come on screen)
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
-      activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
+      activateTimer = timer.performWithDelay( 600, ShowSequence, 0)
       -- Code here runs when the scene is entirely on screen
     end
 end
