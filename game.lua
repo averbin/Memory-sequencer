@@ -4,6 +4,11 @@ math.randomseed( os.time() )
 
 local scene = composer.newScene()
 
+local screenWidth = display.actualContentWidth
+local screenHeight = display.actualContentHeight
+local centerX = display.contentCenterX
+local centerY = display.contentCenterY
+
 local upperLeftButton = nil
 local upperLeftRoundedRect = nil
 local upperRightButton = nil
@@ -146,6 +151,11 @@ end
 -- create()
 function scene:create( event )
     local sceneGroup = self.view
+    -- Setting background image
+    local backgroundImage = display.newImageRect( sceneGroup, "img/background.png", screenWidth, screenHeight)
+    backgroundImage.x = centerX
+    backgroundImage.y = centerY
+    -- Rect group
     rectGroup = display.newGroup()
     guiGroup = display.newGroup()
     local radius = 75
