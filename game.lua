@@ -27,6 +27,8 @@ local countText = nil
 local clock = os.clock
 local numSequence = 1
 local text = nil -- play, stop, lose 
+local playSymbol = "►"
+local rectSymbol = "⬤" -- ⬤ - Circle symbol.
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -62,7 +64,7 @@ local function ShowSequence( event )
       timer.pause( activateTimer )
       count = 1
       numSequence = 1
-      text.text = "play"
+      text.text = rectSymbol
     end
   end
 end
@@ -92,7 +94,7 @@ local function handleButtonEvent( event )
         count = 1
         numSequence = 1
         isPlayer = false
-        text.text = "sequ"
+        text.text = playSymbol
         InsertRandomNumberToRandomSequence()
         timer.resume(activateTimer)
         CleanSequence(userSequence)
@@ -212,7 +214,7 @@ function scene:create( event )
       20, native.systemFont, 40 )
     guiGroup:insert(countText)
     
-    text = display.newText( guiGroup, "sequ", 
+    text = display.newText( guiGroup, playSymbol, 
       countText.x + 100,
       countText.y,
     native.systemFont, 40)
@@ -235,6 +237,7 @@ function scene:show( event )
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
       activateTimer = timer.performWithDelay( 600, ShowSequence, 0)
+      transition.blink(text, { time = 2000 })
       -- Code here runs when the scene is entirely on screen
     end
 end
