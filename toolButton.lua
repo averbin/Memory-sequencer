@@ -8,6 +8,13 @@ local widget = require( "widget" )
 
 local TooButton = {}
 
+ToolButton.numCols = 1 -- number of columns
+ToolButton.numRows = 1 -- number of rows
+ToolButton.colSpace = 0 -- space between columns
+ToolButton.rowsSpace = 0 -- space between rows
+ToolButton.gridOffsetX = 0 -- space between elements on screen
+ToolButton.gridOffsetY  = 0 -- space between elements on screen
+
 local options = {
   group = rectGroup,
   x = 0,
@@ -50,14 +57,14 @@ function CreateRect( options )
   return newRect
 end
 
-function ToolButton.new(group, id, 
-    x, y,
-    width, height,
-    shape, cornerRadius,
-    fillColor, strokeColor)
-  set = {}
-  setmetatable(set, {element, mark})
-  return set
-end
+--function ToolButton.new(group, id, 
+--    x, y,
+--    width, height,
+--    shape, cornerRadius,
+--    fillColor, strokeColor)
+--  set = {}
+--  setmetatable(set, {element, mark})
+--  return set
+--end
 
 return TooButton
