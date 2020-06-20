@@ -6,65 +6,48 @@
 
 local widget = require( "widget" )
 
-local TooButton = {}
+tooButton = {}
 
-ToolButton.numCols = 1 -- number of columns
-ToolButton.numRows = 1 -- number of rows
-ToolButton.colSpace = 0 -- space between columns
-ToolButton.rowsSpace = 0 -- space between rows
-ToolButton.gridOffsetX = 0 -- space between elements on screen
-ToolButton.gridOffsetY  = 0 -- space between elements on screen
-
-local options = {
-  group = rectGroup,
-  x = 0,
-  y = 0,
-  width = width,
-  height = height,
-  cornerRadius = cornerRadius,
-  fillColor = {1, 1, 1, 1},
-  strokeColor = {0.8, 0.8, 1, 1}
-  }
-
-function CreateButton(name, x, y, width, height, shape, cornerRadius)
-  local newButton = widget.newButton( 
-    {
-      id = name,
-      shape = shape,
-      cornerRadius = cornerRadius,
-      width = width,
-      height = height,
-      fillColor = { default={0, 0, 0, 1}, over={1, 1, 1, 1} },
-      strokeColor = { default={1, 1, 1, 1}, over={0.8, 0.8, 1, 1} },
-      onEvent = handleButtonEvent,
-      strokeWidth = 2
-    }
-  )
-  newButton.x = x
-  newButton.y = y
-  return newButton 
+function tooButton.new( options )
+  options = options or {}
+  group = options.group
+  id = options.name or ""
+  x = options.x or 0
+  y = options.y or 0
+  width = options.width or 10
+  height = options.height or 10
+  cornerRadius = options.cornerRadius or 0
+  image = options.image or ""
+  isImageVisible = options.isImageVisible or false
+  
+  if not group then
+    group = display.newGroup()
+  end
+  
+  function group:Blink()
+    transition.resume(id)
+  end
+  
+  local function onObjectTap( event )
+    group:Blink()
+    return true
+  end
+  
+  local function CreateToolButton()
+    local button = display.newRoundedRect(group, x, y, width, height, cornerRadius)
+    button:setFillColor( 0.0, 0.0, 0.0, 1)
+    button:setStrokeColor(0.8, 0.8, 1, 1)
+    button.strokeWidth = 2
+    local insideRect = display.newRoundedRect(group, x, y, width, height, cornerRadius)
+    insideRect:setFillColor( 1, 1, 1, 1)
+    insideRect:setStrokeColor( 0.8, 0.8, 1, 1 )
+    insideRect.strokeWidth = 2
+    transition.blink(insideRect, { tag = id, time = 1500, onRepeat = function ( event ) transition.pause() end })
+    button:addEventListener("tap", onObjectTap)
+  end
+  
+  CreateToolButton()
+  return group
 end
 
-function CreateRect( options )
-  local newRect = display.newRoundedRect(
-    options.group,
-    options.x, options.y,
-    options.width, options.height, options.cornerRadius )
-  newRect.strokeWidth = 2
-  newRect:setFillColor( 1 , 1, 1, 1)
-  newRect:setStrokeColor( 0.8, 0.8, 1, 1 )
-  newRect.isVisible = false
-  return newRect
-end
-
---function ToolButton.new(group, id, 
---    x, y,
---    width, height,
---    shape, cornerRadius,
---    fillColor, strokeColor)
---  set = {}
---  setmetatable(set, {element, mark})
---  return set
---end
-
-return TooButton
+return tooButton
