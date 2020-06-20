@@ -1,5 +1,7 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
+local grid = require( "grid" )
+local toolButton = require( "toolButton" )
 math.randomseed( os.time() )
 
 local scene = composer.newScene()
@@ -155,6 +157,7 @@ function scene:create( event )
     local backgroundImage = display.newImageRect( sceneGroup, "img/background.png", screenWidth, screenHeight)
     backgroundImage.x = centerX
     backgroundImage.y = centerY
+    
     -- Rect group
     rectGroup = display.newGroup()
     guiGroup = display.newGroup()
@@ -177,12 +180,23 @@ function scene:create( event )
       x 0
       0 0
     ]]--
+    options = 
+    {
+      group = sceneGroup,
+      name = "1",
+      x = 85,
+      y = 50,
+      width = 100,
+      height = 100,
+      cornerRadius = 5,
+    }
+    oneButton = toolButton.new(options)
     upperLeftButton = CreateButton("1",
       display.contentCenterX - radius, display.contentCenterY - radius,
       width, height, "roundedRect", cornerRadius)
-    options.x = upperLeftButton.x
-    options.y = upperLeftButton.y
-    upperLeftRoundedRect = CreateRect( options )
+    --options.x = upperLeftButton.x
+    --options.y = upperLeftButton.y
+    --upperLeftRoundedRect = CreateRect( options )
     --[[
       0 x
       0 0
@@ -246,8 +260,8 @@ function scene:show( event )
       -- Code here runs when the scene is still off screen (but is about to come on screen)
       InsertRandomNumberToRandomSequence()
     elseif ( phase == "did" ) then
-      activateTimer = timer.performWithDelay( 600, ShowSequence, 0)
-      transition.blink(text, { time = 2000 })
+      --activateTimer = timer.performWithDelay( 600, ShowSequence, 0)
+      -- transition.blink(text, { time = 2000, iterations=4 })
       -- Code here runs when the scene is entirely on screen
     end
 end
