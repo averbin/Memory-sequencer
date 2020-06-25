@@ -116,22 +116,20 @@ local function handleButtonEvent( event )
   end
 end
 
-function CreateButton(name, x, y, width, height, shape, cornerRadius)
-  local newButton = widget.newButton( 
+function CreateButton(group, name, x, y, width, height, shape, cornerRadius)
+  local newButton = toolButton.new(
     {
-      id = name,
-      shape = shape,
-      cornerRadius = cornerRadius,
+      group = group,
+      name = name,
+      x = x,
+      y = y,
       width = width,
       height = height,
-      fillColor = { default={0, 0, 0, 1}, over={1, 1, 1, 1} },
-      strokeColor = { default={1, 1, 1, 1}, over={0.8, 0.8, 1, 1} },
-      onEvent = handleButtonEvent,
-      strokeWidth = 2
+      cornerRadius = cornerRadius,
+      fillColor = { 1, 1, 1, 1 },
+      strokeColor = { 0.8, 0.8, 1, 1 },
     }
   )
-  newButton.x = x
-  newButton.y = y
   return newButton 
 end
 
@@ -165,74 +163,36 @@ function scene:create( event )
     local width = 100
     local height = 100
     local cornerRadius = 5
-    local options = {
-      group = rectGroup,
-      x = 0,
-      y = 0,
-      width = width,
-      height = height,
-      cornerRadius = cornerRadius,
-      fillColor = {1, 1, 1, 1},
-      strokeColor = {0.8, 0.8, 1, 1}
-      }
     -- Code here runs when the scene is first created but has not yet appeared on screen
     --[[
       x 0
       0 0
     ]]--
-    options = 
-    {
-      group = sceneGroup,
-      name = "1",
-      x = 85,
-      y = 50,
-      width = 100,
-      height = 100,
-      cornerRadius = 5,
-    }
-    oneButton = toolButton.new(options)
-    upperLeftButton = CreateButton("1",
+    upperLeftButton = CreateButton(sceneGroup, "1",
       display.contentCenterX - radius, display.contentCenterY - radius,
       width, height, "roundedRect", cornerRadius)
-    --options.x = upperLeftButton.x
-    --options.y = upperLeftButton.y
-    --upperLeftRoundedRect = CreateRect( options )
     --[[
       0 x
       0 0
     ]]--
-    upperRightButton = CreateButton("2",
+    upperRightButton = CreateButton(sceneGroup, "2",
       display.contentCenterX + radius,
       display.contentCenterY - radius, 
       width, height, "roundedRect", cornerRadius)
-    options.x = upperRightButton.x
-    options.y = upperRightButton.y
-    upperRightRoundedRect = CreateRect( options )
     --[[
       0 0
       x 0
     ]]--
-    downLeftButton = CreateButton("3", 
+    downLeftButton = CreateButton(sceneGroup, "3", 
       display.contentCenterX - radius, display.contentCenterY + radius,
       width, height, "roundedRect", cornerRadius)
-    options.x = downLeftButton.x
-    options.y = downLeftButton.y
-    downLeftRoundedRect = CreateRect( options )
     --[[
       0 0
       0 x
     ]]--
-    downRightButton = CreateButton("4", 
+    downRightButton = CreateButton(sceneGroup, "4", 
       display.contentCenterX + radius, display.contentCenterY + radius,
       width, height, "roundedRect", cornerRadius)
-    options.x = downRightButton.x
-    options.y = downRightButton.y
-    downRightRoundedRect = CreateRect( options )
-    
-    table.insert(rects, upperLeftRoundedRect)
-    table.insert(rects, upperRightRoundedRect)
-    table.insert(rects, downLeftRoundedRect)
-    table.insert(rects, downRightRoundedRect)
     
     countText = display.newText( userCount, display.contentCenterX,
       20, native.systemFont, 40 )
@@ -243,11 +203,6 @@ function scene:create( event )
       countText.y,
     native.systemFont, 40)
     
-    sceneGroup:insert(upperLeftButton)
-    sceneGroup:insert(upperRightButton)
-    sceneGroup:insert(downLeftButton)
-    sceneGroup:insert(downRightButton)
-    sceneGroup:insert(rectGroup)
     sceneGroup:insert(guiGroup)
 end
  
