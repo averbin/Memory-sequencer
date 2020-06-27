@@ -28,6 +28,7 @@ local numSequence = 1
 local text = nil -- play, stop, lose 
 local playSymbol = "►"
 local rectSymbol = "⬤" -- ⬤ - Circle symbol.
+local iteration = 0
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -49,6 +50,8 @@ local function ShowSequence( event )
       numSequence = 1
       text.text = rectSymbol
       timer.pause(activateTimer)
+      iteration = iteration + 1
+      print("iteration: " .. iteration)
     end
   end
 end
