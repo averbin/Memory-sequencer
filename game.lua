@@ -24,6 +24,7 @@ local activateTimer = nil
 local count = 1
 local userCount = 0
 local countText = nil
+local clock = os.clock
 local numSequence = 1
 local text = nil -- play, stop, lose 
 local playSymbol = "►"
@@ -185,7 +186,7 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      activateTimer = timer.performWithDelay( 1000, ShowSequence, 10)
+      activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
       -- transition.blink(text, { time = 2000, iterations=4 })
       -- Code here runs when the scene is entirely on screen
     end
