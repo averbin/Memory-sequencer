@@ -1,7 +1,9 @@
 local composer = require( "composer" )
-local widget = require( "widget" )
 local grid = require( "grid" )
+local loadsave = require( "loadsave" )
 local toolButton = require( "toolButton" )
+local widget = require( "widget" )
+
 math.randomseed( os.time() )
 
 local scene = composer.newScene()
@@ -29,6 +31,10 @@ local numSequence = 1
 local text = nil -- play, stop, lose 
 local playSymbol = "►"
 local rectSymbol = "⬤" -- ⬤ - Circle symbol.
+local gameSettings = 
+{
+  highScore = 0
+}
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -102,6 +108,10 @@ function ResetGame( event )
     CleanSequence(userSequence)
     InsertRandomNumberToRandomSequence()
     text.text = playSymbol
+    if userCount > gameSettings.highScore then
+      gameSettings.highScore = userCount
+    end
+    loadsave.saveTable( gameSettings, "settings.json")
     userCount = 0
     countText.text = userCount
     isPlayer = false
@@ -227,7 +237,12 @@ function scene:create( event )
     sceneGroup:insert(rectGroup)
     sceneGroup:insert(guiGroup)
 
-    InsertRandomNumberToRandomSequence()
+    --InsertRandomNumberToRandomSequence()
+    local loadedSettings = loadsave.loadTable( "settings.json" )
+    if loadedSettings and loadedSettings.highScore then
+      userCount = loadedSettings.highScore
+    end
+    Runtime:addEventListener("touch", ResetGame)
 end
  
 -- show()
