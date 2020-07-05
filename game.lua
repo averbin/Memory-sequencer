@@ -66,6 +66,7 @@ local function blinkingRepeatedly( obj )
 end
 
 local function cancelBlinking( obj )
+    obj.alpha = 0.1
     transition.cancel( obj )
 end
 
@@ -79,7 +80,7 @@ local function ShowSequence( event )
       isPlayer = true
       numSequence = 1
       text.text = rectSymbol
-      timer.pause(activateTimer)
+      timer.pause( activateTimer )
     end
   end
 end
