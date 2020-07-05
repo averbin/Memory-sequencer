@@ -31,12 +31,7 @@ function tooButton.new( options )
   if not set.group then
     set.group = display.newGroup()
   end
-  
-  function set.group:blink(id)
-    print("Id: " .. id)
-    transition.resume(id)
-  end
-  
+
   function touch( event )
     set:blink(event.target.id)
     return true
@@ -47,6 +42,17 @@ function tooButton.new( options )
     return true
   end
   
+  function set.group:blink( obj )
+    transition.to( obj,
+    { 
+      time = 250, 
+      alpha = 1.0,
+      iterations = 1,
+      onComplete = function ( obj ) transition.to( obj, { alpha = 0.1, time = 250, iterations = 1}) end
+    }
+  )
+  end
+  
   local function CreateToolButton()
     set.group.id = set.id
     local button = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
@@ -54,14 +60,14 @@ function tooButton.new( options )
     button:setFillColor(0.1, 0.1, 0.1, 1)
     button:setStrokeColor(unpack(set.strokeColor))
     button.strokeWidth = 2
-    --button:addEventListener("tap", touch)
     
     local insideRect = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
     insideRect.id = set.id
     insideRect:setFillColor(unpack(set.fillColor))
     insideRect:setStrokeColor(unpack(set.strokeColor) )
     insideRect.strokeWidth = 2
-    transition.blink(insideRect, { tag = set.id, time = 1000, onRepeat = function ( obj ) transition.pause(obj) end })
+    set.insideRect = insideRect
+    set.group:blink( set.insideRect )
   end
   
   CreateToolButton()
