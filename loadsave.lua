@@ -1,7 +1,7 @@
 local M = {}
 
 local json = require( "json" )
-local defaultLocation = system.DocumentsDirectory
+local defaultLocation = system.TemporaryDirectory
 
 function M.saveTable(t , filename, location)
   local loc = location

@@ -241,6 +241,7 @@ function scene:create( event )
     local loadedSettings = loadsave.loadTable( "settings.json" )
     if loadedSettings and loadedSettings.highScore then
       userCount = loadedSettings.highScore
+      countText.text = userCount
     end
     Runtime:addEventListener("touch", ResetGame)
 end
