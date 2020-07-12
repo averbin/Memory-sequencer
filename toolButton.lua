@@ -32,16 +32,6 @@ function tooButton.new( options )
     set.group = display.newGroup()
   end
 
-  function touch( event )
-    set:blink(event.target.id)
-    return true
-  end
-  
-  local function onObjectTap( event )
-    set:blink(event.target)
-    return true
-  end
-  
   function set.group:blink( obj )
     transition.to( obj,
     { 
@@ -67,7 +57,7 @@ function tooButton.new( options )
     insideRect:setStrokeColor(unpack(set.strokeColor) )
     insideRect.strokeWidth = 2
     set.insideRect = insideRect
-    set.group:blink( set.insideRect )
+    --set.group:blink( set.insideRect )
   end
   
   CreateToolButton()
