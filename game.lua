@@ -41,7 +41,7 @@ local blinkingInProgress = false
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-local function InsertRandomNumberToRandomSequence()
+local function insertRandomNumberToRandomSequence()
   local var = math.random(4)
   table.insert(randSequence, var)
 end
@@ -125,7 +125,7 @@ function ResetGame( event )
     for i = 1, #rects do
       cancelBlinking(rects[i].insideRect)
     end
-    InsertRandomNumberToRandomSequence()
+    insertRandomNumberToRandomSequence()
     timer.resume(activateTimer)
     Runtime:removeEventListener( "touch", ResetGame )
     return true
@@ -147,7 +147,7 @@ function handleButtonEvent( event )
         numSequence = 1
         isPlayer = false
         text.text = playSymbol
-        InsertRandomNumberToRandomSequence()
+        insertRandomNumberToRandomSequence()
         timer.resume(activateTimer)
         CleanSequence(userSequence)
       end
@@ -246,7 +246,6 @@ function scene:create( event )
     sceneGroup:insert(rectGroup)
     sceneGroup:insert(guiGroup)
 
-    --InsertRandomNumberToRandomSequence()
     local loadedSettings = loadsave.loadTable( "settings.json" )
     if loadedSettings and loadedSettings.highScore then
       userCount = loadedSettings.highScore
