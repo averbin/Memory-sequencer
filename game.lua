@@ -35,6 +35,7 @@ local gameSettings =
 {
   highScore = 0
 }
+local blinkingInProgress = false
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -46,16 +47,23 @@ local function InsertRandomNumberToRandomSequence()
 end
 
 local function blink( obj )
+  if blinkingInProgress == false then
     transition.to( obj,
     { 
       time = 250, 
       alpha = 1.0,
       iterations = 1,
+      onStart = function( obj ) blinkingInProgress = true end,
       onComplete = function ( obj ) 
-        transition.to( obj, { alpha = 0.1, time = 250, iterations = 1})
+        transition.to( obj, 
+          { alpha = 0.1, time = 250, iterations = 1, onComplete = function (obj) blinkingInProgress = false end})
       end
     }
-  )
+    )
+  else
+    print("Blinking is not finished!")
+  end
+  
 end
 
 local function blinkingRepeatedly( obj )
@@ -86,7 +94,6 @@ local function ShowSequence( event )
       isPlayer = true
       numSequence = 1
       text.text = rectSymbol
-      timer.pause( activateTimer )
     end
   end
 end
@@ -106,18 +113,19 @@ function ResetGame( event )
   if event.phase == "began" then
     CleanSequence(randSequence)
     CleanSequence(userSequence)
-    InsertRandomNumberToRandomSequence()
     text.text = playSymbol
     if userCount > gameSettings.highScore then
       gameSettings.highScore = userCount
+      loadsave.saveTable( gameSettings, "settings.json")
     end
-    loadsave.saveTable( gameSettings, "settings.json")
+    numSequence = 1
     userCount = 0
     countText.text = userCount
     isPlayer = false
     for i = 1, #rects do
       cancelBlinking(rects[i].insideRect)
     end
+    InsertRandomNumberToRandomSequence()
     timer.resume(activateTimer)
     Runtime:removeEventListener( "touch", ResetGame )
     return true
@@ -228,6 +236,7 @@ function scene:create( event )
     countText = display.newText( userCount, display.contentCenterX,
       20, native.systemFont, 40 )
     guiGroup:insert(countText)
+    countText.text = "0"
     
     text = display.newText( guiGroup, playSymbol, 
       countText.x + 100,
