@@ -57,7 +57,7 @@ function tooButton.new( options )
     insideRect:setStrokeColor(unpack(set.strokeColor) )
     insideRect.strokeWidth = 2
     set.insideRect = insideRect
-    --set.group:blink( set.insideRect )
+    set.insideRect.alpha = 0.1
   end
   
   CreateToolButton()

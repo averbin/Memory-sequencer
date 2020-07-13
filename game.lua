@@ -98,21 +98,21 @@ local function ShowSequence( event )
   end
 end
 
-local function IsSequencesTheSame( userNumber )
+local function isSequencesTheSame( userNumber )
   if randSequence[numSequence] == userNumber then
     return true
   end
   return false
 end
 
-local function CleanSequence( sequence )
+local function cleanSequence( sequence )
   for i=1, #sequence do sequence[i] = nil end
 end
 
-function ResetGame( event )
+function resetGame( event )
   if event.phase == "began" then
-    CleanSequence(randSequence)
-    CleanSequence(userSequence)
+    cleanSequence(randSequence)
+    cleanSequence(userSequence)
     text.text = playSymbol
     if userCount > gameSettings.highScore then
       gameSettings.highScore = userCount
@@ -127,7 +127,7 @@ function ResetGame( event )
     end
     insertRandomNumberToRandomSequence()
     timer.resume(activateTimer)
-    Runtime:removeEventListener( "touch", ResetGame )
+    Runtime:removeEventListener( "touch", resetGame )
     return true
   end
 end
@@ -137,7 +137,7 @@ function handleButtonEvent( event )
   if ( isPlayer == true) then
     blink(target)
     local userNumber = tonumber(target.id)
-    if ( IsSequencesTheSame(userNumber)) then
+    if ( isSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
       numSequence = numSequence + 1
       userCount = userCount + 1
@@ -149,7 +149,7 @@ function handleButtonEvent( event )
         text.text = playSymbol
         insertRandomNumberToRandomSequence()
         timer.resume(activateTimer)
-        CleanSequence(userSequence)
+        cleanSequence(userSequence)
       end
     else
       timer.pause( activateTimer )
@@ -158,12 +158,12 @@ function handleButtonEvent( event )
       for i = 1, #rects do
         blinkingRepeatedly(rects[i].insideRect)
       end
-      Runtime:addEventListener("touch", ResetGame)
+      Runtime:addEventListener("touch", resetGame)
     end
   end
 end
 
-function CreateButton(group, name, x, y, width, height, shape, cornerRadius)
+function createButton(group, name, x, y, width, height, shape, cornerRadius)
   local newButton = toolButton.new(
     {
       name = name,
@@ -206,14 +206,14 @@ function scene:create( event )
       x 0
       0 0
     ]]--
-    upperLeftButton = CreateButton(rectGroup, "1",
+    upperLeftButton = createButton(rectGroup, "1",
       display.contentCenterX - radius, display.contentCenterY - radius,
       width, height, "roundedRect", cornerRadius)
     --[[
       0 x
       0 0
     ]]--
-    upperRightButton = CreateButton(rectGroup, "2",
+    upperRightButton = createButton(rectGroup, "2",
       display.contentCenterX + radius,
       display.contentCenterY - radius, 
       width, height, "roundedRect", cornerRadius)
@@ -222,14 +222,14 @@ function scene:create( event )
       0 0
       x 0
     ]]--
-    downLeftButton = CreateButton(rectGroup, "3", 
+    downLeftButton = createButton(rectGroup, "3", 
       display.contentCenterX - radius, display.contentCenterY + radius,
       width, height, "roundedRect", cornerRadius)
     --[[
       0 0
       0 x
     ]]--
-    downRightButton = CreateButton(rectGroup, "4", 
+    downRightButton = createButton(rectGroup, "4", 
       display.contentCenterX + radius, display.contentCenterY + radius,
       width, height, "roundedRect", cornerRadius)
     
@@ -251,7 +251,7 @@ function scene:create( event )
       userCount = loadedSettings.highScore
       countText.text = userCount
     end
-    Runtime:addEventListener("touch", ResetGame)
+    Runtime:addEventListener("touch", resetGame)
 end
  
 -- show()
@@ -263,6 +263,8 @@ function scene:show( event )
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
       activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
+      print("Timer is paused: " .. timer.pause(activateTimer))
+      
       -- Code here runs when the scene is entirely on screen
     end
 end
