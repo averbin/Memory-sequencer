@@ -163,7 +163,7 @@ function handleButtonEvent( event )
   end
 end
 
-function CreateButton(group, name, x, y, width, height, shape, cornerRadius)
+function CreateButton(group, name, x, y, width, height, shape, cornerRadius, cellColor)
   local newButton = toolButton.new(
     {
       name = name,
@@ -172,7 +172,7 @@ function CreateButton(group, name, x, y, width, height, shape, cornerRadius)
       width = width,
       height = height,
       cornerRadius = cornerRadius,
-      fillColor = { 1, 1, 1, 1 },
+      fillColor = cellColor or { 1,	1, 1, 1 },
       strokeColor = { 0.8, 0.8, 1, 1 },
     }
   )
@@ -180,6 +180,13 @@ function CreateButton(group, name, x, y, width, height, shape, cornerRadius)
   newButton.insideRect:addEventListener("tap", handleButtonEvent)
   group:insert(newButton.group)
   return newButton 
+end
+
+function convertRGBtoRange( tab )
+  tab[1] = tab[1] / 255
+  tab[2] = tab[2] / 255
+  tab[3] = tab[3] / 255
+  return tab
 end
 
 -- -----------------------------------------------------------------------------------
@@ -208,7 +215,7 @@ function scene:create( event )
     ]]--
     upperLeftButton = CreateButton(rectGroup, "1",
       display.contentCenterX - radius, display.contentCenterY - radius,
-      width, height, "roundedRect", cornerRadius)
+      width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 70, 142, 218, 1.0}))
     --[[
       0 x
       0 0
@@ -216,7 +223,7 @@ function scene:create( event )
     upperRightButton = CreateButton(rectGroup, "2",
       display.contentCenterX + radius,
       display.contentCenterY - radius, 
-      width, height, "roundedRect", cornerRadius)
+      width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 190, 70, 1.0}))
 
     --[[
       0 0
@@ -224,14 +231,14 @@ function scene:create( event )
     ]]--
     downLeftButton = CreateButton(rectGroup, "3", 
       display.contentCenterX - radius, display.contentCenterY + radius,
-      width, height, "roundedRect", cornerRadius)
+      width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 102, 70, 1.0}))
     --[[
       0 0
       0 x
     ]]--
     downRightButton = CreateButton(rectGroup, "4", 
       display.contentCenterX + radius, display.contentCenterY + radius,
-      width, height, "roundedRect", cornerRadius)
+      width, height, "roundedRect", cornerRadius, convertRGBtoRange({	104, 218,	70, 1.0}))
     
     countText = display.newText( userCount, display.contentCenterX,
       20, native.systemFont, 40 )

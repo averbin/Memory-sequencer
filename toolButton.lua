@@ -56,6 +56,7 @@ function tooButton.new( options )
     insideRect:setFillColor(unpack(set.fillColor))
     insideRect:setStrokeColor(unpack(set.strokeColor) )
     insideRect.strokeWidth = 2
+    insideRect.alpha = 0.1
     set.insideRect = insideRect
     --set.group:blink( set.insideRect )
   end
