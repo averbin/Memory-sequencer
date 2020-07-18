@@ -163,7 +163,11 @@ function handleButtonEvent( event )
   end
 end
 
+<<<<<<< HEAD
+function CreateButton(group, name, x, y, width, height, shape, cornerRadius, cellColor)
+=======
 function createButton(group, name, x, y, width, height, shape, cornerRadius)
+>>>>>>> 174514676a3c0cbae08a5826e6314d49582b3acc
   local newButton = toolButton.new(
     {
       name = name,
