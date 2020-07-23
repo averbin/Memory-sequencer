@@ -43,7 +43,7 @@ function tooButton.new( options )
   )
   end
   
-  local function CreateToolButton()
+  local function createToolButton()
     set.group.id = set.id
     local button = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
     button.id = set.id
@@ -61,7 +61,7 @@ function tooButton.new( options )
     set.insideRect.alpha = 0.1
   end
   
-  CreateToolButton()
+  createToolButton()
   return set
 end
 
