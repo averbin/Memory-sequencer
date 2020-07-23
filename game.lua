@@ -84,7 +84,7 @@ local function cancelBlinking( obj )
     transition.cancel( obj )
 end
 
-local function ShowSequence( event )
+local function showSequence( event )
   if isPlayer == false then
     local thisRect = rects[randSequence[numSequence]]
     if numSequence <= #randSequence then
@@ -163,7 +163,7 @@ function handleButtonEvent( event )
   end
 end
 
-function createButton(group, name, x, y, width, height, shape, cornerRadius)
+function createButton(group, name, x, y, width, height, shape, cornerRadius, cellColor)
   local newButton = toolButton.new(
     {
       name = name,
@@ -269,7 +269,7 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      activateTimer = timer.performWithDelay( 1000, ShowSequence, 0)
+      activateTimer = timer.performWithDelay( 1000, showSequence, 0)
       print("Timer is paused: " .. timer.pause(activateTimer))
       
       -- Code here runs when the scene is entirely on screen
