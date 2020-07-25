@@ -32,17 +32,6 @@ function tooButton.new( options )
     set.group = display.newGroup()
   end
 
-  function set.group:blink( obj )
-    transition.to( obj,
-    { 
-      time = 250, 
-      alpha = 1.0,
-      iterations = 1,
-      onComplete = function ( obj ) transition.to( obj, { alpha = 0.1, time = 250, iterations = 1}) end
-    }
-  )
-  end
-  
   local function createToolButton()
     set.group.id = set.id
     local button = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
