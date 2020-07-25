@@ -1,4 +1,5 @@
 local composer = require( "composer" )
+local effects = require( "effects" )
 local grid = require( "grid" )
 local loadsave = require( "loadsave" )
 local toolButton = require( "toolButton" )
@@ -46,49 +47,11 @@ local function insertRandomNumberToRandomSequence()
   table.insert(randSequence, var)
 end
 
-local function blink( obj )
-  if blinkingInProgress == false then
-    transition.to( obj,
-    { 
-      time = 250, 
-      alpha = 1.0,
-      iterations = 1,
-      onStart = function( obj ) blinkingInProgress = true end,
-      onComplete = function ( obj ) 
-        transition.to( obj, 
-          { alpha = 0.1, time = 250, iterations = 1, onComplete = function (obj) blinkingInProgress = false end})
-      end
-    }
-    )
-  else
-    print("Blinking is not finished!")
-  end
-  
-end
-
-local function blinkingRepeatedly( obj )
-    transition.to( obj,
-    { 
-      time = 1000, 
-      alpha = 1.0,
-      iterations = 0,
-      onComplete = function ( obj ) 
-        transition.to( obj, { alpha = 0.1, time = 1000, iterations = 0})
-      end
-    }
-  )
-end
-
-local function cancelBlinking( obj )
-    obj.alpha = 0.1
-    transition.cancel( obj )
-end
-
 local function showSequence( event )
   if isPlayer == false then
     local thisRect = rects[randSequence[numSequence]]
     if numSequence <= #randSequence then
-      blink(thisRect.insideRect)
+      effects.sequenceBlinking(thisRect.insideRect)
       numSequence = numSequence + 1
     else
       isPlayer = true
@@ -123,7 +86,7 @@ function resetGame( event )
     countText.text = userCount
     isPlayer = false
     for i = 1, #rects do
-      cancelBlinking(rects[i].insideRect)
+      effects.cancel(rects[i].insideRect)
     end
     insertRandomNumberToRandomSequence()
     timer.resume(activateTimer)
@@ -135,7 +98,7 @@ end
 function handleButtonEvent( event )
   local target = event.target
   if ( isPlayer == true) then
-    blink(target)
+    effects.blink( target )
     local userNumber = tonumber(target.id)
     if ( isSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
@@ -156,7 +119,8 @@ function handleButtonEvent( event )
       text.text = "lose"
       isPlayer = false
       for i = 1, #rects do
-        blinkingRepeatedly(rects[i].insideRect)
+        effects.cancel(rects[i].insideRect)
+        effects.blinkingRepeatedly(rects[i].insideRect)
       end
       Runtime:addEventListener("touch", resetGame)
     end
