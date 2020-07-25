@@ -74,22 +74,33 @@ end
 
 function resetGame( event )
   if event.phase == "began" then
+    
     cleanSequence(randSequence)
     cleanSequence(userSequence)
+    
     text.text = playSymbol
     if userCount > gameSettings.highScore then
       gameSettings.highScore = userCount
       loadsave.saveTable( gameSettings, "settings.json")
     end
+    
     numSequence = 1
     userCount = 0
     countText.text = userCount
     isPlayer = false
+    
     for i = 1, #rects do
       effects.cancel(rects[i].insideRect)
     end
+    
     insertRandomNumberToRandomSequence()
-    timer.resume(activateTimer)
+    
+    if activateTimer then
+      timer.resume(activateTimer)
+    else
+      activateTimer = timer.performWithDelay( 1000, showSequence, 0)
+    end
+    
     Runtime:removeEventListener( "touch", resetGame )
     return true
   end
@@ -111,7 +122,7 @@ function handleButtonEvent( event )
         isPlayer = false
         text.text = playSymbol
         insertRandomNumberToRandomSequence()
-        timer.resume(activateTimer)
+        --timer.resume(activateTimer)
         cleanSequence(userSequence)
       end
     else
@@ -146,6 +157,90 @@ function createButton(group, name, x, y, width, height, shape, cornerRadius, cel
   return newButton 
 end
 
+-- Setting background image
+function createBackground( sceneGroup )
+  local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screenWidth, screenHeight)
+  backgroundImage.x = centerX
+  backgroundImage.y = centerY
+end
+
+-- TODO: Will be replaced with grid table.
+function createGrid( sceneGroup )
+  -- Rect group
+  rectGroup = display.newGroup()
+
+  local radius = 75
+  local width = 100
+  local height = 100
+  local cornerRadius = 5
+  -- Code here runs when the scene is first created but has not yet appeared on screen
+  --[[
+    x 0
+    0 0
+  ]]--
+  upperLeftButton = createButton(rectGroup, "1",
+    display.contentCenterX - radius, display.contentCenterY - radius,
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 70, 142, 218, 1.0}))
+  --[[
+    0 x
+    0 0
+  ]]--
+  upperRightButton = createButton(rectGroup, "2",
+    display.contentCenterX + radius,
+    display.contentCenterY - radius, 
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 190, 70, 1.0}))
+
+  --[[
+    0 0
+    x 0
+  ]]--
+  downLeftButton = createButton(rectGroup, "3", 
+    display.contentCenterX - radius, display.contentCenterY + radius,
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 102, 70, 1.0}))
+  --[[
+    0 0
+    0 x
+  ]]--
+  downRightButton = createButton(rectGroup, "4", 
+    display.contentCenterX + radius, display.contentCenterY + radius,
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange({	104, 218,	70, 1.0}))
+  -- Set elements to main sceneGroup
+  sceneGroup:insert(rectGroup)
+end
+
+-- TODO: replace with LED screen for score and game state.
+function createUI(sceneGroup)
+  -- UI Group
+  guiGroup = display.newGroup()
+  
+  countText = display.newText(userCount, display.contentCenterX,
+    20, native.systemFont, 40 )
+  guiGroup:insert(countText)
+  countText.text = "0"
+  
+  text = display.newText(guiGroup, playSymbol, 
+    countText.x + 100,
+    countText.y,
+  native.systemFont, 40)
+  -- Set elements to main sceneGroup
+  sceneGroup:insert(guiGroup)
+end
+
+-- Loading score from previous session.
+function loadScore()
+  local loadedSettings = loadsave.loadTable( "settings.json" )
+  if loadedSettings and loadedSettings.highScore then
+    userCount = loadedSettings.highScore
+    countText.text = userCount
+  end
+end
+
+function createGame(sceneGroup)
+  createBackground(sceneGroup)
+  createGrid(sceneGroup)
+  createUI(sceneGroup)
+end
+
 function convertRGBtoRange( tab )
   tab[1] = tab[1] / 255
   tab[2] = tab[2] / 255
@@ -160,69 +255,7 @@ end
 -- create()
 function scene:create( event )
     local sceneGroup = self.view
-    -- Setting background image
-    local backgroundImage = display.newImageRect( sceneGroup, "img/background.png", screenWidth, screenHeight)
-    backgroundImage.x = centerX
-    backgroundImage.y = centerY
-    
-    -- Rect group
-    rectGroup = display.newGroup()
-    guiGroup = display.newGroup()
-    local radius = 75
-    local width = 100
-    local height = 100
-    local cornerRadius = 5
-    -- Code here runs when the scene is first created but has not yet appeared on screen
-    --[[
-      x 0
-      0 0
-    ]]--
-    upperLeftButton = createButton(rectGroup, "1",
-      display.contentCenterX - radius, display.contentCenterY - radius,
-      width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 70, 142, 218, 1.0}))
-    --[[
-      0 x
-      0 0
-    ]]--
-    upperRightButton = createButton(rectGroup, "2",
-      display.contentCenterX + radius,
-      display.contentCenterY - radius, 
-      width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 190, 70, 1.0}))
-
-    --[[
-      0 0
-      x 0
-    ]]--
-    downLeftButton = createButton(rectGroup, "3", 
-      display.contentCenterX - radius, display.contentCenterY + radius,
-      width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 102, 70, 1.0}))
-    --[[
-      0 0
-      0 x
-    ]]--
-    downRightButton = createButton(rectGroup, "4", 
-      display.contentCenterX + radius, display.contentCenterY + radius,
-      width, height, "roundedRect", cornerRadius, convertRGBtoRange({	104, 218,	70, 1.0}))
-    
-    countText = display.newText( userCount, display.contentCenterX,
-      20, native.systemFont, 40 )
-    guiGroup:insert(countText)
-    countText.text = "0"
-    
-    text = display.newText( guiGroup, playSymbol, 
-      countText.x + 100,
-      countText.y,
-    native.systemFont, 40)
-    
-    sceneGroup:insert(rectGroup)
-    sceneGroup:insert(guiGroup)
-
-    local loadedSettings = loadsave.loadTable( "settings.json" )
-    if loadedSettings and loadedSettings.highScore then
-      userCount = loadedSettings.highScore
-      countText.text = userCount
-    end
-    Runtime:addEventListener("touch", resetGame)
+    createGame(sceneGroup)
 end
  
 -- show()
@@ -233,9 +266,12 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      activateTimer = timer.performWithDelay( 1000, showSequence, 0)
-      print("Timer is paused: " .. timer.pause(activateTimer))
-      
+      if userCount < 1 then
+        insertRandomNumberToRandomSequence()
+        activateTimer = timer.performWithDelay( 1000, showSequence, 0)
+      else
+        Runtime:addEventListener("touch", resetGame)
+      end
       -- Code here runs when the scene is entirely on screen
     end
 end
