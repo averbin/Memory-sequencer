@@ -1,3 +1,4 @@
+local colors = require("colors")
 local composer = require( "composer" )
 local effects = require( "effects" )
 local grid = require( "grid" )
@@ -173,6 +174,22 @@ function createGrid( sceneGroup )
   local width = 100
   local height = 100
   local cornerRadius = 5
+  options = 
+  {
+    group = rectGroup,
+    x = centerX - 300 / 2,
+    y = centerY - 300 / 2,
+    width = 300,
+    height = 300,
+    rows = 2,
+    columns = 2, 
+    sideMargin = 5,
+    rowMargin = 50,
+    columnMargin = 50,
+    frameOn = true
+  } 
+  
+  --fourGrid = grid.new(options)
   -- Code here runs when the scene is first created but has not yet appeared on screen
   --[[
     x 0
@@ -180,7 +197,7 @@ function createGrid( sceneGroup )
   ]]--
   upperLeftButton = createButton(rectGroup, "1",
     display.contentCenterX - radius, display.contentCenterY - radius,
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 70, 142, 218, 1.0}))
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][1]))
   --[[
     0 x
     0 0
@@ -188,7 +205,7 @@ function createGrid( sceneGroup )
   upperRightButton = createButton(rectGroup, "2",
     display.contentCenterX + radius,
     display.contentCenterY - radius, 
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 190, 70, 1.0}))
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][2]))
 
   --[[
     0 0
@@ -196,14 +213,14 @@ function createGrid( sceneGroup )
   ]]--
   downLeftButton = createButton(rectGroup, "3", 
     display.contentCenterX - radius, display.contentCenterY + radius,
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange({ 218, 102, 70, 1.0}))
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][3]))
   --[[
     0 0
     0 x
   ]]--
   downRightButton = createButton(rectGroup, "4", 
     display.contentCenterX + radius, display.contentCenterY + radius,
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange({	104, 218,	70, 1.0}))
+    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][4]))
   -- Set elements to main sceneGroup
   sceneGroup:insert(rectGroup)
 end
