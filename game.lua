@@ -177,19 +177,20 @@ function createGrid( sceneGroup )
   options = 
   {
     group = rectGroup,
-    x = centerX - 300 / 2,
-    y = centerY - 300 / 2,
-    width = 300,
-    height = 300,
-    rows = 2,
-    columns = 2, 
+    x = centerX,
+    y = centerY,
+    width = 250,
+    height = 250,
+    rows = 3,
+    columns = 3, 
     sideMargin = 5,
-    rowMargin = 50,
-    columnMargin = 50,
+    rowMargin = 10,
+    columnMargin = 10,
     frameOn = true
   } 
   
-  --fourGrid = grid.new(options)
+  fourGrid = grid.new(options)
+  fourGrid:create()
   -- Code here runs when the scene is first created but has not yet appeared on screen
   --[[
     x 0

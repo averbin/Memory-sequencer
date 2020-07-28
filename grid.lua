@@ -37,8 +37,8 @@ function grid.new(options)
   rowMargin = options.rowMargin or 10
   columnMargin = options.columnMargin or 10
   
-  anchorX = options.anchorX or 0
-  anchorY = options.anchorY or 0
+  anchorX = options.anchorX or 0.5
+  anchorY = options.anchorY or 0.5
   frameOn = options.frameOn
 
   elements = {}
@@ -65,9 +65,9 @@ function grid.new(options)
     print("Distance between elements: " .. elementsMargin)
     -- size without margin and size between elements
     local generalSize = size - sideMargin - ((count - 1) * elementsMargin) - sideMargin
-    local rectWidth = generalSize / count
-    print("((size - sideMargin - ((count - 1) * elementsMargin) - sideMargin) / count) Rect width: " .. rectWidth)
-    return rectWidth
+    local rectSide = generalSize / count
+    print("((size - sideMargin - ((count - 1) * elementsMargin) - sideMargin) / count) Rect width: " .. rectSide)
+    return rectSide
   end
 
   --~ @param Calculate next position of element base on x or y + side size + side margin
@@ -79,21 +79,21 @@ function grid.new(options)
   
   -- @Create grid
   function group:create()
-    local columnSide = group:calculateRectangleSide(width, columns, sideMargin, columnMargin)
-    local rowSide = group:calculateRectangleSide(height, rows, sideMargin, rowMargin)
+    local rectWidth = group:calculateRectangleSide(width, columns, sideMargin, columnMargin) -- columnSide
+    local rectHeight = group:calculateRectangleSide(height, rows, sideMargin, rowMargin) -- rowSide
     
     if rows > 0 and columns > 0 then
-      local yPos = y + sideMargin
+      local yPos = y - (height * anchorY) + (rectHeight * anchorY) + sideMargin -- Don't forget about side margin + sideMargin
       for i = 1, rows do
-        local xPos = x + sideMargin
+        local xPos = x - (width * anchorX) + (rectWidth * anchorX) + sideMargin -- Don't forget about side margin + sideMargin
         -- Set position for columns.
         for j = 1, columns do
           local element = display.newRect(
             group,
             xPos,
             yPos,
-            columnSide,
-            rowSide)
+            rectWidth,
+            rectHeight)
           element.anchorX = anchorX
           element.anchorY = anchorY
           --[[ special effect 
@@ -104,11 +104,11 @@ function grid.new(options)
           element.fill.effect.center_and_radiuses  =  { 0.5, 0.5, 0.5, 0.75 }
           element.fill.effect.aspectRatio  = 1
           ]]
-          xPos = group:nextPosition(element.x, columnSide, columnMargin)
+          xPos = group:nextPosition(element.x, rectWidth, columnMargin)
           yPos = element.y
           table.insert(elements, element)
         end
-      yPos = group:nextPosition(yPos, rowSide, rowMargin)
+      yPos = group:nextPosition(yPos, rectHeight, rowMargin)
       end
     end
   end
