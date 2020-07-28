@@ -1,13 +1,16 @@
--- Grid table with all function for calculation.
-
--- Define module
+-----------------------------------------------------------------------------------------
+--
+-- toolButton.lua Grid table with all function for calculation.
+--
+-----------------------------------------------------------------------------------------
+local toolButton = require("toolButton")
 
 --[[ Example:
 options = 
 {
   group 
-  x = centerX - 300 / 2,
-  y = centerY - 300 / 2,
+  x = centerX - width / 2,
+  y = centerY - height / 2,
   width = 300,
   height = 300,
   rows = 2,
@@ -25,27 +28,28 @@ grid = {}
 
 function grid.new(options)
   
-  options = options or {}
-  group = options.group or nil
-  x = options.x or 0
-  y = options.y or 0
-  width = options.width or 500
-  height = options.height or 500
-  rows = options.rows or 3
-  columns = options.columns or 3
-  sideMargin = options.sideMargin or 25
-  rowMargin = options.rowMargin or 10
-  columnMargin = options.columnMargin or 10
+  options       = options               or {}
+  group         = options.group         or nil
+  x             = options.x             or 0
+  y             = options.y             or 0
+  width         = options.width         or 500
+  height        = options.height        or 500
+  rows          = options.rows          or 3
+  columns       = options.columns       or 3
+  sideMargin    = options.sideMargin    or 25
+  rowMargin     = options.rowMargin     or 10
+  columnMargin  = options.columnMargin  or 10
   
-  anchorX = options.anchorX or 0.5
-  anchorY = options.anchorY or 0.5
-  frameOn = options.frameOn
+  anchorX       = options.anchorX       or 0.5
+  anchorY       = options.anchorY       or 0.5
+  frameOn       = options.frameOn
 
   elements = {}
   
   if not group then 
     group = display.newGroup()
   end
+  
   gridField = display.newRect(group, x, y, width, height)
   gridField.anchorX = anchorX
   gridField.anchorY = anchorY
@@ -58,7 +62,7 @@ function grid.new(options)
   -- @param count - columns / rows count
   -- @param sideMargin - distance between general rect and element
   -- @param elementsMargin - distance between elements
-  function group:calculateRectangleSide(size, count, sideMargin, elementsMargin)
+  function calculateRectangleSide(size, count, sideMargin, elementsMargin)
     print("Size: " .. size)
     print("count: " .. count)
     print("side margin: " .. sideMargin)
@@ -71,21 +75,26 @@ function grid.new(options)
   end
 
   --~ @param Calculate next position of element base on x or y + side size + side margin
-  function group:nextPosition(pos, sideSize, sideMargin)
+  function nextPosition(pos, sideSize, sideMargin)
     local result = pos + sideSize + sideMargin
     print("NextPosition: pos + sideSize + sideMargin = " .. result)
     return result
   end
   
+  --~ @param calculate actual postion of element using anchor and side Marging
+  function postionUsingAnchor(pos, side, anchor, sideRect, sideMargin)
+    return pos - (side * anchor) + (sideRect * anchor) + sideMargin 
+  end
+  
   -- @Create grid
   function group:create()
-    local rectWidth = group:calculateRectangleSide(width, columns, sideMargin, columnMargin) -- columnSide
-    local rectHeight = group:calculateRectangleSide(height, rows, sideMargin, rowMargin) -- rowSide
+    local rectWidth = calculateRectangleSide(width, columns, sideMargin, columnMargin) -- columnSide
+    local rectHeight = calculateRectangleSide(height, rows, sideMargin, rowMargin) -- rowSide
     
     if rows > 0 and columns > 0 then
-      local yPos = y - (height * anchorY) + (rectHeight * anchorY) + sideMargin -- Don't forget about side margin + sideMargin
+      local yPos = postionUsingAnchor(y, height, anchorY, rectHeight, sideMargin)
       for i = 1, rows do
-        local xPos = x - (width * anchorX) + (rectWidth * anchorX) + sideMargin -- Don't forget about side margin + sideMargin
+        local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
         -- Set position for columns.
         for j = 1, columns do
           local element = display.newRect(
@@ -96,19 +105,11 @@ function grid.new(options)
             rectHeight)
           element.anchorX = anchorX
           element.anchorY = anchorY
-          --[[ special effect 
-          element.fill.effect = "generator.radialGradient"
- 
-          element.fill.effect.color1 = { 0.6, 0, 0.2, 1 }
-          element.fill.effect.color2 = { 0.2, 0.2, 0.2, 1 }
-          element.fill.effect.center_and_radiuses  =  { 0.5, 0.5, 0.5, 0.75 }
-          element.fill.effect.aspectRatio  = 1
-          ]]
-          xPos = group:nextPosition(element.x, rectWidth, columnMargin)
+          xPos = nextPosition(element.x, rectWidth, columnMargin)
           yPos = element.y
           table.insert(elements, element)
         end
-      yPos = group:nextPosition(yPos, rectHeight, rowMargin)
+      yPos = nextPosition(yPos, rectHeight, rowMargin)
       end
     end
   end
