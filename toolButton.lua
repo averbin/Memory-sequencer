@@ -39,7 +39,7 @@ function tooButton.new( options )
     button:setFillColor(0.1, 0.1, 0.1, 1)
     button:setStrokeColor(unpack(set.strokeColor))
     button.strokeWidth = 2
-    button.isVisible = false
+    --button.isVisible = false
     
     local insideRect = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
     insideRect.id = set.id
@@ -47,7 +47,7 @@ function tooButton.new( options )
     insideRect:setStrokeColor(unpack(set.strokeColor) )
     insideRect.strokeWidth = 2
     insideRect.alpha = 0.1
-    insideRect.isVisible = false
+    --insideRect.isVisible = false
     set.insideRect = insideRect
     set.insideRect.alpha = 0.1
   end

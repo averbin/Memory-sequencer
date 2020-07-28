@@ -139,25 +139,6 @@ function handleButtonEvent( event )
   end
 end
 
-function createButton(group, name, x, y, width, height, shape, cornerRadius, cellColor)
-  local newButton = toolButton.new(
-    {
-      name = name,
-      x = x,
-      y = y,
-      width = width,
-      height = height,
-      cornerRadius = cornerRadius,
-      fillColor = cellColor or { 1,	1, 1, 1 },
-      strokeColor = { 0.8, 0.8, 1, 1 },
-    }
-  )
-  table.insert(rects, newButton)
-  newButton.insideRect:addEventListener("tap", handleButtonEvent)
-  group:insert(newButton.group)
-  return newButton 
-end
-
 -- Setting background image
 function createBackground( sceneGroup )
   local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screenWidth, screenHeight)
@@ -165,15 +146,10 @@ function createBackground( sceneGroup )
   backgroundImage.y = centerY
 end
 
--- TODO: Will be replaced with grid table.
 function createGrid( sceneGroup )
   -- Rect group
   rectGroup = display.newGroup()
 
-  local radius = 75
-  local width = 100
-  local height = 100
-  local cornerRadius = 5
   options = 
   {
     group = rectGroup,
@@ -181,47 +157,19 @@ function createGrid( sceneGroup )
     y = centerY,
     width = 250,
     height = 250,
-    rows = 3,
-    columns = 3, 
-    sideMargin = 5,
-    rowMargin = 10,
-    columnMargin = 10,
-    frameOn = true
+    rows = 2,
+    columns = 2, 
+    sideMargin = 0,
+    rowMargin = 50,
+    columnMargin = 50,
+    frameOn = false,
+    handleButtonEvent = handleButtonEvent,
+    typeOfGame = "four"
   } 
   
   fourGrid = grid.new(options)
   fourGrid:create()
-  -- Code here runs when the scene is first created but has not yet appeared on screen
-  --[[
-    x 0
-    0 0
-  ]]--
-  upperLeftButton = createButton(rectGroup, "1",
-    display.contentCenterX - radius, display.contentCenterY - radius,
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][1]))
-  --[[
-    0 x
-    0 0
-  ]]--
-  upperRightButton = createButton(rectGroup, "2",
-    display.contentCenterX + radius,
-    display.contentCenterY - radius, 
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][2]))
-
-  --[[
-    0 0
-    x 0
-  ]]--
-  downLeftButton = createButton(rectGroup, "3", 
-    display.contentCenterX - radius, display.contentCenterY + radius,
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][3]))
-  --[[
-    0 0
-    0 x
-  ]]--
-  downRightButton = createButton(rectGroup, "4", 
-    display.contentCenterX + radius, display.contentCenterY + radius,
-    width, height, "roundedRect", cornerRadius, convertRGBtoRange(colors["four"][4]))
+  rects = fourGrid:getRects()
   -- Set elements to main sceneGroup
   sceneGroup:insert(rectGroup)
 end

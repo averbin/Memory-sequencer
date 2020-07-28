@@ -3,6 +3,7 @@
 -- toolButton.lua Grid table with all function for calculation.
 --
 -----------------------------------------------------------------------------------------
+local colors = require("colors")
 local toolButton = require("toolButton")
 
 --[[ Example:
@@ -26,6 +27,24 @@ options =
 
 grid = {}
 
+function createButton(group, name, x, y, width, height, shape, cornerRadius, cellColor, handleButtonEvent)
+  local newButton = toolButton.new(
+    {
+      name = name,
+      x = x,
+      y = y,
+      width = width,
+      height = height,
+      cornerRadius = cornerRadius,
+      fillColor = cellColor or { 1,	1, 1, 1 },
+      strokeColor = { 0.8, 0.8, 1, 1 },
+    }
+  )
+  newButton.insideRect:addEventListener("tap", handleButtonEvent)
+  group:insert(newButton.group)
+  return newButton 
+end
+
 function grid.new(options)
   
   options       = options               or {}
@@ -43,6 +62,9 @@ function grid.new(options)
   anchorX       = options.anchorX       or 0.5
   anchorY       = options.anchorY       or 0.5
   frameOn       = options.frameOn
+  cornerRadius  = options.cornerRadius  or 5
+  handleEvent   = options.handleButtonEvent
+  typeOfGame    = options.typeOfGame    or "four" 
 
   elements = {}
   
@@ -93,25 +115,35 @@ function grid.new(options)
     
     if rows > 0 and columns > 0 then
       local yPos = postionUsingAnchor(y, height, anchorY, rectHeight, sideMargin)
+      local count = 1
       for i = 1, rows do
         local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
         -- Set position for columns.
         for j = 1, columns do
-          local element = display.newRect(
-            group,
-            xPos,
-            yPos,
-            rectWidth,
-            rectHeight)
+          local element = createButton(group, tostring(count), 
+          xPos, yPos, rectWidth, rectHeight, "roundedRect",
+          cornerRadius, convertRGBtoRange(colors[typeOfGame][count]), handleEvent)
+        
+          --local element = display.newRect(
+          --  group,
+          --  xPos,
+          --  yPos,
+          --  rectWidth,
+          --  rectHeight)
           element.anchorX = anchorX
           element.anchorY = anchorY
           xPos = nextPosition(element.x, rectWidth, columnMargin)
           yPos = element.y
           table.insert(elements, element)
+          count = count + 1
         end
       yPos = nextPosition(yPos, rectHeight, rowMargin)
       end
     end
+  end
+  
+  function group:getRects()
+    return elements
   end
   
   return group
