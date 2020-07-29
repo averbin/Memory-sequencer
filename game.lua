@@ -118,13 +118,15 @@ function handleButtonEvent( event )
       userCount = userCount + 1
       countText.text = userCount
       if #userSequence >= #randSequence then
-        count = 1
-        numSequence = 1
-        isPlayer = false
-        text.text = playSymbol
-        insertRandomNumberToRandomSequence()
-        --timer.resume(activateTimer)
-        cleanSequence(userSequence)
+        timer.performWithDelay(500, function()
+            count = 1
+            numSequence = 1
+            isPlayer = false
+            text.text = playSymbol
+            insertRandomNumberToRandomSequence()
+            --timer.resume(activateTimer)
+            cleanSequence(userSequence)
+          end)
       end
     else
       timer.pause( activateTimer )
