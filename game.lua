@@ -38,13 +38,14 @@ local gameSettings =
   highScore = 0
 }
 local blinkingInProgress = false
+local gameType = {id = 4, type = "four"} -- {id = 9, type = "nine"}
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
 local function insertRandomNumberToRandomSequence()
-  local var = math.random(4)
+  local var = math.random(gameType.id)
   table.insert(randSequence, var)
 end
 
@@ -112,7 +113,7 @@ function handleButtonEvent( event )
   if ( isPlayer == true) then
     effects.blink( target )
     -- TODO: set options vibration off/on
-    system.vibrate()
+    effects.vibrate()
     local userNumber = tonumber(target.id)
     if ( isSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
@@ -134,6 +135,7 @@ function handleButtonEvent( event )
       timer.pause( activateTimer )
       text.text = "lose"
       isPlayer = false
+      effects.vibrate()
       for i = 1, #rects do
         effects.cancel(rects[i].insideRect)
         effects.blinkingRepeatedly(rects[i].insideRect)
@@ -153,6 +155,14 @@ end
 function createGrid( sceneGroup )
   -- Rect group
   rectGroup = display.newGroup()
+  
+  if gameType.type == "four" then
+    rows = 2
+    columns = 2
+  elseif gameType.type == "nine" then
+    rows = 3
+    columns = 3
+  end
 
   options = 
   {
@@ -161,14 +171,14 @@ function createGrid( sceneGroup )
     y = centerY,
     width = 250,
     height = 250,
-    rows = 2,
-    columns = 2, 
+    rows = rows,
+    columns = columns, 
     sideMargin = 0,
-    rowMargin = 50,
-    columnMargin = 50,
+    rowMargin = 15,
+    columnMargin = 15,
     frameOn = false,
     handleButtonEvent = handleButtonEvent,
-    typeOfGame = "four"
+    typeOfGame = gameType.type
   } 
   
   fourGrid = grid.new(options)

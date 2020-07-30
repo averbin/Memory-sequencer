@@ -42,4 +42,8 @@ function M.cancel( obj )
     transition.cancel( obj )
 end
 
+function M.vibrate()
+  system.vibrate()
+end
+
 return M
