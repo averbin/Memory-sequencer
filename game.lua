@@ -111,6 +111,8 @@ function handleButtonEvent( event )
   local target = event.target
   if ( isPlayer == true) then
     effects.blink( target )
+    -- TODO: set options vibration off/on
+    system.vibrate()
     local userNumber = tonumber(target.id)
     if ( isSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
