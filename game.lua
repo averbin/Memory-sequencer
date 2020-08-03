@@ -2,6 +2,7 @@ local colors = require("colors")
 local composer = require( "composer" )
 local effects = require( "effects" )
 local grid = require( "grid" )
+local led = require( "ledPannel" )
 local loadsave = require( "loadsave" )
 local toolButton = require( "toolButton" )
 local widget = require( "widget" )
@@ -38,7 +39,7 @@ local gameSettings =
   highScore = 0
 }
 local blinkingInProgress = false
-local gameType = {id = 4, type = "four"} -- {id = 9, type = "nine"}
+local gameType = {id = 9, type = "nine"} -- {id = 9, type = "nine"} , {id = 4, type = "four"}
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -192,6 +193,14 @@ end
 function createUI(sceneGroup)
   -- UI Group
   guiGroup = display.newGroup()
+  
+  options = 
+  {
+    group = guiGroup,
+    x = centerX - 50,
+    y = 32,
+  }
+  led.new(options)
   
   countText = display.newText(userCount, display.contentCenterX,
     20, native.systemFont, 40 )
