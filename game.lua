@@ -80,7 +80,7 @@ function resetGame( event )
     
     cleanSequence(randSequence)
     cleanSequence(userSequence)
-    
+    --led:blinkPlay()
     text.text = playSymbol
     if userCount > gameSettings.highScore then
       gameSettings.highScore = userCount
@@ -199,6 +199,8 @@ function createUI(sceneGroup)
     group = guiGroup,
     x = centerX - 50,
     y = 32,
+    width = 70,
+    height = 128,
   }
   led.new(options)
   
