@@ -208,11 +208,13 @@ function createUI(sceneGroup)
     20, native.systemFont, 40 )
   guiGroup:insert(countText)
   countText.text = "0"
+  countText.isVisible = false
   
   text = display.newText(guiGroup, playSymbol, 
     countText.x + 100,
     countText.y,
   native.systemFont, 40)
+  text.isVisible = false
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
 end
