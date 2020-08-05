@@ -19,8 +19,10 @@ function ledPanel.new( options )
   sections              = options.sections or 4 -- how many elements will be on screen including game state.
   
   local backgroundCell  = nil
-  local play            = nil
-  local record          = nil
+  local playImg         = nil
+  local isPlayRunning   = false
+  local recordImg       = nil
+  local isRecordRunning = false
   
   local function createLedNumber(x, y)
     options = 
@@ -41,32 +43,68 @@ function ledPanel.new( options )
   
   local function createGameState()
     backgroundCell = display.newImageRect(group, "img/play_panel.png", width, height)
-    --backgroundCell.x = x; backgroundCell.y = y
-    play = display.newImageRect(group, "img/play_on.png", width, height)
-    --play.x = x; play.y = y
-    record = display.newImageRect(group, "img/Record_on.png", width, height)
-    --record.x = x; record.y = y
+    playImg = display.newImageRect(group, "img/play_on.png", width, height)
+    playImg.isVisible = false
+    recordImg = display.newImageRect(group, "img/Record_on.png", width, height)
+    recordImg.isVisible = false
     for i = 1, sections do
       createLedNumber(backgroundCell.x + (backgroundCell.width * i), backgroundCell.y)
     end
 
-    ledPanel:blinkPlay()
-    ledPanel:blinkRect()
+    --ledPanel:blinkPlay()
+    --ledPanel:blinkRect()
     group:scale(0.6, 0.6)
     group.x = x - width / 2
     group.y = y
   end
   
+  function visability( obj, state)
+    if obj.isVisible ~= state then
+      obj.isVisible = state
+      if state == true then
+        obj.alpha = 1.0
+      else
+        obj.alpha = 0.0
+      end
+    end
+  end
+  
+  function blink( obj )
+    visability(obj, true)
+    transition.blink( obj , { time=2000 }) 
+  end
+  
+  function cancel( obj )
+    visability(obj, false)
+    transition.cancel( obj )
+  end
+  
   function ledPanel:blinkPlay()
-    transition.blink( play , { time=2000 }) 
+    if isPlayRunning == false then
+      blink(playImg)
+      isPlayRunning = true
+    end
   end
   
-   function ledPanel:blinkRect()
-    transition.blink( record , { time=2000 }) 
+  function ledPanel:cancelPlay()
+    if isPlayRunning == true then
+      cancel(playImg)
+      isPlayRunning = false
+    end
   end
   
-  function ledPanel:getRecord()
-    return record
+  function ledPanel:blinkRecord()
+    if isRecordRunning == false then
+      blink(recordImg)
+      isRecordRunning = true
+    end
+  end
+
+  function ledPanel:cancelRecord()
+    if isRecordRunning == true then
+      cancel(recordImg)
+      isRecordRunning = false
+    end
   end
   
   createGameState()

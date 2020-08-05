@@ -56,10 +56,14 @@ local function showSequence( event )
     if numSequence <= #randSequence then
       effects.sequenceBlinking(thisRect.insideRect)
       numSequence = numSequence + 1
+      led:cancelRecord()
+      led:blinkPlay()
     else
       isPlayer = true
       numSequence = 1
       text.text = rectSymbol
+      led:cancelPlay()
+      led:blinkRecord()
     end
   end
 end
@@ -80,7 +84,6 @@ function resetGame( event )
     
     cleanSequence(randSequence)
     cleanSequence(userSequence)
-    --led:blinkPlay()
     text.text = playSymbol
     if userCount > gameSettings.highScore then
       gameSettings.highScore = userCount
@@ -95,6 +98,9 @@ function resetGame( event )
     for i = 1, #rects do
       effects.cancel(rects[i].insideRect)
     end
+    
+    led:cancelPlay()
+    led:cancelRecord()
     
     insertRandomNumberToRandomSequence()
     
@@ -135,6 +141,12 @@ function handleButtonEvent( event )
     else
       timer.pause( activateTimer )
       text.text = "lose"
+      
+      led:cancelPlay()
+      led:cancelRecord()
+      led:blinkPlay()
+      led:blinkRecord()
+      
       isPlayer = false
       effects.vibrate()
       for i = 1, #rects do
