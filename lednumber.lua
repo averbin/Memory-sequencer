@@ -1,6 +1,8 @@
 ledNumber = {}
 
 function ledNumber.new(options)
+  set = {}
+  setmetatable(set, {})
   options             = options               or {}
   group               = options.group
   x_                  = options.x             or 0
@@ -13,23 +15,19 @@ function ledNumber.new(options)
   numbers             = options.numbers
   id                  = options.id            or 1
   
-  fullLedNumberGroup  = group                 or display.newGroup()
-  
   function createImage(imagePath)
-    image = display.newImageRect(fullLedNumberGroup, imagePath, width, height)
+    image = display.newImageRect(group, imagePath, width, height)
     image.x = x_
     image.y = y_
   end
   
   function createGeneralGroup()
-    local backgroundImg = createImage(backgroundImg)
-    local stencilImg = createImage(stencilImg)
+    set.group = group
+    set.backgroundImg = createImage(backgroundImg)
+    set.stencilImg = createImage(stencilImg)
     print("ID: " .. id)
     print("path: " .. numbers[id].path)
-    local numberImg = createImage(numbers[id].path)
-  
-    --fullLedNumberGroup.x = x_; 
-    --fullLedNumberGroup.y = y_;
+    set.numberImg = createImage(numbers[id].path)
   end
   
   function ledNumber:x()
@@ -41,19 +39,19 @@ function ledNumber.new(options)
   end
   
   function ledNumber:setPosition(x , y)
-    x_ = x_ + x ; fullLedNumberGroup.x = x_; 
-    y_ = y_ + y ; fullLedNumberGroup.y = y_;
+    x_ = x_ + x ; group.x = set.x_; 
+    y_ = y_ + y ; group.y = set.y_;
   end
   
   function dump()
     print("x: " .. x_)
     print("y: " .. y_)
-    print("fullLedNumberGroup x : " .. fullLedNumberGroup.x)
-    print("fullLedNumberGroup y : " .. fullLedNumberGroup.y)
+    print("group x : " .. group.x)
+    print("group y : " .. group.y)
   end
   
   createGeneralGroup()
-  
+  return set
 end
 
 return ledNumber
