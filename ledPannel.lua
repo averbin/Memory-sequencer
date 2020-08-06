@@ -35,7 +35,7 @@ function ledPanel.new( options )
       backgroundImg = "img/numbers/background.png",
       stencilImg = "img/numbers/no_number.png",
       numbers = numbers,
-      id = 1
+      id = 0
     }
 
     return ledNumber.new( options )

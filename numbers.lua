@@ -5,7 +5,7 @@ local path = "img/numbers"
 
 local numbers = 
 {
-  {
+  [0] = {
     id = 0,
     width = generalElementWidth,
     height = generalElementHeight,

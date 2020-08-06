@@ -13,7 +13,7 @@ function ledNumber.new(options)
   backgroundImg       = options.backgroundImg or ""
   stencilImg          = options.stencilImg    or ""
   numbers             = options.numbers
-  id                  = options.id            or 1
+  id                  = options.id            or 0
   
   function createImage(imagePath)
     image = display.newImageRect(group, imagePath, width, height)
