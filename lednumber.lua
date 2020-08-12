@@ -4,50 +4,60 @@ function ledNumber.new(options)
   set = {}
   setmetatable(set, {})
   options             = options               or {}
-  group               = options.group
-  x_                  = options.x             or 0
-  y_                  = options.y             or 0
-  width               = options.width         or 70
-  height              = options.height        or 128
-  
-  backgroundImg       = options.backgroundImg or ""
-  stencilImg          = options.stencilImg    or ""
-  numbers             = options.numbers
-  id                  = options.id            or 0
+  set.group               = options.group
+  set.x_                  = options.x             or 0
+  set.y_                  = options.y             or 0
+  set.width               = options.width         or 70
+  set.height              = options.height        or 128
+
+  set.backgroundImg       = options.backgroundImg or ""
+  set.stencilImg          = options.stencilImg    or ""
+  set.imagesIndex         = options.numbers
+  set.id                  = options.id            or 0
   
   function createImage(imagePath)
-    image = display.newImageRect(group, imagePath, width, height)
-    image.x = x_
-    image.y = y_
+    local image = display.newImageRect(set.group, imagePath, set.width, set.height)
+    image.x = set.x_
+    image.y = set.y_
+    image.filename = imagePath
+    return image
   end
   
   function createGeneralGroup()
     set.group = group
-    set.backgroundImg = createImage(backgroundImg)
-    set.stencilImg = createImage(stencilImg)
-    print("ID: " .. id)
-    print("path: " .. numbers[id].path)
-    set.numberImg = createImage(numbers[id].path)
+    set.backgroundImg = createImage(set.backgroundImg)
+    set.stencilImg = createImage(set.stencilImg)
+    print("ID: " .. set.id )
+    print("path: " .. set.imagesIndex[set.id].path)
+    set.numberImg = createImage(set.imagesIndex[set.id].path)
   end
   
   function ledNumber:x()
-    return x_
+    return set.x_
   end
   
   function ledNumber:y()
-    return y_
+    return set.y_
   end
   
   function ledNumber:setPosition(x , y)
-    x_ = x_ + x ; group.x = set.x_; 
-    y_ = y_ + y ; group.y = set.y_;
+    set.x_ = set.x_ + x ; set.group.x = set.x_; 
+    set.y_ = set.y_ + y ; set.group.y = set.y_;
   end
   
   function dump()
-    print("x: " .. x_)
-    print("y: " .. y_)
-    print("group x : " .. group.x)
-    print("group y : " .. group.y)
+    print("x: " .. set.x_)
+    print("y: " .. set.y_)
+    print("group x : " .. set.group.x)
+    print("group y : " .. set.group.y)
+  end
+  
+  function set.setNumById( number )
+    print("file: " .. set.numberImg.filename)
+    display.remove( set.numberImg )
+    print("path to image: " .. set.imagesIndex[number].path)
+    print("ID: " .. set.id)
+    set.numberImg = createImage(set.imagesIndex[number].path)
   end
   
   createGeneralGroup()

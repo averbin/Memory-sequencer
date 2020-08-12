@@ -23,8 +23,9 @@ function ledPanel.new( options )
   local isPlayRunning   = false
   local recordImg       = nil
   local isRecordRunning = false
+  local scoreNumbers = {}
   
-  local function createLedNumber(x, y)
+  local function createLedNumber(x, y, id)
     options = 
     {
       group = group,
@@ -35,7 +36,7 @@ function ledPanel.new( options )
       backgroundImg = "img/numbers/background.png",
       stencilImg = "img/numbers/no_number.png",
       numbers = numbers,
-      id = 0
+      id = id
     }
 
     return ledNumber.new( options )
@@ -48,7 +49,7 @@ function ledPanel.new( options )
     recordImg = display.newImageRect(group, "img/Record_on.png", width, height)
     recordImg.isVisible = false
     for i = 1, sections do
-      createLedNumber(backgroundCell.x + (backgroundCell.width * i), backgroundCell.y)
+      scoreNumbers[i] = createLedNumber(backgroundCell.x + (backgroundCell.width * i), backgroundCell.y, 0)
     end
 
     --ledPanel:blinkPlay()
@@ -104,6 +105,21 @@ function ledPanel.new( options )
     if isRecordRunning == true then
       cancel(recordImg)
       isRecordRunning = false
+    end
+  end
+  
+  function ledPanel:setScore( tab )
+    for i = 1, #tab do
+      print("table value: " .. tab[i])
+      --scoreNumbers[i].setNumById(tab[i])
+      display.remove( scoreNumbers[i].numberImg )
+      print(type(scoreNumbers[i].group))
+      print(numbers[tab[i]].path)
+      print( scoreNumbers[i].width, scoreNumbers[i].height)
+      print(scoreNumbers[i].x_, scoreNumbers[i].y_)
+      scoreNumbers[i].numberImg = display.newImageRect(scoreNumbers[i].group, numbers[tab[i]].path, scoreNumbers[i].width, scoreNumbers[i].height)
+      scoreNumbers[i].numberImg.x = scoreNumbers[i].x_
+      scoreNumbers[i].numberImg.y = scoreNumbers[i].y_
     end
   end
   

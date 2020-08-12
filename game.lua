@@ -27,7 +27,7 @@ local guiGroup = nil
 local rects = {}
 local activateTimer = nil
 local count = 1
-local userCount = 0
+local userScore = 0
 local countText = nil
 local clock = os.clock
 local numSequence = 1
@@ -48,6 +48,41 @@ local gameType = {id = 9, type = "nine"} -- {id = 9, type = "nine"} , {id = 4, t
 local function insertRandomNumberToRandomSequence()
   local var = math.random(gameType.id)
   table.insert(randSequence, var)
+end
+
+function convertUserScore( userScore )
+  patern = ""
+  local userScoreStr = tostring(userScore)
+  
+  if(#userScoreStr < 2) then
+    userScoreStr = userScoreStr:gsub('()',{[1]='000'})
+    print(userScoreStr)
+  elseif(#userScoreStr < 3) then
+    userScoreStr = userScoreStr:gsub('()',{[1]='00'})
+    print(userScoreStr)
+  elseif(#userScoreStr < 4) then
+    userScoreStr = userScoreStr:gsub('()',{[1]='0'})
+    print(userScoreStr)
+  end
+  
+  for i = 1, #userScoreStr do
+    patern = patern .. "(%d)"
+  end
+  
+  numbers = {}
+  
+  local function fromStringToTable(...)
+    for i,v in ipairs(arg) do
+      if i > 2 then
+        numbers[i - 2] = tonumber(v)
+      end
+    end
+    print(numbers)
+  end
+  
+  fromStringToTable(string.find(userScoreStr, patern))
+  
+  return numbers
 end
 
 local function showSequence( event )
@@ -85,14 +120,15 @@ function resetGame( event )
     cleanSequence(randSequence)
     cleanSequence(userSequence)
     text.text = playSymbol
-    if userCount > gameSettings.highScore then
-      gameSettings.highScore = userCount
+    if userScore > gameSettings.highScore then
+      gameSettings.highScore = userScore
       loadsave.saveTable( gameSettings, "settings.json")
     end
     
     numSequence = 1
-    userCount = 0
-    countText.text = userCount
+    userScore = 0
+    led:setScore(convertUserScore(userScore))
+    countText.text = userScore
     isPlayer = false
     
     for i = 1, #rects do
@@ -125,8 +161,9 @@ function handleButtonEvent( event )
     if ( isSequencesTheSame(userNumber)) then
       table.insert(userSequence, userNumber)
       numSequence = numSequence + 1
-      userCount = userCount + 1
-      countText.text = userCount
+      userScore = userScore + 1
+      led:setScore(convertUserScore(userScore))
+      countText.text = userScore
       if #userSequence >= #randSequence then
         timer.performWithDelay(500, function()
             count = 1
@@ -216,12 +253,13 @@ function createUI(sceneGroup)
   }
   led.new(options)
   
-  countText = display.newText(userCount, display.contentCenterX,
+  countText = display.newText(userScore, display.contentCenterX,
     20, native.systemFont, 40 )
   guiGroup:insert(countText)
   countText.text = "0"
   countText.isVisible = false
   
+  led:setScore(convertUserScore(userScore))
   text = display.newText(guiGroup, playSymbol, 
     countText.x + 100,
     countText.y,
@@ -235,8 +273,9 @@ end
 function loadScore()
   local loadedSettings = loadsave.loadTable( "settings.json" )
   if loadedSettings and loadedSettings.highScore then
-    userCount = loadedSettings.highScore
-    countText.text = userCount
+    userScore = loadedSettings.highScore
+    led:setScore(convertUserScore(userScore))
+    countText.text = userScore
   end
 end
 
@@ -244,6 +283,7 @@ function createGame(sceneGroup)
   createBackground(sceneGroup)
   createGrid(sceneGroup)
   createUI(sceneGroup)
+  loadScore()
 end
 
 function convertRGBtoRange( tab )
@@ -271,7 +311,7 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      if userCount < 1 then
+      if userScore < 1 then
         insertRandomNumberToRandomSequence()
         activateTimer = timer.performWithDelay( 1000, showSequence, 0)
       else
