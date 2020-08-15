@@ -4,7 +4,7 @@
 -- score and game state.
 --
 -----------------------------------------------------------------------------------------
-local numbers = require("numbers")
+local numbersImageSheet = require("numbers")
 local ledNumbers = require("lednumber")
 
 ledPanel = {}
@@ -25,7 +25,7 @@ function ledPanel.new( options )
   local isRecordRunning = false
   local scoreNumbers = {}
   
-  local function createLedNumber(x, y, id)
+  local function createLedNumber(x, y, number)
     options = 
     {
       group = group,
@@ -35,11 +35,11 @@ function ledPanel.new( options )
       height = height,
       backgroundImg = "img/numbers/background.png",
       stencilImg = "img/numbers/no_number.png",
-      numbers = numbers,
-      id = id
+      imageSheet = numbersImageSheet,
+      number = number
     }
-
-    return ledNumber.new( options )
+    local num = ledNumber.new( options )
+    return num
   end
   
   local function createGameState()
@@ -49,8 +49,13 @@ function ledPanel.new( options )
     recordImg = display.newImageRect(group, "img/Record_on.png", width, height)
     recordImg.isVisible = false
     for i = 1, sections do
-      scoreNumbers[i] = createLedNumber(backgroundCell.x + (backgroundCell.width * i), backgroundCell.y, 0)
+      scoreNumbers[i] = createLedNumber(backgroundCell.x + (backgroundCell.width * i), backgroundCell.y, i)
     end
+    print("=== --- Show address table--- ===")
+    for i = 1, #scoreNumbers do
+      print("Number : " .. scoreNumbers[i]:getNumber())
+    end
+    print("=== --- === --- ===")
 
     --ledPanel:blinkPlay()
     --ledPanel:blinkRect()
@@ -111,15 +116,17 @@ function ledPanel.new( options )
   function ledPanel:setScore( tab )
     for i = 1, #tab do
       print("table value: " .. tab[i])
-      --scoreNumbers[i].setNumById(tab[i])
-      display.remove( scoreNumbers[i].numberImg )
-      print(type(scoreNumbers[i].group))
-      print(numbers[tab[i]].path)
-      print( scoreNumbers[i].width, scoreNumbers[i].height)
-      print(scoreNumbers[i].x_, scoreNumbers[i].y_)
-      scoreNumbers[i].numberImg = display.newImageRect(scoreNumbers[i].group, numbers[tab[i]].path, scoreNumbers[i].width, scoreNumbers[i].height)
-      scoreNumbers[i].numberImg.x = scoreNumbers[i].x_
-      scoreNumbers[i].numberImg.y = scoreNumbers[i].y_
+      scoreNumbers[i]:setNumById(tab[i])
+      
+      --display.remove( scoreNumbers[i].numberImg )
+      --print(type(scoreNumbers[i].group))
+      --print(numbers[tab[i]].path)
+      --print( scoreNumbers[i].width, scoreNumbers[i].height)
+      --print(scoreNumbers[i].x_, scoreNumbers[i].y_)
+      --scoreNumbers[i].numberImg = display.newImageRect(scoreNumbers[i].group, numbers[tab[i]].path, scoreNumbers[i].width, scoreNumbers[i].height)
+      --scoreNumbers[i].numberImg.x = scoreNumbers[i].x_
+      --scoreNumbers[i].numberImg.y = scoreNumbers[i].y_
+      
     end
   end
   

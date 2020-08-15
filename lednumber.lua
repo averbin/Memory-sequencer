@@ -1,66 +1,65 @@
 ledNumber = {}
 
 function ledNumber.new(options)
-  set = {}
-  setmetatable(set, {})
-  options             = options               or {}
+  local set = {}
+  
+  options                 = options               or {}
   set.group               = options.group
-  set.x_                  = options.x             or 0
-  set.y_                  = options.y             or 0
+  set.x                   = options.x             or 0
+  set.y                   = options.y             or 0
   set.width               = options.width         or 70
   set.height              = options.height        or 128
-
-  set.backgroundImg       = options.backgroundImg or ""
-  set.stencilImg          = options.stencilImg    or ""
-  set.imagesIndex         = options.numbers
-  set.id                  = options.id            or 0
   
-  function createImage(imagePath)
-    local image = display.newImageRect(set.group, imagePath, set.width, set.height)
-    image.x = set.x_
-    image.y = set.y_
-    image.filename = imagePath
+  local backgroundImgPath = options.backgroundImg or ""
+  local stencilImgPath    = options.stencilImg    or ""
+  local imageSheet        = options.imageSheet    or nil
+  set.number              = options.number        or 0
+  
+  function createImage(parameters)
+    local image = display.newImageRect(parameters.group, parameters.imagePath,
+      parameters.width, parameters.height)
+    image.x = parameters.x
+    image.y = parameters.y
     return image
   end
   
-  function createGeneralGroup()
-    set.group = group
-    set.backgroundImg = createImage(set.backgroundImg)
-    set.stencilImg = createImage(set.stencilImg)
-    print("ID: " .. set.id )
-    print("path: " .. set.imagesIndex[set.id].path)
-    set.numberImg = createImage(set.imagesIndex[set.id].path)
+  function set:createGeneralGroup()
+    parameters = 
+    { 
+      group = self.group,
+      imagePath = backgroundImgPath,
+      x = self.x, y = self.y,
+      width = self.width, height = self.height 
+    }
+    self.backgroundImg = createImage( parameters )
+    parameters.imagePath = stencilImgPath
+    self.stencilImg = createImage( parameters )
+    parameters.imagePath = imageSheet[self.number].path
+    self.numberImg = createImage( parameters )
   end
   
-  function ledNumber:x()
-    return set.x_
+  function set:setPosition(x , y)
+    self.x = self.x + x ; self.group.x = self.x; 
+    self.y = self.y + y ; self.group.y = self.y;
   end
   
-  function ledNumber:y()
-    return set.y_
+  function set:getNumber()
+    return self.number
   end
   
-  function ledNumber:setPosition(x , y)
-    set.x_ = set.x_ + x ; set.group.x = set.x_; 
-    set.y_ = set.y_ + y ; set.group.y = set.y_;
+  function set:setNumById( number )
+    parameters = 
+    { 
+      group = self.group,
+      imagePath = imageSheet[number].path,
+      x = self.x, y = self.y,
+      width = self.width, height = self.height 
+    }
+    display.remove( self.numberImg )
+    self.numberImg = createImage( parameters )
   end
   
-  function dump()
-    print("x: " .. set.x_)
-    print("y: " .. set.y_)
-    print("group x : " .. set.group.x)
-    print("group y : " .. set.group.y)
-  end
-  
-  function set.setNumById( number )
-    print("file: " .. set.numberImg.filename)
-    display.remove( set.numberImg )
-    print("path to image: " .. set.imagesIndex[number].path)
-    print("ID: " .. set.id)
-    set.numberImg = createImage(set.imagesIndex[number].path)
-  end
-  
-  createGeneralGroup()
+  set:createGeneralGroup()
   return set
 end
 
