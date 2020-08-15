@@ -2,7 +2,7 @@ local colors = require("colors")
 local composer = require( "composer" )
 local effects = require( "effects" )
 local grid = require( "grid" )
-local led = require( "ledPannel" )
+local ledPannel = require( "ledPannel" )
 local loadsave = require( "loadsave" )
 local toolButton = require( "toolButton" )
 local widget = require( "widget" )
@@ -91,14 +91,14 @@ local function showSequence( event )
     if numSequence <= #randSequence then
       effects.sequenceBlinking(thisRect.insideRect)
       numSequence = numSequence + 1
-      led:cancelRecord()
-      led:blinkPlay()
+      ledPannel:cancelRecord()
+      ledPannel:blinkPlay()
     else
       isPlayer = true
       numSequence = 1
       text.text = rectSymbol
-      led:cancelPlay()
-      led:blinkRecord()
+      ledPannel:cancelPlay()
+      ledPannel:blinkRecord()
     end
   end
 end
@@ -127,7 +127,7 @@ function resetGame( event )
     
     numSequence = 1
     userScore = 0
-    led:setScore(convertUserScore(userScore))
+    ledPannel:setScore(convertUserScore(userScore))
     countText.text = userScore
     isPlayer = false
     
@@ -135,8 +135,8 @@ function resetGame( event )
       effects.cancel(rects[i].insideRect)
     end
     
-    led:cancelPlay()
-    led:cancelRecord()
+    ledPannel:cancelPlay()
+    ledPannel:cancelRecord()
     
     insertRandomNumberToRandomSequence()
     
@@ -162,7 +162,7 @@ function handleButtonEvent( event )
       table.insert(userSequence, userNumber)
       numSequence = numSequence + 1
       userScore = userScore + 1
-      led:setScore(convertUserScore(userScore))
+      ledPannel:setScore(convertUserScore(userScore))
       countText.text = userScore
       if #userSequence >= #randSequence then
         timer.performWithDelay(500, function()
@@ -179,10 +179,10 @@ function handleButtonEvent( event )
       timer.pause( activateTimer )
       text.text = "lose"
       
-      led:cancelPlay()
-      led:cancelRecord()
-      led:blinkPlay()
-      led:blinkRecord()
+      ledPannel:cancelPlay()
+      ledPannel:cancelRecord()
+      ledPannel:blinkPlay()
+      ledPannel:blinkRecord()
       
       isPlayer = false
       effects.vibrate()
@@ -251,7 +251,7 @@ function createUI(sceneGroup)
     width = 70,
     height = 128,
   }
-  led.new(options)
+  ledPannel.new(options)
   
   countText = display.newText(userScore, display.contentCenterX,
     20, native.systemFont, 40 )
@@ -259,7 +259,7 @@ function createUI(sceneGroup)
   countText.text = "0"
   countText.isVisible = false
   
-  led:setScore(convertUserScore(userScore))
+  ledPannel:setScore(convertUserScore(userScore))
   text = display.newText(guiGroup, playSymbol, 
     countText.x + 100,
     countText.y,
@@ -274,7 +274,7 @@ function loadScore()
   local loadedSettings = loadsave.loadTable( "settings.json" )
   if loadedSettings and loadedSettings.highScore then
     userScore = loadedSettings.highScore
-    led:setScore(convertUserScore(userScore))
+    ledPannel:setScore(convertUserScore(userScore))
     countText.text = userScore
   end
 end

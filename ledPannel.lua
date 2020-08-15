@@ -115,18 +115,7 @@ function ledPanel.new( options )
   
   function ledPanel:setScore( tab )
     for i = 1, #tab do
-      print("table value: " .. tab[i])
       scoreNumbers[i]:setNumById(tab[i])
-      
-      --display.remove( scoreNumbers[i].numberImg )
-      --print(type(scoreNumbers[i].group))
-      --print(numbers[tab[i]].path)
-      --print( scoreNumbers[i].width, scoreNumbers[i].height)
-      --print(scoreNumbers[i].x_, scoreNumbers[i].y_)
-      --scoreNumbers[i].numberImg = display.newImageRect(scoreNumbers[i].group, numbers[tab[i]].path, scoreNumbers[i].width, scoreNumbers[i].height)
-      --scoreNumbers[i].numberImg.x = scoreNumbers[i].x_
-      --scoreNumbers[i].numberImg.y = scoreNumbers[i].y_
-      
     end
   end
   
