@@ -4,7 +4,6 @@
 -- score and game state.
 --
 -----------------------------------------------------------------------------------------
-local numbersImageSheet = require("numbers")
 local ledNumbers = require("lednumber")
 
 ledPanel = {}
@@ -35,7 +34,6 @@ function ledPanel.new( options )
       height = height,
       backgroundImg = "img/numbers/background.png",
       stencilImg = "img/numbers/no_number.png",
-      imageSheet = numbersImageSheet,
       number = number
     }
     local num = ledNumber.new( options )
@@ -51,11 +49,6 @@ function ledPanel.new( options )
     for i = 1, sections do
       scoreNumbers[i] = createLedNumber(backgroundCell.x + (backgroundCell.width * i), backgroundCell.y, i)
     end
-    print("=== --- Show address table--- ===")
-    for i = 1, #scoreNumbers do
-      print("Number : " .. scoreNumbers[i]:getNumber())
-    end
-    print("=== --- === --- ===")
 
     --ledPanel:blinkPlay()
     --ledPanel:blinkRect()

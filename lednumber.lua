@@ -1,3 +1,12 @@
+-----------------------------------------------------------------------------------------
+--
+-- ledNumber.lua in this file you can find implementation of Led number for setting 
+-- number.
+--
+---------------------------------------------------------------------------------------
+
+imageSheet = require("numbers")
+
 ledNumber = {}
 
 function ledNumber.new(options)
@@ -12,7 +21,6 @@ function ledNumber.new(options)
   
   local backgroundImgPath = options.backgroundImg or ""
   local stencilImgPath    = options.stencilImg    or ""
-  local imageSheet        = options.imageSheet    or nil
   set.number              = options.number        or 0
   
   function createImage(parameters)
