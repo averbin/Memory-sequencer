@@ -133,6 +133,7 @@ function resetGame( event )
     
     ledPannel:cancelPlay()
     ledPannel:cancelRecord()
+    ledPannel:cancelBlinkNumbers()
     
     insertRandomNumberToRandomSequence()
     
@@ -177,8 +178,10 @@ function handleButtonEvent( event )
       
       ledPannel:cancelPlay()
       ledPannel:cancelRecord()
+    
       ledPannel:blinkPlay()
       ledPannel:blinkRecord()
+      ledPannel:blinkingNumbers()
       
       isPlayer = false
       effects.vibrate()
@@ -242,19 +245,20 @@ function createUI(sceneGroup)
   options = 
   {
     group = guiGroup,
-    x = centerX - 50,
-    y = 32,
+    x = centerX - 85,
+    y = 40,
     width = 70,
     height = 128,
   }
-  ledPannel.new(options)
+
+  ledPannel = ledPannel.new(options)
+  print(ledPannel.group.width)
   
   countText = display.newText(userScore, display.contentCenterX,
     20, native.systemFont, 40 )
   guiGroup:insert(countText)
   countText.text = "0"
   countText.isVisible = false
-  
   ledPannel:setScore(convertUserScore(userScore))
   text = display.newText(guiGroup, playSymbol, 
     countText.x + 100,
@@ -272,6 +276,9 @@ function loadScore()
     userScore = loadedSettings.highScore
     ledPannel:setScore(convertUserScore(userScore))
     countText.text = userScore
+    ledPannel:blinkingNumbers()
+    ledPannel:blinkPlay()
+    ledPannel:blinkRecord()
   end
 end
 
