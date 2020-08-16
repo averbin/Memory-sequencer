@@ -5,7 +5,8 @@
 --
 ---------------------------------------------------------------------------------------
 
-imageSheet = require("numbers")
+local effects = require("effects")
+local imageSheet = require("numbers")
 
 ledNumber = {}
 
@@ -40,10 +41,13 @@ function ledNumber.new(options)
       width = self.width, height = self.height 
     }
     self.backgroundImg = createImage( parameters )
+    
     parameters.imagePath = stencilImgPath
     self.stencilImg = createImage( parameters )
+    
     parameters.imagePath = imageSheet[self.number].path
     self.numberImg = createImage( parameters )
+    self.numberImg.isVisible = false
   end
   
   function set:setPosition(x , y)
@@ -53,6 +57,15 @@ function ledNumber.new(options)
   
   function set:getNumber()
     return self.number
+  end
+  
+  function set:blinking()
+    effects.simpleBlinking(self.numberImg)
+  end
+  
+  function set:cancel()
+    effects.cancel(self.numberImg)
+    self.numberImg.alpha = 1.0
   end
   
   function set:setNumById( number )

@@ -24,6 +24,10 @@ function M.blink( obj, time )
   transition.blink(obj, {onRepeat = function( obj ) transition.cancel( obj ) obj.alpha = 0.1 end, time = time or 500 })
 end
 
+function M.simpleBlinking( obj, time )
+  transition.blink( obj, { time = time or 2000 }) 
+end
+
 function M.blinkingRepeatedly( obj )
     transition.to( obj,
     { 
