@@ -9,24 +9,24 @@ local effects = require("effects")
 local ledState = {}
 
 function ledState.new( options )
-  local set = {}
-  options     = options        or {}
-  set.group   = options.group
-  set.x       = options.x      or 0
-  set.y       = options.y      or 0
-  set.width   = options.width  or 140
-  set.height  = options.height or 128
-  set.state   = options.state  or "" -- "Start" , "Play", "Record", "Reset"
+  local set           = {}
+  options             = options                or {}
+  set.group           = options.group
+  set.x               = options.x              or 0
+  set.y               = options.y              or 0
+  set.width           = options.width          or 140
+  set.height          = options.height         or 128
+  set.state           = options.state          or "" -- "Start" , "Play", "Record", "Reset"
   
-  backgroundImgPath = options.backgroundPath  or "img/play_panel.png"
-  playImgPath       = options.playPathImg     or "img/play_on.png"
-  recordImgPath     = options.recodPathImg    or "img/Record_on.png"
+  backgroundImgPath   = options.backgroundPath or "img/play_panel.png"
+  playImgPath         = options.playPathImg    or "img/play_on.png"
+  recordImgPath       = options.recodPathImg   or "img/Record_on.png"
   
-  set.backgroundImg         = nil
-  set.playImg               = nil
-  set.recordImg             = nil
-  set.isPlayRunning         = false
-  set.isRecordRunning       = false
+  set.backgroundImg   = nil
+  set.playImg         = nil
+  set.recordImg       = nil
+  set.isPlayRunning   = false
+  set.isRecordRunning = false
   
   local function create()
     set.backgroundImg = display.newImageRect(set.group, backgroundImgPath,
@@ -86,7 +86,7 @@ function ledState.new( options )
     elseif state == "Reset" then
       cancelAllEffects()
     else
-      assert("No state. or state empty!")
+      assert("No state. or state empty! State is : " .. state)
     end
   end
 
