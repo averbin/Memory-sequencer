@@ -25,6 +25,7 @@ function M.blink( obj, time )
 end
 
 function M.simpleBlinking( obj, time )
+  obj.alpha = 1.0
   transition.blink( obj, { time = time or 2000 }) 
 end
 
@@ -42,8 +43,8 @@ function M.blinkingRepeatedly( obj )
 end
 
 function M.cancel( obj )
-    obj.alpha = 0.1
     transition.cancel( obj )
+    obj.alpha = 0.1
 end
 
 function M.vibrate()
