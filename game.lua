@@ -24,12 +24,8 @@ local rects = {}
 local activateTimer = nil
 local count = 1
 local userScore = 0
-local countText = nil
 local clock = os.clock
 local numSequence = 1
-local text = nil -- play, stop, lose 
-local playSymbol = "►"
-local rectSymbol = "⬤" -- ⬤ - Circle symbol.
 local gameSettings = 
 {
   highScore = 0
@@ -87,14 +83,11 @@ local function showSequence( event )
     if numSequence <= #randSequence then
       effects.sequenceBlinking(thisRect.insideRect)
       numSequence = numSequence + 1
-      ledPannel:cancelRecord()
-      ledPannel:blinkPlay()
+      ledPannel:setState("Play")
     else
       isPlayer = true
       numSequence = 1
-      text.text = rectSymbol
-      ledPannel:cancelPlay()
-      ledPannel:blinkRecord()
+      ledPannel:setState("Record")
     end
   end
 end
@@ -115,7 +108,6 @@ function resetGame( event )
     
     cleanSequence(randSequence)
     cleanSequence(userSequence)
-    text.text = playSymbol
     if userScore > gameSettings.highScore then
       gameSettings.highScore = userScore
       loadsave.saveTable( gameSettings, "settings.json")
@@ -124,16 +116,13 @@ function resetGame( event )
     numSequence = 1
     userScore = 0
     ledPannel:setScore(convertUserScore(userScore))
-    countText.text = userScore
     isPlayer = false
     
     for i = 1, #rects do
       effects.cancel(rects[i].insideRect)
     end
     
-    ledPannel:cancelPlay()
-    ledPannel:cancelRecord()
-    ledPannel:cancelBlinkNumbers()
+    ledPannel:setState("Reset")
     
     insertRandomNumberToRandomSequence()
     
@@ -160,13 +149,11 @@ function handleButtonEvent( event )
       numSequence = numSequence + 1
       userScore = userScore + 1
       ledPannel:setScore(convertUserScore(userScore))
-      countText.text = userScore
       if #userSequence >= #randSequence then
         timer.performWithDelay(500, function()
             count = 1
             numSequence = 1
             isPlayer = false
-            text.text = playSymbol
             insertRandomNumberToRandomSequence()
             --timer.resume(activateTimer)
             cleanSequence(userSequence)
@@ -174,14 +161,9 @@ function handleButtonEvent( event )
       end
     else
       timer.pause( activateTimer )
-      text.text = "lose"
       
-      ledPannel:cancelPlay()
-      ledPannel:cancelRecord()
-    
-      ledPannel:blinkPlay()
-      ledPannel:blinkRecord()
-      ledPannel:blinkingNumbers()
+      ledPannel:setState("Reset")
+      ledPannel:setState("Start")
       
       isPlayer = false
       effects.vibrate()
@@ -253,18 +235,7 @@ function createUI(sceneGroup)
 
   ledPannel = ledPannel.new(options)
   print(ledPannel.group.width)
-  
-  countText = display.newText(userScore, display.contentCenterX,
-    20, native.systemFont, 40 )
-  guiGroup:insert(countText)
-  countText.text = "0"
-  countText.isVisible = false
   ledPannel:setScore(convertUserScore(userScore))
-  text = display.newText(guiGroup, playSymbol, 
-    countText.x + 100,
-    countText.y,
-  native.systemFont, 40)
-  text.isVisible = false
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
 end
@@ -275,10 +246,7 @@ function loadScore()
   if loadedSettings and loadedSettings.highScore then
     userScore = loadedSettings.highScore
     ledPannel:setScore(convertUserScore(userScore))
-    countText.text = userScore
-    ledPannel:blinkingNumbers()
-    ledPannel:blinkPlay()
-    ledPannel:blinkRecord()
+    ledPannel:setState("Start")
   end
 end
 
