@@ -231,6 +231,8 @@ function createUI(sceneGroup)
     y = 40,
     width = 70,
     height = 128,
+    withFrame = true,
+    cornerRadius = 5
   }
 
   ledPannel = ledPannel.new(options)

@@ -7,17 +7,23 @@
 local ledNumbers = require("lednumber")
 local ledState = require("ledState")
 
-local ledPanel = {}
+local ledPannel = {}
 
-function ledPanel.new( options )
+function ledPannel.new( options )
   local set        = {}
-  options          = options          or {}
+  options          = options              or {}
   set.group        = options.group
-  set.x            = options.x        or 0
-  set.y            = options.y        or 0
-  set.width        = options.width    or 140 -- width of element is 70 number + game state = 140
-  set.height       = options.height   or 128 -- height of element is 128
-  set.sections     = options.sections or 4 -- how many elements will be on screen including game state.
+  set.x            = options.x            or 0
+  set.y            = options.y            or 0
+  set.width        = options.width        or 140 -- width of element is 70 number + game state = 140
+  set.height       = options.height       or 128 -- height of element is 128
+  set.sections     = options.sections     or 4 -- how many elements will be on screen including game state.
+  
+  set.withFrame    = options.withFrame
+  set.frameColor   = options.frameColor   or { 0, 0, 0, 1 }
+  set.strokeColor  = options.strokeColor  or { 0.8, 0.8, 1, 1 }
+  set.cornerRadius = options.cornerRadius or 0
+  set.frame        = nil
   
   set.scoreNumbers = {}
   set.ledState     = nil
@@ -36,6 +42,16 @@ function ledPanel.new( options )
     }
     local num = ledNumber.new( options )
     return num
+  end
+  
+  function set:createFrame()
+    local pannelWidth = self.width * (self.sections + 1) + self.cornerRadius -- plus one because we have ledState also in pannel
+    self.frame = display.newRoundedRect(self.group, 0, 0, pannelWidth, self.height + self.cornerRadius, self.cornerRadius)
+    self.frame:setFillColor(0.1, 0.1, 0.1, 1)
+    self.frame:setStrokeColor(unpack(set.strokeColor))
+    self.frame.strokeWidth = 2
+    self.frame.x = self.frame.x + (pannelWidth / 2) - (self.width / 2) - ( self.cornerRadius / 2 )
+    self.frame.y = self.frame.y - 1
   end
   
   function set:createGameState()
@@ -63,6 +79,9 @@ function ledPanel.new( options )
   end
   
   local function create()
+    if set.withFrame then
+      set:createFrame()
+    end
     set:createGameState()
     set:createNumbers()
     set:setupGroup()
@@ -101,4 +120,4 @@ function ledPanel.new( options )
   
 end
 
-return ledPanel
+return ledPannel
