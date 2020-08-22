@@ -11,8 +11,7 @@ local imageSheet = require("numbers")
 ledNumber = {}
 
 function ledNumber.new(options)
-  local set = {}
-  
+  local set               = {}
   options                 = options               or {}
   set.group               = options.group
   set.x                   = options.x             or 0
