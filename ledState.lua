@@ -39,11 +39,11 @@ function ledState.new( options )
       set.width, set.height)
   end
   
-  function blink( obj )
+  local function blink( obj )
     effects.simpleBlinking(obj)
   end
   
-  function cancelAllEffects()
+  local function cancelAllEffects()
     if set.isPlayRunning == true then
       effects.cancel(set.playImg)
       set.isPlayRunning = false
