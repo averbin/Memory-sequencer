@@ -31,12 +31,19 @@ function ledState.new( options )
   local function create()
     set.backgroundImg = display.newImageRect(set.group, backgroundImgPath,
       set.width, set.height)
+    set.backgroundImg.x = set.x
+    set.backgroundImg.y = set.y
     
     set.playImg = display.newImageRect(set.group, playImgPath,
       set.width, set.height)
+    set.playImg.x = set.x
+    set.playImg.y = set.y
     
     set.recordImg = display.newImageRect(set.group, recordImgPath,
       set.width, set.height)
+    
+    set.recordImg.x = set.x
+    set.recordImg.y = set.y
   end
   
   local function blink( obj )

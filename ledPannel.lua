@@ -15,8 +15,8 @@ function ledPannel.new( options )
   set.group        = options.group
   set.x            = options.x            or 0
   set.y            = options.y            or 0
-  set.width        = options.width        or 140 -- width of element is 70 number + game state = 140
-  set.height       = options.height       or 128 -- height of element is 128
+  set.width        = options.width        or 70 -- width of element
+  set.height       = options.height       or 128 -- height of element
   set.sections     = options.sections     or 4 -- how many elements will be on screen including game state.
   
   set.withFrame    = options.withFrame
@@ -45,13 +45,11 @@ function ledPannel.new( options )
   end
   
   function set:createFrame()
-    local pannelWidth = self.width * (self.sections + 1) + self.cornerRadius -- plus one because we have ledState also in pannel
+    local pannelWidth = self.width * (self.sections + 1) -- plus one because we have ledState also in pannel
     self.frame = display.newRoundedRect(self.group, 0, 0, pannelWidth, self.height + self.cornerRadius, self.cornerRadius)
     self.frame:setFillColor(0.1, 0.1, 0.1, 1)
     self.frame:setStrokeColor(unpack(set.strokeColor))
-    self.frame.strokeWidth = 2
-    self.frame.x = self.frame.x + (pannelWidth / 2) - (self.width / 2) - ( self.cornerRadius / 2 )
-    self.frame.y = self.frame.y - 1
+    self.frame.strokeWidth = 4
   end
   
   function set:createGameState()
@@ -60,6 +58,7 @@ function ledPannel.new( options )
       group = self.group,
       width = self.width,
       height = self.height,
+      x = - ((self.width * ( self.sections + 1 )) / 2 - (self.width / 2))
     }
     self.ledState = ledState.new( options )
   end

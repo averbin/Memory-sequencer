@@ -227,7 +227,7 @@ function createUI(sceneGroup)
   options = 
   {
     group = guiGroup,
-    x = centerX - 85,
+    x = centerX,
     y = 40,
     width = 70,
     height = 128,
