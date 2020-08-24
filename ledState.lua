@@ -14,7 +14,7 @@ function ledState.new( options )
   set.group           = options.group
   set.x               = options.x              or 0
   set.y               = options.y              or 0
-  set.width           = options.width          or 140
+  set.width           = options.width          or 70
   set.height          = options.height         or 128
   set.state           = options.state          or "" -- "Start" , "Play", "Record", "Reset"
   
@@ -41,7 +41,6 @@ function ledState.new( options )
     
     set.recordImg = display.newImageRect(set.group, recordImgPath,
       set.width, set.height)
-    
     set.recordImg.x = set.x
     set.recordImg.y = set.y
   end
