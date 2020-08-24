@@ -45,9 +45,11 @@ function ledPannel.new( options )
   end
   
   function set:createFrame()
-    local pannelWidth = self.width * (self.sections + 1) -- plus one because we have ledState also in pannel
+    local pannelWidth = self.width * (self.sections + 1) + self.cornerRadius -- plus one because we have ledState also in pannel
     self.frame = display.newRoundedRect(self.group, 0, 0, pannelWidth, self.height + self.cornerRadius, self.cornerRadius)
-    self.frame:setFillColor(0.1, 0.1, 0.1, 1)
+    local frameColor = convertRGBtoRange({51.0, 0.0, 0.0}) -- same color like in image.
+    frameColor[#frameColor + 1] = 1.0
+    self.frame:setFillColor(unpack(frameColor))
     self.frame:setStrokeColor(unpack(set.strokeColor))
     self.frame.strokeWidth = 4
   end
