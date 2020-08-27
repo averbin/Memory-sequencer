@@ -27,7 +27,7 @@ options =
 
 grid = {}
 
-function createButton(group, name, x, y, width, height, shape, cornerRadius, cellColor, handleButtonEvent)
+function createButton(group, name, x, y, width, height, shape, cornerRadius, cellColor, gameCallbackEvent)
   local newButton = toolButton.new(
     {
       name = name,
@@ -38,35 +38,35 @@ function createButton(group, name, x, y, width, height, shape, cornerRadius, cel
       cornerRadius = cornerRadius,
       fillColor = cellColor or { 1,	1, 1, 1 },
       strokeColor = { 0.8, 0.8, 1, 1 },
+      gameCallbackEvent = gameCallbackEvent
     }
   )
-  newButton.insideRect:addEventListener("tap", handleButtonEvent)
   group:insert(newButton.group)
   return newButton 
 end
 
 function grid.new(options)
   
-  options       = options               or {}
-  group         = options.group         or nil
-  x             = options.x             or 0
-  y             = options.y             or 0
-  width         = options.width         or 500
-  height        = options.height        or 500
-  rows          = options.rows          or 3
-  columns       = options.columns       or 3
-  sideMargin    = options.sideMargin    or 25
-  rowMargin     = options.rowMargin     or 10
-  columnMargin  = options.columnMargin  or 10
+  options           = options               or {}
+  group             = options.group         or nil
+  x                 = options.x             or 0
+  y                 = options.y             or 0
+  width             = options.width         or 500
+  height            = options.height        or 500
+  rows              = options.rows          or 3
+  columns           = options.columns       or 3
+  sideMargin        = options.sideMargin    or 25
+  rowMargin         = options.rowMargin     or 10
+  columnMargin      = options.columnMargin  or 10
   
-  anchorX       = options.anchorX       or 0.5
-  anchorY       = options.anchorY       or 0.5
-  frameOn       = options.frameOn
-  cornerRadius  = options.cornerRadius  or 5
-  handleEvent   = options.handleButtonEvent
-  typeOfGame    = options.typeOfGame    or "four" 
+  anchorX           = options.anchorX       or 0.5
+  anchorY           = options.anchorY       or 0.5
+  frameOn           = options.frameOn
+  cornerRadius      = options.cornerRadius  or 5
+  gameCallbackEvent = options.gameCallbackEvent
+  typeOfGame        = options.typeOfGame    or "four" 
 
-  elements = {}
+  elements          = {}
   
   if not group then 
     group = display.newGroup()
@@ -122,7 +122,7 @@ function grid.new(options)
         for j = 1, columns do
           local element = createButton(group, tostring(count), 
           xPos, yPos, rectWidth, rectHeight, "roundedRect",
-          cornerRadius, convertRGBtoRange(colors[typeOfGame][count]), handleEvent)
+          cornerRadius, convertRGBtoRange(colors[typeOfGame][count]), gameCallbackEvent)
         
           --local element = display.newRect(
           --  group,

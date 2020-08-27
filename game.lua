@@ -4,6 +4,7 @@ local effects = require( "effects" )
 local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
 local loadsave = require( "loadsave" )
+local gameState = require( "gameState" )
 local toolButton = require( "toolButton" )
 local widget = require( "widget" )
 
@@ -17,7 +18,7 @@ local centerX = display.contentCenterX
 local centerY = display.contentCenterY
 local userSequence = {}
 local randSequence = {} -- 1,2,3,4
-local isPlayer = false
+gameState.isPlayer = false
 local rectGroup = nil
 local guiGroup = nil
 local rects = {}
@@ -30,7 +31,6 @@ local gameSettings =
 {
   highScore = 0
 }
-local blinkingInProgress = false
 local gameType = {id = 9, type = "nine"} -- {id = 9, type = "nine"} , {id = 4, type = "four"}
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
@@ -78,14 +78,14 @@ function convertUserScore( userScore )
 end
 
 local function showSequence( event )
-  if isPlayer == false then
+  if gameState.isPlayer == false then
     local thisRect = rects[randSequence[numSequence]]
     if numSequence <= #randSequence then
-      effects.sequenceBlinking(thisRect.insideRect)
+      thisRect:sequenceBlinking()
       numSequence = numSequence + 1
       ledPannel:setState("Play")
     else
-      isPlayer = true
+      gameState.isPlayer = true
       numSequence = 1
       ledPannel:setState("Record")
     end
@@ -116,10 +116,10 @@ function resetGame( event )
     numSequence = 1
     userScore = 0
     ledPannel:setScore(convertUserScore(userScore))
-    isPlayer = false
+    gameState.isPlayer = false
     
     for i = 1, #rects do
-      effects.cancel(rects[i].insideRect)
+      rects[i]:cancel()
     end
     
     ledPannel:setState("Reset")
@@ -137,42 +137,36 @@ function resetGame( event )
   end
 end
 
-function handleButtonEvent( event )
-  local target = event.target
-  if ( isPlayer == true) then
-    effects.blink( target )
-    -- TODO: set options vibration off/on
-    effects.vibrate()
-    local userNumber = tonumber(target.id)
-    if ( isSequencesTheSame(userNumber)) then
-      table.insert(userSequence, userNumber)
-      numSequence = numSequence + 1
-      userScore = userScore + 1
-      ledPannel:setScore(convertUserScore(userScore))
-      if #userSequence >= #randSequence then
-        timer.performWithDelay(500, function()
-            count = 1
-            numSequence = 1
-            isPlayer = false
-            insertRandomNumberToRandomSequence()
-            --timer.resume(activateTimer)
-            cleanSequence(userSequence)
-          end)
-      end
-    else
+function gameCallbackEvent( id )
+  print("ID is : " .. id)
+  if ( isSequencesTheSame(id)) then
+    table.insert(userSequence, id)
+    numSequence = numSequence + 1
+    userScore = userScore + 1
+    ledPannel:setScore(convertUserScore(userScore))
+    if #userSequence >= #randSequence then
+      timer.performWithDelay(500, function()
+          count = 1
+          numSequence = 1
+          gameState.isPlayer = false
+          insertRandomNumberToRandomSequence()
+          --timer.resume(activateTimer)
+          cleanSequence(userSequence)
+        end)
+    end
+  else
       timer.pause( activateTimer )
       
       ledPannel:setState("Reset")
       ledPannel:setState("Start")
       
-      isPlayer = false
+      gameState.isPlayer = false
       effects.vibrate()
       for i = 1, #rects do
-        effects.cancel(rects[i].insideRect)
-        effects.blinkingRepeatedly(rects[i].insideRect)
+        rects[i]:cancel()
+        rects[i]:blinkingRepeatedly()
       end
       Runtime:addEventListener("touch", resetGame)
-    end
   end
 end
 
@@ -208,7 +202,7 @@ function createGrid( sceneGroup )
     rowMargin = 15,
     columnMargin = 15,
     frameOn = false,
-    handleButtonEvent = handleButtonEvent,
+    gameCallbackEvent = gameCallbackEvent,
     typeOfGame = gameType.type
   } 
   
@@ -238,6 +232,7 @@ function createUI(sceneGroup)
   ledPannel = ledPannel.new(options)
   print(ledPannel.group.width)
   ledPannel:setScore(convertUserScore(userScore))
+  ledPannel:setWidth( 420 )
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
 end

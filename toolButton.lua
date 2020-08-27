@@ -3,14 +3,14 @@
 -- toolButton.lua in this file you can find implementation of button table.
 --
 -----------------------------------------------------------------------------------------
-
+local effects = require( "effects" )
+local gamestate = require( "gameState" )
 local widget = require( "widget" )
 
 tooButton = {}
 
 function tooButton.new( options )
-  set = {}
-  setmetatable(set, {})
+  local set          = {}
   options            = options                   or {}
   set.group          = options.group             or nil
   set.id             = options.name              or ""
@@ -27,6 +27,15 @@ function tooButton.new( options )
 
   set.image          = options.image or ""
   set.isImageVisible = options.isImageVisible or false
+  gameCallbackEvent  = options.gameCallbackEvent or nil
+  
+  local function handleButtonEvent( target )
+    if gamestate.isPlayer then
+      set:blink()
+      set:vibrate()
+      gameCallbackEvent(tonumber(set.id))
+    end
+  end
   
   if not set.group then
     set.group = display.newGroup()
@@ -50,8 +59,29 @@ function tooButton.new( options )
     --insideRect.isVisible = false
     set.insideRect = insideRect
     set.insideRect.alpha = 0.1
+    set.insideRect:addEventListener("tap", handleButtonEvent)
   end
   
+  function set:blink()
+    effects.blink(self.insideRect)
+  end
+  
+  function set:blinkingRepeatedly()
+    effects.blinkingRepeatedly(self.insideRect)
+  end
+  
+  function set:sequenceBlinking()
+    effects.sequenceBlinking(self.insideRect)
+  end
+  
+  function set:cancel()
+    effects.cancel(self.insideRect)
+  end
+  
+  function set:vibrate()
+    effects.vibrate()
+  end
+
   createToolButton()
   return set
 end
