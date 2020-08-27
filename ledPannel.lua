@@ -10,23 +10,23 @@ local ledState = require("ledState")
 local ledPannel = {}
 
 function ledPannel.new( options )
-  local set        = {}
-  options          = options              or {}
-  set.group        = options.group
-  set.x            = options.x            or 0
-  set.y            = options.y            or 0
-  set.width        = options.width        or 70 -- width of element
-  set.height       = options.height       or 128 -- height of element
-  set.sections     = options.sections     or 4 -- how many elements will be on screen including game state.
+  local set         = {}
+  options           = options               or {}
+  set.group         = options.group
+  set.x             = options.x             or 0
+  set.y             = options.y             or 0
+  set.widthElement  = options.widthElement  or 70 -- width of element
+  set.heightElement = options.heightElement or 128 -- height of element
+  set.sections      = options.sections      or 4 -- how many elements will be on screen including game state.
   
-  set.withFrame    = options.withFrame
-  set.frameColor   = options.frameColor   or { 0, 0, 0, 1 }
-  set.strokeColor  = options.strokeColor  or { 0.8, 0.8, 1, 1 }
-  set.cornerRadius = options.cornerRadius or 0
-  set.frame        = nil
+  set.withFrame     = options.withFrame
+  set.frameColor    = options.frameColor    or { 0, 0, 0, 1 }
+  set.strokeColor   = options.strokeColor   or { 0.8, 0.8, 1, 1 }
+  set.cornerRadius  = options.cornerRadius  or 0
+  set.frame         = nil
   
-  set.scoreNumbers = {}
-  set.ledState     = nil
+  set.scoreNumbers  = {}
+  set.ledState      = nil
   
   function createLedNumber(x, y, number)
     local options = 
@@ -45,8 +45,9 @@ function ledPannel.new( options )
   end
   
   function set:createFrame()
-    local pannelWidth = self.width * (self.sections + 1) + self.cornerRadius -- plus one because we have ledState also in pannel
-    self.frame = display.newRoundedRect(self.group, 0, 0, pannelWidth, self.height + self.cornerRadius, self.cornerRadius)
+    local pannelWidth = self.widthElement * (self.sections + 1) + self.cornerRadius -- plus one because we have ledState also in pannel
+    self.frame = display.newRoundedRect(self.group, 0, 0, pannelWidth
+      , self.heightElement + self.cornerRadius, self.cornerRadius)
     local frameColor = convertRGBtoRange({51.0, 0.0, 0.0}) -- same color like in image.
     frameColor[#frameColor + 1] = 1.0
     self.frame:setFillColor(unpack(frameColor))
@@ -58,9 +59,9 @@ function ledPannel.new( options )
     local options = 
     {
       group = self.group,
-      width = self.width,
-      height = self.height,
-      x = - ((self.width * ( self.sections + 1 )) / 2 - (self.width / 2))
+      width = self.widthElement,
+      height = self.heightElement,
+      x = - ((self.widthElement * ( self.sections + 1 )) / 2 - (self.widthElement / 2))
     }
     self.ledState = ledState.new( options )
   end
@@ -113,6 +114,14 @@ function ledPannel.new( options )
     elseif state == "Reset" then
       self:cancelBlinkNumbers()
     end
+  end
+  
+  function set:setWidth( width )
+    self.group.width = width
+  end
+  
+  function set:setHeight( height )
+    self.group.height = height
   end
   
   create()
