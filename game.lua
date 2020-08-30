@@ -31,14 +31,14 @@ local gameSettings =
 {
   highScore = 0
 }
-local gameType = {id = 9, type = "nine"} -- {id = 9, type = "nine"} , {id = 4, type = "four"}
+
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
 local function insertRandomNumberToRandomSequence()
-  local var = math.random(gameType.id)
+  local var = math.random(gameState.Type.id)
   table.insert(randSequence, var)
 end
 
@@ -181,10 +181,10 @@ function createGrid( sceneGroup )
   -- Rect group
   rectGroup = display.newGroup()
   
-  if gameType.type == "four" then
+  if gameState.Type.type == "four" then
     rows = 2
     columns = 2
-  elseif gameType.type == "nine" then
+  elseif gameState.Type.type == "nine" then
     rows = 3
     columns = 3
   end
@@ -203,7 +203,7 @@ function createGrid( sceneGroup )
     columnMargin = 15,
     frameOn = false,
     gameCallbackEvent = gameCallbackEvent,
-    typeOfGame = gameType.type
+    typeOfGame = gameState.Type.type
   } 
   
   fourGrid = grid.new(options)
