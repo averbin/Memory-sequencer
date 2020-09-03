@@ -4,10 +4,12 @@
 -- also settings
 --
 -----------------------------------------------------------------------------------------
-gameState = 
+level = 
 {
   isPlayer = false,
-  Type = {} -- {id = 9, type = "nine"} , {id = 4, type = "four"}
+  buttons = 0, -- count of buttons defaults for "four" type is 4,
+               -- for "nine" type of game is 9,
+  type = "" -- "four", "nine"
 }
 
-return gameState
+return level

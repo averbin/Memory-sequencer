@@ -4,7 +4,7 @@ local effects = require( "effects" )
 local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
 local loadsave = require( "loadsave" )
-local gameState = require( "gameState" )
+local level = require( "level" )
 local toolButton = require( "toolButton" )
 local widget = require( "widget" )
 
@@ -18,7 +18,7 @@ local centerX = display.contentCenterX
 local centerY = display.contentCenterY
 local userSequence = {}
 local randSequence = {} -- 1,2,3,4
-gameState.isPlayer = false
+level.isPlayer = false
 local rectGroup = nil
 local guiGroup = nil
 local rects = {}
@@ -38,7 +38,7 @@ local gameSettings =
 -- -----------------------------------------------------------------------------------
 
 local function insertRandomNumberToRandomSequence()
-  local var = math.random(gameState.Type.id)
+  local var = math.random(level.buttons)
   table.insert(randSequence, var)
 end
 
@@ -78,14 +78,14 @@ function convertUserScore( userScore )
 end
 
 local function showSequence( event )
-  if gameState.isPlayer == false then
+  if level.isPlayer == false then
     local thisRect = rects[randSequence[numSequence]]
     if numSequence <= #randSequence then
       thisRect:sequenceBlinking()
       numSequence = numSequence + 1
       ledPannel:setState("Play")
     else
-      gameState.isPlayer = true
+      level.isPlayer = true
       numSequence = 1
       ledPannel:setState("Record")
     end
@@ -116,7 +116,7 @@ function resetGame( event )
     numSequence = 1
     userScore = 0
     ledPannel:setScore(convertUserScore(userScore))
-    gameState.isPlayer = false
+    level.isPlayer = false
     
     for i = 1, #rects do
       rects[i]:cancel()
@@ -148,7 +148,7 @@ function gameCallbackEvent( id )
       timer.performWithDelay(500, function()
           count = 1
           numSequence = 1
-          gameState.isPlayer = false
+          level.isPlayer = false
           insertRandomNumberToRandomSequence()
           --timer.resume(activateTimer)
           cleanSequence(userSequence)
@@ -160,7 +160,7 @@ function gameCallbackEvent( id )
       ledPannel:setState("Reset")
       ledPannel:setState("Start")
       
-      gameState.isPlayer = false
+      level.isPlayer = false
       effects.vibrate()
       for i = 1, #rects do
         rects[i]:cancel()
@@ -181,10 +181,10 @@ function createGrid( sceneGroup )
   -- Rect group
   rectGroup = display.newGroup()
   
-  if gameState.Type.type == "four" then
+  if level.type == "four" then
     rows = 2
     columns = 2
-  elseif gameState.Type.type == "nine" then
+  elseif level.type == "nine" then
     rows = 3
     columns = 3
   end
@@ -203,7 +203,7 @@ function createGrid( sceneGroup )
     columnMargin = 15,
     frameOn = false,
     gameCallbackEvent = gameCallbackEvent,
-    typeOfGame = gameState.Type.type
+    typeOfGame = level.type
   } 
   
   fourGrid = grid.new(options)
