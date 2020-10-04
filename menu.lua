@@ -43,17 +43,28 @@ function scene:create( event )
   local rectWidth = 100
   local rectHeight = 100
   local margin = 10
-  local forthButton = display.newImageRect(sceneGroup, "img/fourth_board.png",
-    rectWidth, rectHeight)
-  forthButton.x = (centerX - 50 - margin)
-  forthButton.y = (centerY - 50 - margin)
+  
+  local paint = 
+  {
+    type = "image",
+    filename = "img/fourth_board.png"
+  }
+
+  local forthButton = display.newRoundedRect(sceneGroup, centerX - 50 - margin, centerY - 50 - margin, rectWidth, rectHeight, 4)
+  forthButton:setFillColor(0.1, 0.1, 0.1, 1)
+  forthButton:setStrokeColor(0.8, 0.8, 1, 1)
+  forthButton.strokeWidth = 2
+  forthButton.fill = paint
   forthButton:addEventListener("tap", gotoFourth)
   
-  local ninthButton = display.newImageRect(sceneGroup, "img/ninth_board.png",
-    rectWidth, rectHeight)
-  ninthButton.x = (centerX + 50 + margin)
-  ninthButton.y = (centerY - 50 - margin)
+  paint.filename = "img/ninth_board.png"
+  local ninthButton = display.newRoundedRect(sceneGroup, centerX + 50 + margin, centerY - 50 - margin, rectWidth, rectHeight, 4)
+  ninthButton:setFillColor(0.1, 0.1, 0.1, 1)
+  ninthButton:setStrokeColor(0.8, 0.8, 1, 1)
+  ninthButton.strokeWidth = 2
+  ninthButton.fill = paint
   ninthButton:addEventListener("tap", gotoNineth)
+  ninthButton.isVisible = false
 end
  
 -- show()
