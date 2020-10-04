@@ -32,6 +32,13 @@ local gameSettings =
   highScore = 0
 }
 
+local backButton = nil
+
+
+local function gotoMenu()
+  composer.removeScene("menu")
+  composer.gotoScene("menu", { time=800, effect="crossFade" })
+end
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -218,11 +225,12 @@ function createUI(sceneGroup)
   -- UI Group
   guiGroup = display.newGroup()
   
+  -- Create led pannel
   options = 
   {
     group = guiGroup,
     x = centerX,
-    y = 40,
+    y = 90,
     width = 70,
     height = 128,
     withFrame = true,
@@ -233,6 +241,21 @@ function createUI(sceneGroup)
   print(ledPannel.group.width)
   ledPannel:setScore(convertUserScore(userScore))
   ledPannel:setWidth( 420 )
+  
+  fourGrid.y = 30
+  -- Create back button
+  local paint = 
+  {
+    type = "image",
+    filename = "img/back.png"
+  }
+  backButton = display.newRoundedRect(sceneGroup, screenWidth - 35, 15, 50, 50, 4)
+  backButton:setFillColor(0.1, 0.1, 0.1, 1)
+  backButton:setStrokeColor(0.8, 0.8, 1, 1)
+  backButton.strokeWidth = 2
+  backButton.fill = paint
+  backButton:addEventListener("tap", gotoMenu)
+  
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
 end
