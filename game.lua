@@ -110,26 +110,30 @@ local function cleanSequence( sequence )
   for i=1, #sequence do sequence[i] = nil end
 end
 
+function cleanGame()
+  cleanSequence(randSequence)
+  cleanSequence(userSequence)
+  if userScore > gameSettings.highScore then
+    gameSettings.highScore = userScore
+    loadsave.saveTable( gameSettings, "settings.json")
+  end
+  
+  numSequence = 1
+  userScore = 0
+  ledPannel:setScore(convertUserScore(userScore))
+  level.isPlayer = false
+  
+  for i = 1, #rects do
+    rects[i]:cancel()
+  end
+  
+  ledPannel:setState("Reset")
+end
+
 function resetGame( event )
   if event.phase == "began" then
     
-    cleanSequence(randSequence)
-    cleanSequence(userSequence)
-    if userScore > gameSettings.highScore then
-      gameSettings.highScore = userScore
-      loadsave.saveTable( gameSettings, "settings.json")
-    end
-    
-    numSequence = 1
-    userScore = 0
-    ledPannel:setScore(convertUserScore(userScore))
-    level.isPlayer = false
-    
-    for i = 1, #rects do
-      rects[i]:cancel()
-    end
-    
-    ledPannel:setState("Reset")
+    cleanGame()
     
     insertRandomNumberToRandomSequence()
     
@@ -278,10 +282,12 @@ function createGame(sceneGroup)
 end
 
 function convertRGBtoRange( tab )
-  tab[1] = tab[1] / 255
-  tab[2] = tab[2] / 255
-  tab[3] = tab[3] / 255
-  return tab
+  local convertedColor= {}
+  convertedColor[1] = tab[1] / 255
+  convertedColor[2] = tab[2] / 255
+  convertedColor[3] = tab[3] / 255
+  print(convertedColor[1], convertedColor[2], convertedColor[3])
+  return convertedColor
 end
 
 -- -----------------------------------------------------------------------------------
@@ -321,6 +327,7 @@ function scene:hide( event )
       -- Code here runs when the scene is on screen (but is about to go off screen)
       timer.cancel( activateTimer )
     elseif ( phase == "did" ) then
+      Runtime:removeEventListener( "touch", resetGame )
       -- Code here runs immediately after the scene goes entirely off screen
     end
 end

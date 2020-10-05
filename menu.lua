@@ -26,7 +26,7 @@ local function gotoNineth()
 	composer.gotoScene( "game", { time=800, effect="crossFade" } )
 end
 
-local function gotoFigures()
+local function gotoShapes()
 end
 
 -- -----------------------------------------------------------------------------------
