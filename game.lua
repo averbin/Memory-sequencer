@@ -27,9 +27,13 @@ local count = 1
 local userScore = 0
 local clock = os.clock
 local numSequence = 1
+local highScore = 0
 local gameSettings = 
 {
-  highScore = 0
+  [ "four" ]   = 0,
+  [ "nine" ]   = 0,
+  [ "pairs" ]  = 0,
+  [ "shapes" ] = 0
 }
 
 local backButton = nil
@@ -113,8 +117,8 @@ end
 function cleanGame()
   cleanSequence(randSequence)
   cleanSequence(userSequence)
-  if userScore > gameSettings.highScore then
-    gameSettings.highScore = userScore
+  if userScore > gameSettings[level.type] then
+    gameSettings[level.type] = userScore
     loadsave.saveTable( gameSettings, "settings.json")
   end
   
@@ -267,8 +271,8 @@ end
 -- Loading score from previous session.
 function loadScore()
   local loadedSettings = loadsave.loadTable( "settings.json" )
-  if loadedSettings and loadedSettings.highScore then
-    userScore = loadedSettings.highScore
+  if loadedSettings and loadedSettings[level.type] then
+    userScore = loadedSettings[level.type]
     ledPannel:setScore(convertUserScore(userScore))
     ledPannel:setState("Start")
   end

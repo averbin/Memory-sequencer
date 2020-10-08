@@ -64,7 +64,6 @@ function scene:create( event )
   ninthButton.strokeWidth = 2
   ninthButton.fill = paint
   ninthButton:addEventListener("tap", gotoNineth)
-  ninthButton.isVisible = false
 end
  
 -- show()

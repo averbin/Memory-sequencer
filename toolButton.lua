@@ -67,7 +67,7 @@ function tooButton.new( options )
   end
   
   function set:blinkingRepeatedly()
-    effects.blinkingRepeatedly(self.insideRect)
+    effects.simpleBlinking(self.insideRect)
   end
   
   function set:sequenceBlinking()
