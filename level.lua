@@ -1,7 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- gameState.lua in this file you can find implementation of the game state and type
--- also settings
+-- level.lua in this file you can find implementation of the game state and type.
 --
 -----------------------------------------------------------------------------------------
 level = 

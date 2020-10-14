@@ -37,11 +37,16 @@ local gameSettings =
 }
 
 local backButton = nil
+local settingsButton = nil
 
 
 local function gotoMenu()
   composer.removeScene("menu")
   composer.gotoScene("menu", { time=800, effect="crossFade" })
+end
+
+local function handleSettingsEvent()
+  
 end
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
@@ -264,15 +269,29 @@ function createUI(sceneGroup)
   backButton.fill = paint
   backButton:addEventListener("tap", gotoMenu)
   
+  -- Create settings button
+  local optionsSettingsButton = 
+  {
+    width = 50,
+    height = 50,
+    defaultFile = "img/settings.png",
+    overFile = "img/settings_on.png",
+    onEvent = handleSettingsEvent
+  }
+  settingsButton = widget.newButton(optionsSettingsButton)
+  settingsButton.x = 35
+  settingsButton.y = 15
+  sceneGroup:insert(settingsButton)
+  
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
 end
 
 -- Loading score from previous session.
 function loadScore()
-  local loadedSettings = loadsave.loadTable( "settings.json" )
-  if loadedSettings and loadedSettings[level.type] then
-    userScore = loadedSettings[level.type]
+  gameSettings = loadsave.loadTable( "settings.json" )
+  if gameSettings and gameSettings[level.type] then
+    userScore = gameSettings[level.type]
     ledPannel:setScore(convertUserScore(userScore))
     ledPannel:setState("Start")
   end
