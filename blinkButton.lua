@@ -7,9 +7,9 @@ local effects = require( "effects" )
 local level = require( "level" )
 local widget = require( "widget" )
 
-tooButton = {}
+blinkButton = {}
 
-function tooButton.new( options )
+function blinkButton.new( options )
   local set          = {}
   options            = options                   or {}
   set.group          = options.group             or nil
@@ -86,4 +86,4 @@ function tooButton.new( options )
   return set
 end
 
-return tooButton
+return blinkButton

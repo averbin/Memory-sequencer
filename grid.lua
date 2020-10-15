@@ -1,10 +1,10 @@
 -----------------------------------------------------------------------------------------
 --
--- toolButton.lua Grid table with all function for calculation.
+-- grid.lua Grid table with all function for calculation.
 --
 -----------------------------------------------------------------------------------------
 local colors = require("colors")
-local toolButton = require("toolButton")
+local blinkButton = require("blinkButton")
 
 --[[ Example:
 options = 
@@ -28,7 +28,7 @@ options =
 grid = {}
 
 function createButton(group, name, x, y, width, height, shape, cornerRadius, cellColor, gameCallbackEvent)
-  local newButton = toolButton.new(
+  local newButton = blinkButton.new(
     {
       name = name,
       x = x,

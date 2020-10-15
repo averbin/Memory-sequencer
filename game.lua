@@ -5,7 +5,6 @@ local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
 local loadsave = require( "loadsave" )
 local level = require( "level" )
-local toolButton = require( "toolButton" )
 local widget = require( "widget" )
 
 math.randomseed( os.time() )
