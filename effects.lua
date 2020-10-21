@@ -3,6 +3,7 @@
 -- effects.lua in this file you can find all effects for game.
 --
 -----------------------------------------------------------------------------------------
+local settings = require( "settings" )
 local M = {}
 
 function M.sequenceBlinking( obj, time )
@@ -48,7 +49,9 @@ function M.cancel( obj )
 end
 
 function M.vibrate()
-  system.vibrate()
+  if settings.isVibrationOn then
+    system.vibrate()
+  end
 end
 
 return M
