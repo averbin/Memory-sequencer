@@ -5,6 +5,7 @@ local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
 local loadsave = require( "loadsave" )
 local level = require( "level" )
+local settings = require( "settings" )
 local widget = require( "widget" )
 
 math.randomseed( os.time() )
@@ -27,7 +28,7 @@ local userScore = 0
 local clock = os.clock
 local numSequence = 1
 local highScore = 0
-local gameSettings = 
+local gameScores = 
 {
   [ "four" ]   = 0,
   [ "nine" ]   = 0,
@@ -44,9 +45,6 @@ local function gotoMenu()
   composer.gotoScene("menu", { time=800, effect="crossFade" })
 end
 
-local function handleSettingsEvent()
-  
-end
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -121,9 +119,9 @@ end
 function cleanGame()
   cleanSequence(randSequence)
   cleanSequence(userSequence)
-  if userScore > gameSettings[level.type] then
-    gameSettings[level.type] = userScore
-    loadsave.saveTable( gameSettings, "settings.json")
+  if userScore > gameScores[level.type] then
+    gameScores[level.type] = userScore
+    loadsave.saveTable( gameScores, "settings.json")
   end
   
   numSequence = 1
@@ -268,19 +266,22 @@ function createUI(sceneGroup)
   backButton.fill = paint
   backButton:addEventListener("tap", gotoMenu)
   
-  -- Create settings button
-  local optionsSettingsButton = 
+  -- Create a settings menu
+  local settingsParameters = 
   {
-    width = 50,
-    height = 50,
-    defaultFile = "img/settings.png",
-    overFile = "img/settings_on.png",
-    onEvent = handleSettingsEvent
+    group = guiGroup,
+    x = 35,
+    y = 15,
+    width = 45,
+    height = 45,
+    margin = 10
   }
-  settingsButton = widget.newButton(optionsSettingsButton)
-  settingsButton.x = 35
-  settingsButton.y = 15
-  sceneGroup:insert(settingsButton)
+  settingsMenu = settings.new(settingsParameters)
+  sceneGroup:insert(settingsMenu.settingsCheckbox)
+  sceneGroup:insert(settingsMenu.soundCheckBox)
+  if system.getInfo("platform") == "android" then
+    sceneGroup:insert(settingsMenu.vibrationCheckBox)
+  end
   
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
@@ -288,9 +289,9 @@ end
 
 -- Loading score from previous session.
 function loadScore()
-  gameSettings = loadsave.loadTable( "settings.json" )
-  if gameSettings and gameSettings[level.type] then
-    userScore = gameSettings[level.type]
+  gameScores = loadsave.loadTable( "settings.json" )
+  if gameScores and gameScores[level.type] then
+    userScore = gameScores[level.type]
     ledPannel:setScore(convertUserScore(userScore))
     ledPannel:setState("Start")
   end
