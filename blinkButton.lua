@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- toolButton.lua in this file you can find implementation of button table.
+-- blinkButton.lua in this file you can find implementation of button table.
 --
 -----------------------------------------------------------------------------------------
 local effects = require( "effects" )
