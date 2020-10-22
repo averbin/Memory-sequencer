@@ -269,19 +269,15 @@ function createUI(sceneGroup)
   -- Create a settings menu
   local settingsParameters = 
   {
-    group = guiGroup,
     x = 35,
     y = 15,
     width = 45,
     height = 45,
     margin = 10
   }
+  
   settingsMenu = settings.new(settingsParameters)
-  sceneGroup:insert(settingsMenu.settingsCheckbox)
-  sceneGroup:insert(settingsMenu.soundCheckBox)
-  if system.getInfo("platform") == "android" then
-    sceneGroup:insert(settingsMenu.vibrationCheckBox)
-  end
+  sceneGroup:insert(settingsMenu)
   
   -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)

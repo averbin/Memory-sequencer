@@ -12,20 +12,20 @@ settings =
 }
 
 function settings.new( options )
-  local set = {}
+  local group = display.newGroup()
   
-  set.options = options        or {}
-  set.x       = options.x      or 0
-  set.y       = options.y      or 0
-  set.width   = options.width  or 50
-  set.height  = options.height or 50
-  set.margin  = options.margin or 10
+  options = options        or {}
+  x       = options.x      or 0
+  y       = options.y      or 0
+  width   = options.width  or 50
+  height  = options.height or 50
+  margin  = options.margin or 10
   
   local function onSettingsSwitchPress( event )
     local switch = event.target
-    set.soundCheckBox.isVisible = switch.isOn
-    if set.vibrationCheckBox then
-      set.vibrationCheckBox.isVisible = switch.isOn
+    soundCheckBox.isVisible = switch.isOn
+    if vibrationCheckBox then
+      vibrationCheckBox.isVisible = switch.isOn
     end
   end
 
@@ -59,17 +59,18 @@ function settings.new( options )
       top = 0,
       style = "checkbox",
       id = "settingsCheckbox",
-      width = set.width,
-      height = set.height,
+      width = width,
+      height = height,
       onPress = onSettingsSwitchPress,
       sheet = settingsCheckboxSheet,
       frameOff = 1,
       frameOn = 2
     }
   
-    set.settingsCheckbox = widget.newSwitch(optionsCheckBox)
-    set.settingsCheckbox.x = set.x
-    set.settingsCheckbox.y = set.y
+    settingsCheckbox = widget.newSwitch(optionsCheckBox)
+    settingsCheckbox.x = x
+    settingsCheckbox.y = y
+    group:insert(settingsCheckbox )
   
     -- Create sound
     local soundCheckboxSheet = graphics.newImageSheet("img/soundSheet.png", sheetOptions)
@@ -78,10 +79,11 @@ function settings.new( options )
     optionsCheckBox.sheet = soundCheckboxSheet
     optionsCheckBox.initialSwitchState = settings.isSoundOn
   
-    set.soundCheckBox = widget.newSwitch(optionsCheckBox)
-    set.soundCheckBox.x = set.settingsCheckbox.x + set.settingsCheckbox.width + set.margin
-    set.soundCheckBox.y = set.y
-    set.soundCheckBox.isVisible = false
+    soundCheckBox = widget.newSwitch(optionsCheckBox)
+    soundCheckBox.x = settingsCheckbox.x + settingsCheckbox.width + margin
+    soundCheckBox.y = y
+    soundCheckBox.isVisible = false
+    group:insert( soundCheckBox )
     
     -- Create vibration
     if system.getInfo("platform") == "android" then
@@ -91,16 +93,18 @@ function settings.new( options )
       optionsCheckBox.sheet = vibrationCheckBoxSheet
       optionsCheckBox.initialSwitchState = settings.isVibrationOn
       
-      set.vibrationCheckBox = widget.newSwitch(optionsCheckBox)
-      set.vibrationCheckBox.x = set.soundCheckBox.x + set.soundCheckBox.width + set.margin
-      set.vibrationCheckBox.y = set.y
-      set.vibrationCheckBox.isVisible = false
+      vibrationCheckBox = widget.newSwitch(optionsCheckBox)
+      vibrationCheckBox.x = soundCheckBox.x + soundCheckBox.width + margin
+      vibrationCheckBox.y = y
+      vibrationCheckBox.isVisible = false
+      
+      group:insert( soundCheckBox )
     end
   end
 
   create()
   
-  return set
+  return group
 end
 
 return settings
