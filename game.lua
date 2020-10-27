@@ -55,41 +55,6 @@ local function insertRandomNumberToRandomSequence()
   table.insert(randSequence, var)
 end
 
-function convertUserScore( userScore )
-  patern = ""
-  local userScoreStr = tostring(userScore)
-  
-  if(#userScoreStr < 2) then
-    userScoreStr = userScoreStr:gsub('()',{[1]='000'})
-    print(userScoreStr)
-  elseif(#userScoreStr < 3) then
-    userScoreStr = userScoreStr:gsub('()',{[1]='00'})
-    print(userScoreStr)
-  elseif(#userScoreStr < 4) then
-    userScoreStr = userScoreStr:gsub('()',{[1]='0'})
-    print(userScoreStr)
-  end
-  
-  for i = 1, #userScoreStr do
-    patern = patern .. "(%d)"
-  end
-  
-  numbers = {}
-  
-  local function fromStringToTable(...)
-    for i,v in ipairs(arg) do
-      if i > 2 then
-        numbers[i - 2] = tonumber(v)
-      end
-    end
-    print(numbers)
-  end
-  
-  fromStringToTable(string.find(userScoreStr, patern))
-  
-  return numbers
-end
-
 local function showSequence( event )
   if level.isPlayer == false then
     local thisRect = rects[randSequence[numSequence]]
@@ -126,7 +91,7 @@ function cleanGame()
   
   numSequence = 1
   userScore = 0
-  ledPannel:setScore(convertUserScore(userScore))
+  ledPannel:setScore(userScore)
   level.isPlayer = false
   
   for i = 1, #rects do
@@ -155,12 +120,11 @@ function resetGame( event )
 end
 
 function gameCallbackEvent( id )
-  print("ID is : " .. id)
   if ( isSequencesTheSame(id)) then
     table.insert(userSequence, id)
     numSequence = numSequence + 1
     userScore = userScore + 1
-    ledPannel:setScore(convertUserScore(userScore))
+    ledPannel:setScore(userScore)
     if #userSequence >= #randSequence then
       timer.performWithDelay(500, function()
           count = 1
@@ -248,8 +212,7 @@ function createUI(sceneGroup)
   }
 
   ledPannel = ledPannel.new(options)
-  print(ledPannel.group.width)
-  ledPannel:setScore(convertUserScore(userScore))
+  ledPannel:setScore(userScore)
   ledPannel:setWidth( 420 )
   
   fourGrid.y = 30
@@ -288,7 +251,7 @@ function loadScore()
   gameScores = loadsave.loadTable( "settings.json" )
   if gameScores and gameScores[level.type] then
     userScore = gameScores[level.type]
-    ledPannel:setScore(convertUserScore(userScore))
+    ledPannel:setScore(userScore)
     ledPannel:setState("Start")
   end
 end
@@ -305,7 +268,6 @@ function convertRGBtoRange( tab )
   convertedColor[1] = tab[1] / 255
   convertedColor[2] = tab[2] / 255
   convertedColor[3] = tab[3] / 255
-  print(convertedColor[1], convertedColor[2], convertedColor[3])
   return convertedColor
 end
 

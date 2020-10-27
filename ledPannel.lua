@@ -89,7 +89,25 @@ function ledPannel.new( options )
     set:setupGroup()
   end
   
-  function set:setScore( tab )
+  local function convertUserScore( userScore )
+    local userScoreStr = tostring(userScore)
+    local numbers = {}
+    local maxScore = 4
+  
+    for i = #userScoreStr, 1, -1 do
+      numbers[maxScore] = tonumber(string.char(string.byte(tostring(userScore), i)))
+      maxScore = maxScore - 1
+    end
+  
+    for i = 1, maxScore do
+      numbers[i] = 0
+    end
+
+    return numbers
+  end
+  
+  function set:setScore( score )
+    tab = convertUserScore(score)
     for i = 1, #tab do
       self.scoreNumbers[i]:setNumById(tab[i])
     end
