@@ -4,15 +4,12 @@
 -- This table should translate to gameboard.lua
 -----------------------------------------------------------------------------------------
 
-local colors = require("colors")
 local composer = require( "composer" )
-local effects = require( "effects" )
 local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
 local loadsave = require( "loadsave" )
 local level = require( "level" )
 local settings = require( "settings" )
-local widget = require( "widget" )
 
 math.randomseed( os.time() )
 
@@ -29,11 +26,9 @@ local rectGroup = nil
 local guiGroup = nil
 local rects = {}
 local activateTimer = nil
-local count = 1
 local userScore = 0
 local clock = os.clock
 local numSequence = 1
-local highScore = 0
 local gameScores = 
 {
   [ "four" ]   = 0,
@@ -133,7 +128,6 @@ function gameCallbackEvent( id )
     ledPannel:setScore(userScore)
     if #userSequence >= #randSequence then
       timer.performWithDelay(500, function()
-          count = 1
           numSequence = 1
           level.isPlayer = false
           insertRandomNumberToRandomSequence()
@@ -148,7 +142,6 @@ function gameCallbackEvent( id )
       ledPannel:setState("Start")
       
       level.isPlayer = false
-      effects.vibrate()
       for i = 1, #rects do
         rects[i]:cancel()
         rects[i]:blinkingRepeatedly()
