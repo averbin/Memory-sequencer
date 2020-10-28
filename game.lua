@@ -1,3 +1,9 @@
+-----------------------------------------------------------------------------------------
+--
+-- In this section we create game board with ui elements.
+-- This table should translate to gameboard.lua
+-----------------------------------------------------------------------------------------
+
 local colors = require("colors")
 local composer = require( "composer" )
 local effects = require( "effects" )
@@ -194,7 +200,6 @@ function createGrid( sceneGroup )
   sceneGroup:insert(rectGroup)
 end
 
--- TODO: replace with LED screen for score and game state.
 function createUI(sceneGroup)
   -- UI Group
   guiGroup = display.newGroup()
@@ -261,14 +266,6 @@ function createGame(sceneGroup)
   createGrid(sceneGroup)
   createUI(sceneGroup)
   loadScore()
-end
-
-function convertRGBtoRange( tab )
-  local convertedColor= {}
-  convertedColor[1] = tab[1] / 255
-  convertedColor[2] = tab[2] / 255
-  convertedColor[3] = tab[3] / 255
-  return convertedColor
 end
 
 -- -----------------------------------------------------------------------------------

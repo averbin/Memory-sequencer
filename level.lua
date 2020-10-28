@@ -1,13 +1,11 @@
 -----------------------------------------------------------------------------------------
 --
 -- level.lua in this file you can find implementation of the game state and type.
---
+-- This table should translate to game.lua
 -----------------------------------------------------------------------------------------
 level = 
 {
   isPlayer = false,
-  buttons = 0, -- count of buttons defaults for "four" type is 4,
-               -- for "nine" type of game is 9,
   type = "" -- "four", "nine"
 }
 
