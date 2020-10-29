@@ -4,7 +4,7 @@
 --
 -----------------------------------------------------------------------------------------
 local effects = require( "effects" )
-local level = require( "level" )
+local game = require( "game" )
 local widget = require( "widget" )
 
 blinkButton = {}
@@ -30,11 +30,13 @@ function blinkButton.new( options )
   gameCallbackEvent  = options.gameCallbackEvent or nil
   
   local function handleButtonEvent( target )
-    if level.isPlayer then
+    --if game.isPlayer then
       set:blink()
       set:vibrate()
-      gameCallbackEvent(tonumber(set.id))
-    end
+      if gameCallbackEvent then
+        gameCallbackEvent(tonumber(set.id))
+      end
+    --end
   end
   
   if not set.group then

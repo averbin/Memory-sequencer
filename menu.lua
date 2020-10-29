@@ -1,5 +1,5 @@
 composer = require("composer")
-level = require("level")
+game = require("game")
 
 local screenWidth = display.actualContentWidth
 local screenHeight = display.actualContentHeight
@@ -13,17 +13,17 @@ local function gotoPairs()
 end
 
 local function gotoFourth()
-  level.buttons = 4
-  level.type = "four"
-  composer.removeScene("game")
-	composer.gotoScene( "game", { time=800, effect="crossFade" } )
+  game.buttons = 4
+  game.type = "four"
+  composer.removeScene("gameBoard")
+	composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
 end
 
 local function gotoNineth()
-  level.buttons = 9
-  level.type = "nine"
-  composer.removeScene("game")
-	composer.gotoScene( "game", { time=800, effect="crossFade" } )
+  game.buttons = 9
+  game.type = "nine"
+  composer.removeScene("gameBoard")
+	composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
 end
 
 local function gotoShapes()
