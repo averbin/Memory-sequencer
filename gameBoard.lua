@@ -7,7 +7,6 @@
 local composer = require( "composer" )
 local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
-local loadsave = require( "loadsave" )
 local game = require( "game" )
 local settings = require( "settings" )
 
@@ -22,18 +21,11 @@ local centerY = display.contentCenterY
 game.isPlayer = false
 local rectGroup = nil
 local guiGroup = nil
+local gameRectungles = {}
 
 --local activateTimer = nil
 local userScore = 0
 local clock = os.clock
-
-local gameScores = 
-{
-  [ "four" ]   = 0,
-  [ "nine" ]   = 0,
-  [ "pairs" ]  = 0,
-  [ "shapes" ] = 0
-}
 
 local backButton = nil
 local settingsButton = nil
@@ -85,9 +77,9 @@ function createGrid( sceneGroup )
     typeOfGame = game.type
   } 
   
-  fourGrid = grid.new(options)
-  fourGrid:create()
-  --rects = fourGrid:getRects()
+  gameGrid = grid.new(options)
+  gameGrid:create()
+  gameRectungles = gameGrid:getRects()
   -- Set elements to main sceneGroup
   sceneGroup:insert(rectGroup)
 end
@@ -112,7 +104,7 @@ function createUI(sceneGroup)
   ledPannel:setScore(userScore)
   ledPannel:setWidth( 420 )
   
-  fourGrid.y = 30
+  gameGrid.y = 30
   -- Create back button
   local paint = 
   {
@@ -144,20 +136,22 @@ function createUI(sceneGroup)
 end
 
 -- Loading score from previous session.
-function loadScore()
-  gameScores = loadsave.loadTable( "settings.json" )
-  if gameScores and gameScores[game.type] then
-    userScore = gameScores[game.type]
-    ledPannel:setScore(userScore)
-    ledPannel:setState("Start")
-  end
+function setScoreToPannel( score )
+  ledPannel:setScore(score)
+  ledPannel:setState("Start")
+end
+
+function InitGame()
+  local game = game.new()
+  game:loadScore()
+  setScoreToPannel(game:getScore())
 end
 
 function createGame(sceneGroup)
   createBackground(sceneGroup)
   createGrid(sceneGroup)
   createUI(sceneGroup)
-  loadScore()
+  InitGame()
 end
 
 -- -----------------------------------------------------------------------------------

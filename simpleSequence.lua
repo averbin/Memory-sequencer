@@ -4,8 +4,6 @@
 -- 
 -----------------------------------------------------------------------------------------
 
-local game = require( "game" )
-
 local simpleSequence = {}
 
 function simpleSequence.new( options )
