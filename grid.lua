@@ -66,7 +66,7 @@ function grid.new(options)
   gameCallbackEvent = options.gameCallbackEvent
   typeOfGame        = options.typeOfGame    or "four" 
 
-  elements          = {}
+  buttons           = {}
   
   if not group then 
     group = display.newGroup()
@@ -78,7 +78,7 @@ function grid.new(options)
   gridField:setFillColor(0.9, 0.1, 0.2)
   gridField.isVisible = frameOn
   group.gridField = gridField
-  group.elements = elements
+  group.buttons = buttons
   
   -- @param size - General width / height
   -- @param count - columns / rows count
@@ -120,7 +120,7 @@ function grid.new(options)
         local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
         -- Set position for columns.
         for j = 1, columns do
-          local element = createButton(group, tostring(count), 
+          local button = createButton(group, tostring(count), 
           xPos, yPos, rectWidth, rectHeight, "roundedRect",
           cornerRadius, convertRGBtoRange(colors[typeOfGame][count]), gameCallbackEvent)
         
@@ -130,11 +130,11 @@ function grid.new(options)
           --  yPos,
           --  rectWidth,
           --  rectHeight)
-          element.anchorX = anchorX
-          element.anchorY = anchorY
-          xPos = nextPosition(element.x, rectWidth, columnMargin)
-          yPos = element.y
-          table.insert(elements, element)
+          button.anchorX = anchorX
+          button.anchorY = anchorY
+          xPos = nextPosition(button.x, rectWidth, columnMargin)
+          yPos = button.y
+          table.insert(buttons, button)
           count = count + 1
         end
       yPos = nextPosition(yPos, rectHeight, rowMargin)
@@ -142,8 +142,8 @@ function grid.new(options)
     end
   end
   
-  function group:getRects()
-    return elements
+  function group:getButtons()
+    return buttons
   end
   
   return group

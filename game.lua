@@ -22,13 +22,13 @@ game =
 function game.new(options)
   local set = {}
   options = options or {}
-  set.rectungles = options.rectungles or {}
+  set.buttons = options.buttons or {}
   set.score = 0
   set.sequencer = {}
   
   function set:init()
     if game.type == "four" or game.type == "nine" then
-      self.sequencer = sequencer.new({rectungles = self.rectungles})
+      self.sequencer = sequencer.new({buttons = self.buttons})
     end
   end
   

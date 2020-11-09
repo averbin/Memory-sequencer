@@ -10,8 +10,7 @@ function simpleSequence.new( options )
   local set = {}
   
   set.options = options or {}
-  set.rects = set.options.rectungles or {}-- a list of game buttons.
-  set.buttons = #set.rects -- count of buttons in the game
+  set.buttons = set.options.buttons or {}-- a list of game buttons.
   set.numSequence = 1
   set.randSequence = {}
   set.userSequence = {}
@@ -21,7 +20,7 @@ function simpleSequence.new( options )
   -- Second After user set correct sequence.
   -- Third when do the first game.
   function set:insertRandomNumberToRandomSequence()
-    local var = math.random(self.buttons)
+    local var = math.random(#self.buttons)
     table.insert(self.randSequence, var)
   end
   
@@ -127,8 +126,8 @@ function simpleSequence.new( options )
   end
   
   local function init()
-    for i = 1, #set.rects do
-      set.rects[i]:setCallback(gameCallbackEvent)
+    for i = 1, #set.buttons do
+      set.buttons[i]:setCallback(gameCallbackEvent)
     end
   end
 

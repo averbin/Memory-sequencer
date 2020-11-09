@@ -21,7 +21,7 @@ local centerY = display.contentCenterY
 game.isPlayer = false
 local rectGroup = nil
 local guiGroup = nil
-local gameRectungles = {}
+local buttons = {}
 
 --local activateTimer = nil
 local userScore = 0
@@ -79,7 +79,7 @@ function createGrid( sceneGroup )
   
   gameGrid = grid.new(options)
   gameGrid:create()
-  gameRectungles = gameGrid:getRects()
+  buttons = gameGrid:getButtons()
   -- Set elements to main sceneGroup
   sceneGroup:insert(rectGroup)
 end
@@ -142,7 +142,7 @@ function setScoreToPannel( score )
 end
 
 function InitGame()
-  local game = game.new({rectungles = gameRectungles})
+  local game = game.new({buttons = buttons})
   game:loadScore()
   setScoreToPannel(game:getScore())
   game:init()
