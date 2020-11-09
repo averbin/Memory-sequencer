@@ -83,6 +83,10 @@ function blinkButton.new( options )
   function set:vibrate()
     effects.vibrate()
   end
+  
+  function set:setCallback( callback )
+    gameCallbackEvent = callback
+  end
 
   createToolButton()
   return set
