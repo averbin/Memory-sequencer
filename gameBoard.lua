@@ -142,9 +142,10 @@ function setScoreToPannel( score )
 end
 
 function InitGame()
-  local game = game.new()
+  local game = game.new({rectungles = gameRectungles})
   game:loadScore()
   setScoreToPannel(game:getScore())
+  game:init()
 end
 
 function createGame(sceneGroup)

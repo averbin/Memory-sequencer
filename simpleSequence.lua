@@ -9,12 +9,12 @@ local simpleSequence = {}
 function simpleSequence.new( options )
   local set = {}
   
-  set.options = options
-  set.buttons = options.buttons or 0 -- count of buttons in the game
+  set.options = options or {}
+  set.rects = set.options.rectungles or {}-- a list of game buttons.
+  set.buttons = #set.rects -- count of buttons in the game
   set.numSequence = 1
   set.randSequence = {}
   set.userSequence = {}
-  set.rects = {} -- a list of game buttons.
   
   -- this function called 
   -- First when do reset a game after clear a sequence.
@@ -96,7 +96,8 @@ function simpleSequence.new( options )
   end
   
   function gameCallbackEvent( id )
-    if ( isSequencesTheSame(id)) then
+    print( "Button clicked " .. id )
+    --[[if ( isSequencesTheSame(id)) then
       table.insert(userSequence, id)
       numSequence = numSequence + 1
       userScore = userScore + 1
@@ -122,8 +123,16 @@ function simpleSequence.new( options )
           rects[i]:blinkingRepeatedly()
         end
         Runtime:addEventListener("touch", resetGame)
+    end]]
+  end
+  
+  local function init()
+    for i = 1, #set.rects do
+      set.rects[i]:setCallback(gameCallbackEvent)
     end
   end
+
+  init()
 
   return set
 end

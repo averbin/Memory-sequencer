@@ -24,6 +24,13 @@ function game.new(options)
   options = options or {}
   set.rectungles = options.rectungles or {}
   set.score = 0
+  set.sequencer = {}
+  
+  function set:init()
+    if game.type == "four" or game.type == "nine" then
+      self.sequencer = sequencer.new({rectungles = self.rectungles})
+    end
+  end
   
   function set:loadScore()
     game.scores = loadsave.loadTable( "settings.json" )
