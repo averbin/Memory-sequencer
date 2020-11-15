@@ -7,10 +7,8 @@
 local composer = require( "composer" )
 local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
-local game = require( "game" )
+local gameOptions = require( "game" )
 local settings = require( "settings" )
-
-math.randomseed( os.time() )
 
 local scene = composer.newScene()
 
@@ -18,20 +16,18 @@ local screenWidth = display.actualContentWidth
 local screenHeight = display.actualContentHeight
 local centerX = display.contentCenterX
 local centerY = display.contentCenterY
-game.isPlayer = false
-local rectGroup = nil
+gameOptions.isPlayer = false
+local buttonsGroup = nil
 local guiGroup = nil
 local buttons = {}
-
---local activateTimer = nil
-local userScore = 0
-local clock = os.clock
+local game = nil
 
 local backButton = nil
 local settingsButton = nil
 
 
 local function gotoMenu()
+  game:stopLoop()
   composer.removeScene("menu")
   composer.gotoScene("menu", { time=800, effect="crossFade" })
 end
@@ -50,19 +46,19 @@ end
 
 function createGrid( sceneGroup )
   -- Rect group
-  rectGroup = display.newGroup()
+  buttonsGroup = display.newGroup()
   
-  if game.type == "four" then
+  if gameOptions.type == "four" then
     rows = 2
     columns = 2
-  elseif game.type == "nine" then
+  elseif gameOptions.type == "nine" then
     rows = 3
     columns = 3
   end
 
   options = 
   {
-    group = rectGroup,
+    group = buttonsGroup,
     x = centerX,
     y = centerY,
     width = 250,
@@ -73,15 +69,14 @@ function createGrid( sceneGroup )
     rowMargin = 15,
     columnMargin = 15,
     frameOn = false,
-    --gameCallbackEvent = gameCallbackEvent,
-    typeOfGame = game.type
+    typeOfGame = gameOptions.type
   } 
   
   gameGrid = grid.new(options)
   gameGrid:create()
   buttons = gameGrid:getButtons()
   -- Set elements to main sceneGroup
-  sceneGroup:insert(rectGroup)
+  sceneGroup:insert(buttonsGroup)
 end
 
 function createUI(sceneGroup)
@@ -101,7 +96,7 @@ function createUI(sceneGroup)
   }
 
   ledPannel = ledPannel.new(options)
-  ledPannel:setScore(userScore)
+  ledPannel:setScore(0)
   ledPannel:setWidth( 420 )
   
   gameGrid.y = 30
@@ -135,16 +130,8 @@ function createUI(sceneGroup)
   sceneGroup:insert(guiGroup)
 end
 
--- Loading score from previous session.
-function setScoreToPannel( score )
-  ledPannel:setScore(score)
-  ledPannel:setState("Start")
-end
-
 function InitGame()
-  local game = game.new({buttons = buttons})
-  game:loadScore()
-  setScoreToPannel(game:getScore())
+  game = gameOptions.new({buttons = buttons, ledPannel = ledPannel})
   game:init()
 end
 
@@ -173,12 +160,7 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      if userScore < 1 then
-        --insertRandomNumberToRandomSequence()
-        --activateTimer = timer.performWithDelay( 1000, showSequence, 0)
-      else
-        --Runtime:addEventListener("touch", resetGame)
-      end
+      game:startLoop()
       -- Code here runs when the scene is entirely on screen
     end
 end
@@ -190,9 +172,7 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
       -- Code here runs when the scene is on screen (but is about to go off screen)
-      --timer.cancel( activateTimer )
     elseif ( phase == "did" ) then
-      --Runtime:removeEventListener( "touch", resetGame )
       -- Code here runs immediately after the scene goes entirely off screen
     end
 end

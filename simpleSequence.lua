@@ -4,16 +4,27 @@
 -- 
 -----------------------------------------------------------------------------------------
 
+local clock = os.clock
+math.randomseed( os.time() )
+
 local simpleSequence = {}
 
 function simpleSequence.new( options )
   local set = {}
   
   set.options = options or {}
-  set.buttons = set.options.buttons or {}-- a list of game buttons.
+  set.buttons = options.buttons or {}-- a list of game buttons.
+  set.ledPannel = options.ledPannel or {}
+  handleEndGame = options.handleEndGame
+  isPlayerTurn = options.isPlayerTurn
+  setTurn = options.setTurn
+  set.setScore = options.setScore
+  set.getScore = options.getScore
+  set.userScore = 0
   set.numSequence = 1
   set.randSequence = {}
   set.userSequence = {}
+  set.activateTimer = nil
   
   -- this function called 
   -- First when do reset a game after clear a sequence.
@@ -34,17 +45,17 @@ function simpleSequence.new( options )
   
   -- This is the main function with should be run it when we create board
   -- And when we do reset of the game.
-  function set:showSequence( event )
-    if game.isPlayer == false then
-      local thisRect = rects[self.randSequence[self.numSequence]]
-      if self.numSequence <= #self.randSequence then
+  function showSequence( event )
+    if isPlayerTurn() == false then
+      local thisRect = set.buttons[set.randSequence[set.numSequence]]
+      if set.numSequence <= #set.randSequence then
         thisRect:sequenceBlinking()
-        self.numSequence = self.numSequence + 1
-        ledPannel:setState("Play")
+        set.numSequence = set.numSequence + 1
+        set.ledPannel:setState("Play")
       else
-        game.isPlayer = true
-        self.numSequence = 1
-        ledPannel:setState("Record")
+        setTurn(true)
+        set.numSequence = 1
+        set.ledPannel:setState("Record")
       end
     end
   end
@@ -58,76 +69,78 @@ function simpleSequence.new( options )
   function set:cleanGame()
     cleanSequence(self.randSequence)
     cleanSequence(self.userSequence)
-    --if userScore > gameScores[game.type] then
-    --  gameScores[game.type] = userScore
-    --  loadsave.saveTable( gameScores, "settings.json")
-    --end
     
-    --numSequence = 1
-    --userScore = 0
-    --ledPannel:setScore(userScore)
-    --game.isPlayer = false
+    setTurn( false )
+    set.userScore = 0
+    set.numSequence = 1
+    set.ledPannel:setScore(set.userScore)
+    set.ledPannel:setState("Reset")
     
-    --[[for i = 1, #rects do
-      rects[i]:cancel()
-    end]]
+    for i = 1, #self.buttons do
+        self.buttons[i]:cancel()
+    end
     
-    --ledPannel:setState("Reset")
+    self.ledPannel:setState("Reset")
   end
   
-  -- Uses for reset game.
-  function set:resetGame( event )
-    if event.phase == "began" then
-      
-      self.cleanGame()
-      
-      self.insertRandomNumberToRandomSequence()
-      
-      --[[if activateTimer then
-        timer.resume(activateTimer)
-      else
-        activateTimer = timer.performWithDelay( 1000, showSequence, 0)
-      end
-      
-      Runtime:removeEventListener( "touch", resetGame ) ]]
-      return true
+  function set:resetGame()
+    set:cleanGame()
+    set:insertRandomNumberToRandomSequence()
+    
+    if set.activateTimer then
+      timer.resume(set.activateTimer)
+    else
+      set.activateTimer = timer.performWithDelay( 1000, showSequence, 0)
     end
   end
   
   function gameCallbackEvent( id )
-    print( "Button clicked " .. id )
-    --[[if ( isSequencesTheSame(id)) then
-      table.insert(userSequence, id)
-      numSequence = numSequence + 1
-      userScore = userScore + 1
-      ledPannel:setScore(userScore)
-      if #userSequence >= #randSequence then
+    if ( set:isSequencesTheSame(id)) then
+      table.insert(set.userSequence, id)
+      set.numSequence = set.numSequence + 1
+      set.userScore = set.userScore + 1
+      set.ledPannel:setScore(set.userScore)
+      if #set.userSequence >= #set.randSequence then
         timer.performWithDelay(500, function()
-            numSequence = 1
-            game.isPlayer = false
-            insertRandomNumberToRandomSequence()
-            --timer.resume(activateTimer)
-            cleanSequence(userSequence)
+            set.numSequence = 1
+            setTurn( false )
+            set:insertRandomNumberToRandomSequence()
+            cleanSequence(set.userSequence)
           end)
       end
     else
-        timer.pause( activateTimer )
-        
-        ledPannel:setState("Reset")
-        ledPannel:setState("Start")
-        
-        game.isPlayer = false
-        for i = 1, #rects do
-          rects[i]:cancel()
-          rects[i]:blinkingRepeatedly()
-        end
-        Runtime:addEventListener("touch", resetGame)
-    end]]
+      if set.getScore() < set.userScore then
+        set.setScore(set.userScore)
+      end
+      timer.pause( set.activateTimer )
+
+      set.ledPannel:setState("Start")
+
+      for i = 1, #set.buttons do
+        set.buttons[i]:cancel()
+        set.buttons[i]:blinkingRepeatedly()
+      end
+      handleEndGame()
+
+      -- Runtime:addEventListener("touch", resetGame)
+    end
   end
   
   local function init()
     for i = 1, #set.buttons do
       set.buttons[i]:setCallback(gameCallbackEvent)
+    end
+  end
+  
+  function set:start()
+    self.resetGame()
+  end
+  
+  function set:stop()
+    set:cleanGame()
+
+    if set.activateTimer then
+      timer.cancel(set.activateTimer)
     end
   end
 

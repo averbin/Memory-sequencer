@@ -30,13 +30,13 @@ function blinkButton.new( options )
   gameCallbackEvent  = options.gameCallbackEvent or nil
   
   local function handleButtonEvent( target )
-    --if game.isPlayer then
+    if game.isPlayer then
       set:blink()
       set:vibrate()
       if gameCallbackEvent then
         gameCallbackEvent(tonumber(set.id))
       end
-    --end
+    end
   end
   
   if not set.group then

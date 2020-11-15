@@ -5,11 +5,13 @@
 
 local sequencer = require( "simpleSequence" ) 
 local loadsave = require( "loadsave" )
+local ledPannel = require( "ledPannel" )
 
 game = 
 {
   isPlayer = false,
   type = "", -- "four", "nine", "pairs", "shapes"
+  isStarted = false,
   scores = 
   {
     [ "four" ]   = 0,
@@ -23,13 +25,38 @@ function game.new(options)
   local set = {}
   options = options or {}
   set.buttons = options.buttons or {}
+  set.ledPannel = options.ledPannel or {}
   set.score = 0
   set.sequencer = {}
   
-  function set:init()
-    if game.type == "four" or game.type == "nine" then
-      self.sequencer = sequencer.new({buttons = self.buttons})
+  function set:handleEndGame()
+    self:saveScore()
+    self:startLoop()
+  end
+  
+  function isPlayerTurn()
+    if game.isPlayer == nil then
+      game.isPlayer = false
     end
+    return game.isPlayer
+  end
+  
+  function setTurn( turn )
+    game.isPlayer = turn
+  end
+  
+  function set:setScore( score )
+    self.score = score
+  end
+  
+  function set:getScore()
+    return self.score
+  end
+  
+  -- Loading score from previous session.
+  local function setScoreToPannel( score )
+    set.ledPannel:setScore(score)
+    set.ledPannel:setState("Start")
   end
   
   function set:loadScore()
@@ -39,19 +66,49 @@ function game.new(options)
     end
   end
   
-  function set:getScore()
-    return self.score
-  end
-
   function set:saveScore()
-    game.scores[game.type] = self.score
+    game.scores[game.type] = self.getScore()
     loadsave.saveTable( game.scores, "settings.json")
   end
-
-  function set:startLoop()
+  
+  function set:init()
+    self:loadScore() 
+    setScoreToPannel(self.score)
     
+    if game.type == "four" or game.type == "nine" then
+      options = 
+      {
+        buttons = self.buttons,
+        ledPannel = self.ledPannel,
+        handleEndGame = function() return self:handleEndGame() end,
+        isPlayerTurn = isPlayerTurn,
+        setTurn = setTurn,
+        setScore = function() return self:setScore() end,
+        getScore = function() return self:getScore() end
+      }
+      self.sequencer = sequencer.new(options)
+    end
   end
   
+  function loop()
+    --game.isStarted = true
+    set.ledPannel:setScore(set.score)
+    set.sequencer:start()
+    Runtime:removeEventListener( "touch", loop)
+  end
+  
+  function set:startLoop()
+    if self:getScore() < 1 then
+      loop()
+    else
+      Runtime:addEventListener( "touch", loop)
+    end
+  end
+  
+  function set:stopLoop()
+    self.sequencer:stop()
+  end
+
   return set
 end
 
