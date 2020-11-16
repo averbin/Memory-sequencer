@@ -11,7 +11,6 @@ game =
 {
   isPlayer = false,
   type = "", -- "four", "nine", "pairs", "shapes"
-  isStarted = false,
   scores = 
   {
     [ "four" ]   = 0,
@@ -67,7 +66,7 @@ function game.new(options)
   end
   
   function set:saveScore()
-    game.scores[game.type] = self.getScore()
+    game.scores[game.type] = self.score
     loadsave.saveTable( game.scores, "settings.json")
   end
   
@@ -83,7 +82,7 @@ function game.new(options)
         handleEndGame = function() return self:handleEndGame() end,
         isPlayerTurn = isPlayerTurn,
         setTurn = setTurn,
-        setScore = function() return self:setScore() end,
+        setScore = function( score ) return self:setScore( score ) end,
         getScore = function() return self:getScore() end
       }
       self.sequencer = sequencer.new(options)
@@ -91,14 +90,13 @@ function game.new(options)
   end
   
   function loop()
-    --game.isStarted = true
     set.ledPannel:setScore(set.score)
     set.sequencer:start()
     Runtime:removeEventListener( "touch", loop)
   end
   
   function set:startLoop()
-    if self:getScore() < 1 then
+    if self.score < 1 then
       loop()
     else
       Runtime:addEventListener( "touch", loop)
