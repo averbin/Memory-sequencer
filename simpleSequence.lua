@@ -106,6 +106,25 @@ function simpleSequence.new( options )
     end
   end
   
+  function set:finish()
+    local missedButton = set:getButtonFromSequence(set.randSequence, set.numSequence)
+    local playerButton = set:getButtonFromSequence(set.userSequence, set.numSequence)
+    playerButton:cancel()
+    playerButton:switchOn()
+    transition.to(missedButton, {
+        iterations = 4, 
+        time = 1000, 
+        onComplete = function() 
+          playerButton:switchOn() 
+          set.ledPannel:setState("Start")
+          set:blinkRepeadly() 
+          set.handleEndGame() 
+        end,
+        onRepeat = function() missedButton:sequenceBlinking() end
+      }
+    )
+  end
+  
   function gameCallbackEvent( id )
     table.insert(set.userSequence, id)
     if ( set:isSequencesTheSame(id)) then
@@ -126,23 +145,7 @@ function simpleSequence.new( options )
       end
       timer.pause( set.activateTimer )
 
-
-      local missedButton = set:getButtonFromSequence(set.randSequence, set.numSequence)
-      local playerButton = set:getButtonFromSequence(set.userSequence, set.numSequence)
-      playerButton:cancel()
-      playerButton:switchOn()
-      transition.to(missedButton, {
-          iterations = 4, 
-          time = 1000, 
-          onComplete = function() 
-            playerButton:switchOn() 
-            set.ledPannel:setState("Start")
-            set:blinkRepeadly() 
-            set.handleEndGame() 
-          end,
-          onRepeat = function() missedButton:sequenceBlinking() end
-        }
-      )
+      set:finish()
     end
   end
   
