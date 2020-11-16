@@ -15,7 +15,7 @@ function simpleSequence.new( options )
   set.options = options or {}
   set.buttons = options.buttons or {}-- a list of game buttons.
   set.ledPannel = options.ledPannel or {}
-  handleEndGame = options.handleEndGame
+  set.handleEndGame = options.handleEndGame
   isPlayerTurn = options.isPlayerTurn
   setTurn = options.setTurn
   set.setScore = options.setScore
@@ -65,6 +65,11 @@ function simpleSequence.new( options )
     for i=1, #sequence do sequence[i] = nil end
   end
   
+  -- Get button from list
+  function set:getButtonFromSequence(sequence, buttonID)
+    return self.buttons[sequence[buttonID]]
+  end
+  
   -- Used for reset game.
   function set:cleanGame()
     cleanSequence(self.randSequence)
@@ -94,9 +99,16 @@ function simpleSequence.new( options )
     end
   end
   
+  function set:blinkRepeadly()
+    for i = 1, #self.buttons do
+      self.buttons[i]:cancel()
+      self.buttons[i]:blinkingRepeatedly()
+    end
+  end
+  
   function gameCallbackEvent( id )
+    table.insert(set.userSequence, id)
     if ( set:isSequencesTheSame(id)) then
-      table.insert(set.userSequence, id)
       set.numSequence = set.numSequence + 1
       set.userScore = set.userScore + 1
       set.ledPannel:setScore(set.userScore)
@@ -114,15 +126,23 @@ function simpleSequence.new( options )
       end
       timer.pause( set.activateTimer )
 
-      set.ledPannel:setState("Start")
 
-      for i = 1, #set.buttons do
-        set.buttons[i]:cancel()
-        set.buttons[i]:blinkingRepeatedly()
-      end
-      handleEndGame()
-
-      -- Runtime:addEventListener("touch", resetGame)
+      local missedButton = set:getButtonFromSequence(set.randSequence, set.numSequence)
+      local playerButton = set:getButtonFromSequence(set.userSequence, set.numSequence)
+      playerButton:cancel()
+      playerButton:switchOn()
+      transition.to(missedButton, {
+          iterations = 4, 
+          time = 1000, 
+          onComplete = function() 
+            playerButton:switchOn() 
+            set.ledPannel:setState("Start")
+            set:blinkRepeadly() 
+            set.handleEndGame() 
+          end,
+          onRepeat = function() missedButton:sequenceBlinking() end
+        }
+      )
     end
   end
   
