@@ -87,6 +87,14 @@ function blinkButton.new( options )
   function set:setCallback( callback )
     gameCallbackEvent = callback
   end
+  
+  function set:switchOn()
+    self.insideRect.alpha = 1.0
+  end
+  
+  function set:switchOff()
+    self.insideRect.alpha = 0.1
+  end
 
   createToolButton()
   return set
