@@ -89,11 +89,23 @@ function blinkButton.new( options )
   end
   
   function set:switchOn()
-    self.insideRect.alpha = 1.0
+    transition.to(self.insideRect, 
+      { 
+        time = 10,
+        iterations = 10,
+        onRepeat = function() self.insideRect.alpha = self.insideRect.alpha + 0.1 end
+      }
+    )
   end
   
   function set:switchOff()
-    self.insideRect.alpha = 0.1
+    transition.to(self.insideRect, 
+      { 
+        time = 10,
+        iterations = 10,
+        onRepeat = function() self.insideRect.alpha = self.insideRect.alpha - 0.1 end
+      }
+    )
   end
 
   createToolButton()
