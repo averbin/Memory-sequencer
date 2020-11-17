@@ -10,20 +10,20 @@ math.randomseed( os.time() )
 local simpleSequence = {}
 
 function simpleSequence.new( options )
-  local set = {}
+  local set         = {}
   
-  set.options = options or {}
-  set.buttons = options.buttons or {}-- a list of game buttons.
-  set.ledPannel = options.ledPannel or {}
-  set.handleEndGame = options.handleEndGame
-  isPlayerTurn = options.isPlayerTurn
-  setTurn = options.setTurn
-  set.setScore = options.setScore
-  set.getScore = options.getScore
-  set.userScore = 0
-  set.numSequence = 1
-  set.randSequence = {}
-  set.userSequence = {}
+  set.options       = options               or {}
+  set.buttons       = options.buttons       or {}-- a list of game buttons.
+  set.ledPannel     = options.ledPannel     or {}
+  set.handleEndGame = options.handleEndGame or {}
+  isPlayerTurn      = options.isPlayerTurn  or {}
+  setTurn           = options.setTurn       or {}
+  set.setScore      = options.setScore      or {}
+  set.getScore      = options.getScore      or {}
+  set.userScore     = 0
+  set.numSequence   = 1
+  set.randSequence  = {}
+  set.userSequence  = {}
   set.activateTimer = nil
   
   -- this function called 
@@ -53,7 +53,7 @@ function simpleSequence.new( options )
         set.numSequence = set.numSequence + 1
         set.ledPannel:setState("Play")
       else
-        setTurn(true)
+        setTurn( true )
         set.numSequence = 1
         set.ledPannel:setState("Record")
       end
