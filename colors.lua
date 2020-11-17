@@ -27,6 +27,10 @@ colors =
     {159, 80, 196, 1.0}, 
     {162, 83, 173, 1.0}, 
   },
+  ["shapes"] = 
+  {
+    {0, 0, 200, 1.0}
+  },
 }
 
 function convertRGBtoRange( tab )
