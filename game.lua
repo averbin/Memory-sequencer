@@ -21,12 +21,13 @@ game =
 }
 
 function game.new(options)
-  local set = {}
-  options = options or {}
-  set.buttons = options.buttons or {}
+  local set     = {}
+  
+  options       = options           or {}
+  set.buttons   = options.buttons   or {}
   set.ledPannel = options.ledPannel or {}
-  set.score = 0
-  set.sequencer = {}
+  set.score     = 0
+  set.sequencer = nil
   
   function set:handleEndGame()
     self:saveScore()
@@ -96,10 +97,12 @@ function game.new(options)
   end
   
   function set:startLoop()
-    if self.score < 1 then
-      loop()
-    else
-      Runtime:addEventListener( "touch", loop)
+    if set.sequencer then
+      if self.score < 1 then
+        loop()
+      else
+        Runtime:addEventListener( "touch", loop)
+      end
     end
   end
   

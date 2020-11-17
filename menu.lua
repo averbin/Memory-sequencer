@@ -8,25 +8,30 @@ local centerY = display.contentCenterY
 
 local scene = composer.newScene()
 
+local function gotoGameBoard()
+  composer.removeScene("gameBoard")
+	composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
+end
+
 local function gotoPairs()
   
 end
 
 local function gotoFourth()
-  game.buttons = 4
+  --game.buttons = 4
   game.type = "four"
-  composer.removeScene("gameBoard")
-	composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
+  gotoGameBoard()
 end
 
 local function gotoNineth()
-  game.buttons = 9
+  --game.buttons = 9
   game.type = "nine"
-  composer.removeScene("gameBoard")
-	composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
+  gotoGameBoard()
 end
 
 local function gotoShapes()
+  game.type = "shapes"
+  gotoGameBoard()
 end
 
 -- -----------------------------------------------------------------------------------
@@ -64,6 +69,13 @@ function scene:create( event )
   ninthButton.strokeWidth = 2
   ninthButton.fill = paint
   ninthButton:addEventListener("tap", gotoNineth)
+  
+  local shapesButton = display.newRoundedRect(sceneGroup, centerX + 50 + margin, centerY + 50 + margin, rectWidth, rectHeight, 4)
+  shapesButton:setFillColor(0.1, 0.1, 0.1, 1)
+  shapesButton:setStrokeColor(0.8, 0.8, 1, 1)
+  shapesButton.strokeWidth = 2
+  shapesButton:addEventListener("tap", gotoShapes)
+  
 end
  
 -- show()

@@ -48,15 +48,7 @@ function createGrid( sceneGroup )
   -- Rect group
   buttonsGroup = display.newGroup()
   
-  if gameOptions.type == "four" then
-    rows = 2
-    columns = 2
-  elseif gameOptions.type == "nine" then
-    rows = 3
-    columns = 3
-  end
-
-  options = 
+  local options = 
   {
     group = buttonsGroup,
     x = centerX,
@@ -71,6 +63,23 @@ function createGrid( sceneGroup )
     frameOn = false,
     typeOfGame = gameOptions.type
   } 
+  
+  if gameOptions.type == "four" then
+    options.rows = 2
+    options.columns = 2
+    options.rowMargin = 20
+    options.columnMargin = 20
+  elseif gameOptions.type == "nine" then
+    options.rows = 3
+    options.columns = 3
+  elseif gameOptions.type == "shapes" then
+    options.rows = 6
+    options.columns = 6
+    options.rowMargin = 5
+    options.columnMargin = 5
+  end
+
+  
   
   gameGrid = grid.new(options)
   gameGrid:create()

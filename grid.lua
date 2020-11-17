@@ -48,25 +48,25 @@ end
 function grid.new(options)
   
   options           = options               or {}
-  group             = options.group         or nil
-  x                 = options.x             or 0
-  y                 = options.y             or 0
-  width             = options.width         or 500
-  height            = options.height        or 500
-  rows              = options.rows          or 3
-  columns           = options.columns       or 3
-  sideMargin        = options.sideMargin    or 25
-  rowMargin         = options.rowMargin     or 10
-  columnMargin      = options.columnMargin  or 10
+  local group             = options.group         or nil
+  local x                 = options.x             or 0
+  local y                 = options.y             or 0
+  local width             = options.width         or 500
+  local height            = options.height        or 500
+  local rows              = options.rows          or 3
+  local columns           = options.columns       or 3
+  local sideMargin        = options.sideMargin    or 25
+  local rowMargin         = options.rowMargin     or 10
+  local columnMargin      = options.columnMargin  or 10
   
-  anchorX           = options.anchorX       or 0.5
-  anchorY           = options.anchorY       or 0.5
-  frameOn           = options.frameOn
-  cornerRadius      = options.cornerRadius  or 5
-  gameCallbackEvent = options.gameCallbackEvent
-  typeOfGame        = options.typeOfGame    or "four" 
+  local anchorX           = options.anchorX       or 0.5
+  local anchorY           = options.anchorY       or 0.5
+  local frameOn           = options.frameOn
+  local cornerRadius      = options.cornerRadius  or 5
+  local gameCallbackEvent = options.gameCallbackEvent
+  local typeOfGame        = options.typeOfGame    or "four" 
 
-  buttons           = {}
+  local buttons           = {}
   
   if not group then 
     group = display.newGroup()
@@ -120,9 +120,16 @@ function grid.new(options)
         local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
         -- Set position for columns.
         for j = 1, columns do
+          local color = {}
+          if typeOfGame == "shapes" then
+            color = convertRGBtoRange(colors[typeOfGame][1])
+          else
+            color = convertRGBtoRange(colors[typeOfGame][count])
+          end
+          
           local button = createButton(group, tostring(count), 
           xPos, yPos, rectWidth, rectHeight, "roundedRect",
-          cornerRadius, convertRGBtoRange(colors[typeOfGame][count]), gameCallbackEvent)
+          cornerRadius, color, gameCallbackEvent)
         
           --local element = display.newRect(
           --  group,
