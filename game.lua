@@ -3,7 +3,8 @@
 -- level.lua in this file you can find implementation of the game state and type.
 -- This table should translate to game.lua
 
-local sequencer = require( "simpleSequence" ) 
+local simpleSequencer = require( "simpleSequence" ) 
+local shapesSequencer = require( "shapeSequence" )
 local loadsave = require( "loadsave" )
 local ledPannel = require( "ledPannel" )
 
@@ -75,18 +76,21 @@ function game.new(options)
     self:loadScore() 
     setScoreToPannel(self.score)
     
+    local options = 
+    {
+      buttons = self.buttons,
+      ledPannel = self.ledPannel,
+      endGameCallback = function() return self:handleEndGame() end,
+      isPlayerTurnCallback = isPlayerTurn,
+      setTurnCallback = setTurn,
+      setScoreCallback = function( score ) return self:setScore( score ) end,
+      getScoreCallback = function() return self:getScore() end
+    }
+    
     if game.type == "four" or game.type == "nine" then
-      options = 
-      {
-        buttons = self.buttons,
-        ledPannel = self.ledPannel,
-        handleEndGame = function() return self:handleEndGame() end,
-        isPlayerTurn = isPlayerTurn,
-        setTurn = setTurn,
-        setScore = function( score ) return self:setScore( score ) end,
-        getScore = function() return self:getScore() end
-      }
-      self.sequencer = sequencer.new(options)
+      self.sequencer = simpleSequencer.new(options)
+    elseif game.type == "shapes" then
+      self.sequencer = shapesSequencer.new(options)
     end
   end
   

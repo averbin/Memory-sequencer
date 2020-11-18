@@ -73,14 +73,12 @@ function createGrid( sceneGroup )
     options.rows = 3
     options.columns = 3
   elseif gameOptions.type == "shapes" then
-    options.rows = 6
-    options.columns = 6
+    options.rows = 5
+    options.columns = 5
     options.rowMargin = 5
     options.columnMargin = 5
   end
 
-  
-  
   gameGrid = grid.new(options)
   gameGrid:create()
   buttons = gameGrid:getButtons()
