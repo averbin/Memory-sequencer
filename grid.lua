@@ -47,7 +47,7 @@ end
 
 function grid.new(options)
   
-  options           = options               or {}
+  options                 = options               or {}
   local group             = options.group         or nil
   local x                 = options.x             or 0
   local y                 = options.y             or 0
