@@ -18,7 +18,9 @@ game =
     [ "nine" ]   = 0,
     [ "pairs" ]  = 0,
     [ "shapes" ] = 0
-  }
+  },
+  rows = 0,
+  columns = 0,
 }
 
 function game.new(options)
@@ -84,7 +86,9 @@ function game.new(options)
       isPlayerTurnCallback = isPlayerTurn,
       setTurnCallback = setTurn,
       setScoreCallback = function( score ) return self:setScore( score ) end,
-      getScoreCallback = function() return self:getScore() end
+      getScoreCallback = function() return self:getScore() end,
+      rows = game.rows,
+      columns = game.columns
     }
     
     if game.type == "four" or game.type == "nine" then

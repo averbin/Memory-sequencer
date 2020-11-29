@@ -79,6 +79,9 @@ function createGrid( sceneGroup )
     options.columnMargin = 5
   end
 
+  gameOptions.rows = options.rows
+  gameOptions.columns = options.columns
+  
   gameGrid = grid.new(options)
   gameGrid:create()
   buttons = gameGrid:getButtons()
