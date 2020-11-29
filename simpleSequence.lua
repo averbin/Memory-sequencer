@@ -156,7 +156,7 @@ function simpleSequence.new( options )
   end
   
   function set:start()
-    self.resetGame()
+    self:resetGame()
   end
   
   function set:stop()
