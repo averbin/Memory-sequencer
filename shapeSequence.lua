@@ -51,7 +51,7 @@ function shapeSequence.new( options )
     return true
   end
   
-  function set:insertRundomShape()
+  function set:insertRandomShape()
     local direction = 0
     local lastElement = 0
     if #self.randSequence == 0 then
