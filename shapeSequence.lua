@@ -24,7 +24,7 @@ function shapeSequence.new( options )
   set.columns          = options.columns              or 0
   set.userScore        = 0
   set.numSequence      = 1
-  set.randSequence     = {1}
+  set.randSequence     = {7,12,17}
   set.userSequence     = {}
   set.activateTimer    = nil
   
@@ -56,6 +56,7 @@ function shapeSequence.new( options )
     local lastElement = 0
     if #self.randSequence == 0 then
       local var = math.random(#self.buttons)
+      print("var: " .. var)
       table.insert(self.randSequence, var)
     else
       while true do
@@ -85,12 +86,76 @@ function shapeSequence.new( options )
     end
   end
   
+  local function cleanSequence( sequence )
+    for i=1, #sequence do sequence[i] = nil end
+  end
+  
+  function set:cleanGame()
+    --cleanSequence(self.randSequence)
+    cleanSequence(self.userSequence)
+    
+    setTurnCallback( false )
+    set.userScore = 0
+    set.numSequence = 1
+    
+    set.ledPannel:setScore(set.userScore)
+    set.ledPannel:setState("Reset")
+    
+    for i = 1, #self.buttons do
+        self.buttons[i]:cancel()
+    end
+    
+    self.ledPannel:setState("Reset")
+  end
+  
+  function showButtons()
+    for i = 1, #set.randSequence do 
+      set.buttons[set.randSequence[i]]:switchOn()
+    end
+    set.ledPannel:setState("Play")
+  end
+  
+  function hideButtons()
+    for i = 1, #set.randSequence do 
+      set.buttons[set.randSequence[i]]:switchOff()
+    end
+    set.ledPannel:setState("Record")
+    setTurnCallback( true )
+  end
+  
+  function showSequence( event )
+    if isPlayerTurnCallback() == false then
+      transition.to(set, 
+        {
+          time = 1000,
+          onStart = showButtons,
+          onComplete = hideButtons
+        }
+      )
+    end
+  end
+  
+  function set:resetGame()
+    set:cleanGame()
+    set:insertRandomShape()
+    
+    if set.activateTimer then
+      timer.resume(set.activateTimer)
+    else
+      set.activateTimer = timer.performWithDelay( 1000, showSequence, 0)
+    end
+  end
+  
   function set:start()
-
+    self.resetGame()
   end
   
   function set:stop()
-    
+    set:cleanGame()
+
+    if set.activateTimer then
+      timer.cancel(set.activateTimer)
+    end
   end
   
   function set:finish()
