@@ -31,7 +31,15 @@ function blinkButton.new( options )
   
   local function handleButtonEvent( target )
     if game.isPlayer then
-      set:blink()
+      if game.type == 'shapes' then
+        if set.insideRect.alpha <= 0.1 then 
+          set:switchOn()
+        else
+          set:switchOff()
+        end
+      else
+        set:blink()
+      end
       set:vibrate()
       if gameCallbackEvent then
         gameCallbackEvent(tonumber(set.id))
@@ -62,6 +70,7 @@ function blinkButton.new( options )
     set.insideRect = insideRect
     set.insideRect.alpha = 0.1
     set.insideRect:addEventListener("tap", handleButtonEvent)
+    set.isTurnOn = false
   end
   
   function set:blink()
@@ -89,23 +98,42 @@ function blinkButton.new( options )
   end
   
   function set:switchOn()
+    self.isTurnOn = true
+    self.insideRect.alpha = 1.0
+    --[[
     transition.to(self.insideRect, 
       { 
-        time = 10,
-        iterations = 10,
-        onRepeat = function() self.insideRect.alpha = self.insideRect.alpha + 0.1 end
+        time = 100,
+        iterations = 9,
+        onStart = function()self.insideRect.alpha = 0.1  print("onStart: alpha : " .. self.insideRect.alpha) end,
+        onRepeat = function() self.insideRect.alpha = self.insideRect.alpha + 0.1 end,
+        onComplete = function() 
+          self.insideRect.alpha = 1.0 print("onComplete: alpha : " .. self.insideRect.alpha) 
+        end
       }
     )
+    ]]
   end
   
   function set:switchOff()
+    if self.isTurnOn == false then
+      print("switchOff id : " .. self.id)
+    end 
+    self.isTurnOn = false
+    self.insideRect.alpha = 0.1
+    --[[
     transition.to(self.insideRect, 
       { 
-        time = 10,
-        iterations = 10,
-        onRepeat = function() self.insideRect.alpha = self.insideRect.alpha - 0.1 end
+        time = 100,
+        iterations = 9,
+        onStart = function() self.insideRect.alpha = 1.0 print("onStart: alpha : " .. self.insideRect.alpha) end,
+        onRepeat = function() self.insideRect.alpha = self.insideRect.alpha - 0.1 print("onRepeat: alpha : " .. self.insideRect.alpha) end,
+        onComplete = function() 
+          self.insideRect.alpha = 0.1 print("onComplete: alpha : " .. self.insideRect.alpha) 
+        end
       }
     )
+    ]]
   end
 
   createToolButton()
