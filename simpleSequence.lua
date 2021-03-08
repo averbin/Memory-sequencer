@@ -36,7 +36,11 @@ function simpleSequence.new( options )
   end
   
   -- Called after user press a button.
+  -- Check is sequince the same.
   function set:isSequencesTheSame( userNumber )
+    if not self.randSequence[self.numSequence] then
+      assert("ERROR: no randSequence exists!")
+    end
     if self.randSequence[self.numSequence] == userNumber then
       return true
     end
@@ -60,7 +64,7 @@ function simpleSequence.new( options )
     end
   end
   
-  -- General function.
+  -- Clear array of numbers which is store in sequences.
   local function cleanSequence( sequence )
     for i=1, #sequence do sequence[i] = nil end
   end
@@ -125,19 +129,32 @@ function simpleSequence.new( options )
     )
   end
   
+  local function isUserMoreRand()
+    return #set.userSequence >= #set.randSequence
+  end
+  
+  local function runNextSequence()
+    timer.performWithDelay(500, function()
+        set.numSequence = 1
+        setTurnCallback( false )
+        set:insertRandomNumberToRandomSequence()
+        cleanSequence(set.userSequence)
+      end)
+  end
+  
   function gameCallbackEvent( id )
     table.insert(set.userSequence, id)
+    if ( #set.userSequence > #set.randSequence ) then
+      runNextSequence()
+      return
+    end
+    
     if ( set:isSequencesTheSame(id)) then
       set.numSequence = set.numSequence + 1
       set.userScore = set.userScore + 1
       set.ledPannel:setScore(set.userScore)
-      if #set.userSequence >= #set.randSequence then
-        timer.performWithDelay(500, function()
-            set.numSequence = 1
-            setTurnCallback( false )
-            set:insertRandomNumberToRandomSequence()
-            cleanSequence(set.userSequence)
-          end)
+      if ( isUserMoreRand() ) then
+        runNextSequence()
       end
     else
       if set.getScoreCallback() < set.userScore then
