@@ -140,16 +140,16 @@ function createUI(sceneGroup)
   sceneGroup:insert(guiGroup)
 end
 
-function InitGame()
-  game = gameOptions.new({buttons = buttons, ledPannel = ledPannel})
-  game:init()
-end
-
 function createGame(sceneGroup)
   createBackground(sceneGroup)
   createGrid(sceneGroup)
+  
+  game = gameOptions.new({buttons = buttons })
+  
   createUI(sceneGroup)
-  InitGame()
+  game.ledPannel = ledPannel
+  
+  game:init()
 end
 
 -- -----------------------------------------------------------------------------------

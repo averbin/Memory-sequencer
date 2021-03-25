@@ -7,6 +7,7 @@ local simpleSequencer = require( "simpleSequence" )
 local shapesSequencer = require( "shapeSequence" )
 local loadsave = require( "loadsave" )
 local ledPannel = require( "ledPannel" )
+local settings = require( "settings" )
 
 game = 
 {
@@ -58,24 +59,31 @@ function game.new(options)
   
   -- Loading score from previous session.
   local function setScoreToPannel( score )
-    set.ledPannel:setScore(score)
-    set.ledPannel:setState("Start")
+    if set.ledPannel and score then
+      set.ledPannel:setScore( score )
+      set.ledPannel:setState("Start")
+    end
   end
   
   function set:loadScore()
     game.scores = loadsave.loadTable( "settings.json" )
     if game.scores and game.scores[game.type] then
       self.score = game.scores[game.type]
+      if game.scores.isVibration ~= nil and game.scores.isSound ~= nil then
+        settings.isVibrationOn = game.scores.isVibration
+        settings.isSoundOn = game.scores.isSound
+      end
     end
   end
   
   function set:saveScore()
     game.scores[game.type] = self.score
+    game.scores.isVibration = settings.isVibrationOn
+    game.scores.isSound = settings.isSoundOn
     loadsave.saveTable( game.scores, "settings.json")
   end
   
   function set:init()
-    self:loadScore() 
     setScoreToPannel(self.score)
     
     local options = 
@@ -117,6 +125,8 @@ function game.new(options)
   function set:stopLoop()
     self.sequencer:stop()
   end
+  
+  set:loadScore()
 
   return set
 end
