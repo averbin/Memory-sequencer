@@ -180,9 +180,9 @@ function simpleSequence.new( options )
   end
   
   function set:stop()
-    set:cleanGame()
+    self:cleanGame()
 
-    if set.activatedTimer then
+    if self.activatedTimer and self.activatedTimer._expired == false then
       timer.cancel(set.activateTimer)
     end
   end
