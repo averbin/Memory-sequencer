@@ -21,10 +21,11 @@ function simpleSequence.new( options )
   set.setScoreCallback = options.setScoreCallback     or {}
   set.getScoreCallback = options.getScoreCallback     or {}
   set.userScore        = 0
-  set.numSequence      = 1
+  set.numSequence      = 0
   set.randSequence     = {}
   set.userSequence     = {}
-  set.activateTimer    = nil
+  set.activatedTimer   = nil
+  set.timerDelay       = 1000
   
   -- this function called 
   -- First when do reset a game after clear a sequence.
@@ -33,6 +34,7 @@ function simpleSequence.new( options )
   function set:insertRandomNumberToRandomSequence()
     local var = math.random(#self.buttons)
     table.insert(self.randSequence, var)
+    self.numSequence = #self.randSequence
   end
   
   -- Called after user press a button.
@@ -50,18 +52,23 @@ function simpleSequence.new( options )
   -- This is the main function with should be run it when we create board
   -- And when we do reset of the game.
   function showSequence( event )
-    if isPlayerTurnCallback() == false then
-      local thisRect = set.buttons[set.randSequence[set.numSequence]]
-      if set.numSequence <= #set.randSequence then
-        thisRect:sequenceBlinking()
-        set.numSequence = set.numSequence + 1
-        set.ledPannel:setState("Play")
-      else
-        setTurnCallback( true )
-        set.numSequence = 1
-        set.ledPannel:setState("Record")
-      end
+    set.numSequence = event.count
+    local thisRect = set.buttons[set.randSequence[set.numSequence]]
+    if set.numSequence <= #set.randSequence then
+      thisRect:sequenceBlinking()
+      set.ledPannel:setState("Play")
     end
+    
+    if set.numSequence >= #set.randSequence then
+      setTurnCallback( true )
+      set.numSequence = 1
+    end
+  end
+  
+  function completeSequence( event )
+    setTurnCallback( true )
+    set.numSequence = 0
+    set.ledPannel:setState("Record")
   end
   
   -- Clear array of numbers which is store in sequences.
@@ -81,7 +88,7 @@ function simpleSequence.new( options )
     
     setTurnCallback( false )
     set.userScore = 0
-    set.numSequence = 1
+    set.numSequence = 0
     set.ledPannel:setScore(set.userScore)
     set.ledPannel:setState("Reset")
     
@@ -93,14 +100,12 @@ function simpleSequence.new( options )
   end
   
   function set:resetGame()
-    set:cleanGame()
-    set:insertRandomNumberToRandomSequence()
+    self:cleanGame()
+    self:insertRandomNumberToRandomSequence()
+    self.timerDelay = 1000
     
-    if set.activateTimer then
-      timer.resume(set.activateTimer)
-    else
-      set.activateTimer = timer.performWithDelay( 1000, showSequence, 0)
-    end
+    self.activatedTimer = timer.performWithDelay( self.timerDelay, showSequence, #self.randSequence)
+
   end
   
   function set:blinkRepeadly()
@@ -111,18 +116,20 @@ function simpleSequence.new( options )
   end
   
   function set:finish()
+    setTurnCallback( false )
     local missedButton = set:getButtonFromSequence(set.randSequence, set.numSequence)
     local playerButton = set:getButtonFromSequence(set.userSequence, set.numSequence)
     playerButton:cancel()
     playerButton:switchOn()
     transition.to(missedButton, {
-        iterations = 4, 
+        iterations = 3, 
         time = 1000, 
         onComplete = function() 
           playerButton:switchOn() 
           set.ledPannel:setState("Start")
           set:blinkRepeadly() 
           set.endGameCallback() 
+          set.numSequence = 0
         end,
         onRepeat = function() missedButton:sequenceBlinking() end
       }
@@ -130,25 +137,22 @@ function simpleSequence.new( options )
   end
   
   local function isUserMoreRand()
-    return #set.userSequence >= #set.randSequence
+    return #set.userSequence == #set.randSequence
   end
   
   local function runNextSequence()
-    timer.performWithDelay(500, function()
-        set.numSequence = 1
-        setTurnCallback( false )
-        set:insertRandomNumberToRandomSequence()
-        cleanSequence(set.userSequence)
-      end)
+    setTurnCallback( false )
+    set.numSequence = 0
+    set:insertRandomNumberToRandomSequence()
+    cleanSequence(set.userSequence)
+    set.timerDelay = set.timerDelay - 1
+    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, #set.randSequence)
   end
   
-  function gameCallbackEvent( id )
+  function gameCallbackEvent( button )
+    local id = tonumber(button.id)
     table.insert(set.userSequence, id)
-    if ( #set.userSequence > #set.randSequence ) then
-      runNextSequence()
-      return
-    end
-    
+    button:blink()
     if ( set:isSequencesTheSame(id)) then
       set.numSequence = set.numSequence + 1
       set.userScore = set.userScore + 1
@@ -160,7 +164,6 @@ function simpleSequence.new( options )
       if set.getScoreCallback() < set.userScore then
         set.setScoreCallback(set.userScore)
       end
-      timer.pause( set.activateTimer )
 
       set:finish()
     end
@@ -179,7 +182,7 @@ function simpleSequence.new( options )
   function set:stop()
     set:cleanGame()
 
-    if set.activateTimer then
+    if set.activatedTimer then
       timer.cancel(set.activateTimer)
     end
   end

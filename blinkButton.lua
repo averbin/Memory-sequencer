@@ -31,6 +31,10 @@ function blinkButton.new( options )
   
   local function handleButtonEvent( target )
     if game.isPlayer then
+      if gameCallbackEvent then
+        gameCallbackEvent(set)
+      end
+      --[[
       if game.type == 'shapes' then
         if set.insideRect.alpha <= 0.1 then 
           set:switchOn()
@@ -44,6 +48,7 @@ function blinkButton.new( options )
       if gameCallbackEvent then
         gameCallbackEvent(tonumber(set.id))
       end
+      ]]--
     end
   end
   
