@@ -13,15 +13,21 @@ game =
 {
   isPlayer = false,
   type = "", -- "four", "nine", "pairs", "shapes"
-  scores = 
-  {
-    [ "four" ]   = 0,
-    [ "nine" ]   = 0,
-    [ "pairs" ]  = 0,
-    [ "shapes" ] = 0
-  },
+
   rows = 0,
   columns = 0,
+  store = 
+  {   
+    scores = 
+    {
+      [ "four" ]   = 0,
+      [ "nine" ]   = 0,
+      [ "pairs" ]  = 0,
+      [ "shapes" ] = 0
+    },
+    isVibrationOn = false,
+    isSoundOn = false, 
+  },
 }
 
 function game.new(options)
@@ -66,21 +72,28 @@ function game.new(options)
   end
   
   function set:loadScore()
-    game.scores = loadsave.loadTable( "settings.json" )
-    if game.scores and game.scores[game.type] then
-      self.score = game.scores[game.type]
-      if game.scores.isVibration ~= nil and game.scores.isSound ~= nil then
-        settings.isVibrationOn = game.scores.isVibration
-        settings.isSoundOn = game.scores.isSound
+    local store = loadsave.loadTable( "settings.json" )
+    --TODO: remove additional checks after application will be installed on device.
+    if not store or (store and store[game.type]) then
+      return
+    end
+    
+    game.store = store
+    
+    if game.store.scores and game.store.scores[game.type] then
+      self.score = game.store.scores[game.type]
+      if game.store.isVibration ~= nil and game.store.isSound ~= nil then
+        settings.isVibrationOn = game.store.isVibration
+        settings.isSoundOn = game.store.isSound
       end
     end
   end
   
   function set:saveScore()
-    game.scores[game.type] = self.score
-    game.scores.isVibration = settings.isVibrationOn
-    game.scores.isSound = settings.isSoundOn
-    loadsave.saveTable( game.scores, "settings.json")
+    game.store.scores[game.type] = self.score
+    game.store.isVibration = settings.isVibrationOn
+    game.store.isSound = settings.isSoundOn
+    loadsave.saveTable( game.store, "settings.json")
   end
   
   function set:init()
