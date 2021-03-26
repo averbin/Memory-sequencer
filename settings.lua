@@ -98,7 +98,7 @@ function settings.new( options )
       vibrationCheckBox.y = y
       vibrationCheckBox.isVisible = false
       
-      group:insert( soundCheckBox )
+      group:insert( vibrationCheckBox )
     end
   end
 

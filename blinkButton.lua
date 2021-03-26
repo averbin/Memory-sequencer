@@ -44,10 +44,6 @@ function blinkButton.new( options )
       else
         set:blink()
       end
-      set:vibrate()
-      if gameCallbackEvent then
-        gameCallbackEvent(tonumber(set.id))
-      end
       ]]--
     end
   end

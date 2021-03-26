@@ -153,6 +153,7 @@ function simpleSequence.new( options )
     local id = tonumber(button.id)
     table.insert(set.userSequence, id)
     button:blink()
+    button:vibrate()
     if ( set:isSequencesTheSame(id)) then
       set.numSequence = set.numSequence + 1
       set.userScore = set.userScore + 1

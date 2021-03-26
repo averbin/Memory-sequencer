@@ -73,8 +73,7 @@ function game.new(options)
   
   function set:loadScore()
     local store = loadsave.loadTable( "settings.json" )
-    --TODO: remove additional checks after application will be installed on device.
-    if not store or (store and store[game.type]) then
+    if not store then
       return
     end
     
