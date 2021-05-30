@@ -52,6 +52,7 @@ function simpleSequence.new( options )
   -- This is the main function with should be run it when we create board
   -- And when we do reset of the game.
   function showSequence( event )
+    print("Count : " .. event.count )
     set.numSequence = event.count
     local thisRect = set.buttons[set.randSequence[set.numSequence]]
     if set.numSequence <= #set.randSequence then
@@ -59,9 +60,10 @@ function simpleSequence.new( options )
       set.ledPannel:setState("Play")
     end
     
-    if set.numSequence >= #set.randSequence then
+    if set.numSequence > #set.randSequence then
       setTurnCallback( true )
       set.numSequence = 1
+      set.ledPannel:setState("Record")
     end
   end
   
@@ -104,7 +106,7 @@ function simpleSequence.new( options )
     self:insertRandomNumberToRandomSequence()
     self.timerDelay = 1000
     
-    self.activatedTimer = timer.performWithDelay( self.timerDelay, showSequence, #self.randSequence)
+    self.activatedTimer = timer.performWithDelay( self.timerDelay, showSequence, #self.randSequence+1)
 
   end
   
@@ -146,7 +148,7 @@ function simpleSequence.new( options )
     set:insertRandomNumberToRandomSequence()
     cleanSequence(set.userSequence)
     set.timerDelay = set.timerDelay - 1
-    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, #set.randSequence)
+    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, #set.randSequence + 1)
   end
   
   function gameCallbackEvent( button )
@@ -184,7 +186,7 @@ function simpleSequence.new( options )
     self:cleanGame()
 
     if self.activatedTimer and self.activatedTimer._expired == false then
-      timer.cancel(set.activateTimer)
+      timer.cancel(self.activateTimer)
     end
   end
 
