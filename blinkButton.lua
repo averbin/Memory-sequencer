@@ -34,17 +34,14 @@ function blinkButton.new( options )
       if gameCallbackEvent then
         gameCallbackEvent(set)
       end
-      --[[
+      
       if game.type == 'shapes' then
         if set.insideRect.alpha <= 0.1 then 
           set:switchOn()
         else
           set:switchOff()
         end
-      else
-        set:blink()
       end
-      ]]--
     end
   end
   

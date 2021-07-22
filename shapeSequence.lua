@@ -77,7 +77,7 @@ function shapeSequence.new( options )
   end
   
   function set:cleanGame()
-    --cleanSequence(self.randSequence)
+    cleanSequence(self.randSequence)
     cleanSequence(self.userSequence)
     
     setTurnCallback( false )
@@ -139,35 +139,37 @@ function shapeSequence.new( options )
   end
   
   function set:resetGame()
-    set:cleanGame()
-    set:insertRandomShape()
+    self:cleanGame()
+    self:insertRandomShape()
     
-    if set.activateTimer then
+    if self.activateTimer then
       timer.resume(set.activateTimer)
     else
-      --set.activateTimer = timer.performWithDelay( 1000, showSequence, 0)
+      self.activateTimer = timer.performWithDelay( 1000, showSequence, 0)
     end
-    set:nextStep()
+    self:nextStep()
   end
   
   function set:start()
-    self.resetGame()
+    self:resetGame()
   end
   
   function set:stop()
-    set:cleanGame()
+    self:cleanGame()
 
-    if set.activateTimer then
-      timer.cancel(set.activateTimer)
+    if self.activatedTimer and self.activatedTimer._expired == false then
+      timer.cancel(self.activateTimer)
     end
   end
   
   function set:finish()
     print("Call function finish")
+    setTurnCallback( false )
   end
 
-  function set:findInRandomSequence( id )
-    for i = 0, #self.randSequence do
+  function set:findInRandomSequence( button )
+    local id = tonumber(button.id)
+    for i = 1, #self.randSequence do
       if id == self.randSequence[i] then
         return true
       end
@@ -175,12 +177,15 @@ function shapeSequence.new( options )
     return false
   end
 
-  local function gameCallbackEvent( id )
-    if set:findInRandomSequence(id) then
-      table.insert(set.userSequence, id)
+  local function gameCallbackEvent( button )
+    if set:findInRandomSequence(button) then
+      table.insert(set.userSequence, button)
+      button:vibrate()
       if #set.userSequence == #set.randSequence then
         setTurnCallback( false )
         set.numSequence = #set.randSequence + 1
+        set.userScore = set.userScore + 1
+        set.ledPannel:setScore(set.userScore)
         transition.to({}, { delay = 500, 
           onComplete = function()
               for i = 1, #set.randSequence do 

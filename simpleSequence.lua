@@ -138,10 +138,6 @@ function simpleSequence.new( options )
     )
   end
   
-  local function isUserMoreRand()
-    return #set.userSequence == #set.randSequence
-  end
-  
   local function runNextSequence()
     setTurnCallback( false )
     set.numSequence = 0
@@ -160,7 +156,7 @@ function simpleSequence.new( options )
       set.numSequence = set.numSequence + 1
       set.userScore = set.userScore + 1
       set.ledPannel:setScore(set.userScore)
-      if ( isUserMoreRand() ) then
+      if ( #set.userSequence == #set.randSequence ) then
         runNextSequence()
       end
     else
