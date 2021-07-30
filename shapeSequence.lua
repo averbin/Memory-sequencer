@@ -27,6 +27,7 @@ function shapeSequence.new( options )
   set.randSequence     = {}
   set.userSequence     = {}
   set.activateTimer    = nil
+  set.timerDelay       = 1000
   
   function isExistsElement ( array, element )
     for i = 1, #array do
@@ -37,38 +38,17 @@ function shapeSequence.new( options )
     return false
   end
   
-  function isDirectionCorrect ( array, columns, rows, element )
-    local x = element % columns
-    if element > columns * rows then
-      return false
-    elseif element < 0 then
-      return false
-    elseif x > rows then
-      return false
-    elseif isExistsElement( array, element) then
-      return false
-    elseif element == 0 then
-      return false
-    end
-    return true
-  end
-  
-  function set:insertRandomShape()
-    local direction = 0
-    local lastElement = 0
-    if #self.randSequence == 0 then
-      local var = math.random(#self.buttons)
-      table.insert(self.randSequence, var)
-    else
-      while true do
-        lastElement = math.random(#self.buttons)
-        if isDirectionCorrect(self.randSequence, self.columns, self.rows, lastElement) then
+  function set:insertSequence()
+    for i = 1, self.numSequence do
+      while true do 
+        local var = math.random(#self.buttons)
+        if not isExistsElement(self.randSequence, var) then
+          table.insert(self.randSequence, var)
           break
         end
       end
-
-      table.insert(self.randSequence, lastElement)
     end
+    
     print(self.randSequence)
   end
   
@@ -102,50 +82,45 @@ function shapeSequence.new( options )
   end
   
   function hideButtons()
-    print("--== Hide buttons ==--")
-
     for i = 1, #set.randSequence do 
-      print("hide button: " .. set.randSequence[i])
       set.buttons[set.randSequence[i]]:switchOff()
     end
     set.ledPannel:setState("Record")
-    setTurnCallback( true )
   end
   
-  function showSequence()
+  function hideAllButtons()
+    for i = 1, #set.buttons do 
+      set.buttons[i]:switchOff()
+    end
+    print("finished")
+  end
+  
+  function showSequence( event )
     if isPlayerTurnCallback() == false then
       transition.to(set, 
         {
           time = 1000,
           onStart = showButtons,
-          onComplete = hideButtons,
+          onComplete = function() hideButtons(); setTurnCallback( true ) end,
           iterations = 1
         }
       )
     end
   end
   
-  function set:setNexStep()
-    cleanSequence( self.randSequence )
-    cleanSequence( self.userSequence )
-    
-    for i = 1, self.numSequence do
-      self:insertRandomShape()
-    end
-  end
-  
   function set:nextStep()
-    transition.to( {}, { time = 1000, onComplete = function() showSequence() end })
+    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, #set.randSequence + 1)
   end
   
   function set:resetGame()
     self:cleanGame()
-    self:insertRandomShape()
+    self:insertSequence()
     
     if self.activateTimer then
       timer.resume(set.activateTimer)
     else
-      self.activateTimer = timer.performWithDelay( 1000, showSequence, 0)
+      self.timerDelay = 1000
+      self.activateTimer = timer.performWithDelay( self.timerDelay, showSequence, 0)
     end
     self:nextStep()
   end
@@ -162,9 +137,13 @@ function shapeSequence.new( options )
     end
   end
   
+  -- Get button from list
+  function set:getButtonFromSequence(sequence, buttonID)
+    return self.buttons[sequence[buttonID]]
+  end
+  
   function set:finish()
     print("Call function finish")
-    setTurnCallback( false )
   end
 
   function set:findInRandomSequence( button )
@@ -176,28 +155,46 @@ function shapeSequence.new( options )
     end
     return false
   end
+  
+  local function runNextSequence()
+    setTurnCallback( false )
+    cleanSequence(set.randSequence)
+    cleanSequence(set.userSequence)
+    hideAllButtons()
+    
+    set:insertSequence()
+    set.timerDelay = set.timerDelay - 1
+    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, set.numSequence + 1)
+  end
 
   local function gameCallbackEvent( button )
-    if set:findInRandomSequence(button) then
-      table.insert(set.userSequence, button)
-      button:vibrate()
-      if #set.userSequence == #set.randSequence then
-        setTurnCallback( false )
-        set.numSequence = #set.randSequence + 1
+    local id = tonumber(button.id)
+    if ( not isExistsElement(set.userSequence, id) ) then
+      table.insert(set.userSequence, id)
+      button:switchOn()
+    else
+      for i = 1, #set.userSequence do
+        if set.userSequence[i] == id then
+          table.remove( set.userSequence, i)
+          break
+        end
+      end
+      button:switchOff()
+      return
+    end
+    button:vibrate()
+    
+    if ( isExistsElement(set.randSequence, id)) then
+      if ( #set.userSequence == #set.randSequence ) then
+        set.numSequence = set.numSequence + 1
         set.userScore = set.userScore + 1
         set.ledPannel:setScore(set.userScore)
-        transition.to({}, { delay = 500, 
-          onComplete = function()
-              for i = 1, #set.randSequence do 
-                set.buttons[set.randSequence[i]]:switchOff()
-              end
-              set:setNexStep()
-              set:nextStep()
-            end })
-        print("finished loop")
+        transition.to( set, { delay = 500, onComplete = function() runNextSequence() end })
       end
     else
-      -- TODO : finish the game
+      if set.getScoreCallback() < set.userScore then
+        set.setScoreCallback(set.userScore)
+      end
       set:finish()
     end
   end

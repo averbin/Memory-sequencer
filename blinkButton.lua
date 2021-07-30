@@ -34,14 +34,6 @@ function blinkButton.new( options )
       if gameCallbackEvent then
         gameCallbackEvent(set)
       end
-      
-      if game.type == 'shapes' then
-        if set.insideRect.alpha <= 0.1 then 
-          set:switchOn()
-        else
-          set:switchOff()
-        end
-      end
     end
   end
   
@@ -98,6 +90,7 @@ function blinkButton.new( options )
   function set:switchOn()
     self.isTurnOn = true
     self.insideRect.alpha = 1.0
+    print("Pressed: " .. self.id)
     --[[
     transition.to(self.insideRect, 
       { 
