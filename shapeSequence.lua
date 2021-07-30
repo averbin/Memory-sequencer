@@ -120,7 +120,7 @@ function shapeSequence.new( options )
       timer.resume(set.activateTimer)
     else
       self.timerDelay = 1000
-      self.activateTimer = timer.performWithDelay( self.timerDelay, showSequence, 0)
+      self.activateTimer = timer.performWithDelay( self.timerDelay, showSequence, 1)
     end
     self:nextStep()
   end
@@ -164,7 +164,7 @@ function shapeSequence.new( options )
     
     set:insertSequence()
     set.timerDelay = set.timerDelay - 1
-    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, set.numSequence + 1)
+    set.activatedTimer = timer.performWithDelay( set.timerDelay, showSequence, 1)
   end
 
   local function gameCallbackEvent( button )
