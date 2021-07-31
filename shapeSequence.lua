@@ -23,7 +23,7 @@ function shapeSequence.new( options )
   set.rows             = options.rows                 or 0
   set.columns          = options.columns              or 0
   set.userScore        = 0
-  set.numSequence      = 0
+  set.numSequence      = 1
   set.randSequence     = {}
   set.userSequence     = {}
   set.activateTimer    = nil
@@ -142,8 +142,33 @@ function shapeSequence.new( options )
     return self.buttons[sequence[buttonID]]
   end
   
+  function set:blinkRepeadly()
+    for i = 1, #self.buttons do
+      self.buttons[i]:cancel()
+      self.buttons[i]:blinkingRepeatedly()
+    end
+  end
+  
   function set:finish()
     print("Call function finish")
+    setTurnCallback( false )
+    local missedButton = set:getButtonFromSequence(set.randSequence, #set.randSequence)
+    local playerButton = set:getButtonFromSequence(set.userSequence, #set.userSequence)
+    playerButton:cancel()
+    playerButton:switchOn()
+    transition.to(missedButton, {
+        iterations = 3, 
+        time = 1000, 
+        onComplete = function() 
+          playerButton:switchOn() 
+          set.ledPannel:setState("Start")
+          set:blinkRepeadly() 
+          set.endGameCallback() 
+          set.numSequence = 1
+        end,
+        onRepeat = function() missedButton:sequenceBlinking() end
+      }
+    )
   end
 
   function set:findInRandomSequence( button )
