@@ -149,11 +149,33 @@ function shapeSequence.new( options )
     end
   end
   
+  function set:findLastLostElement( randSequence, userSequence)
+    local missedIndex = nil
+    
+    for i = 1, #userSequence do
+      local found = false
+      for j = 1, #randSequence do
+        if randSequence[j] == userSequence[i] then
+          found = true
+          table.remove(randSequence, j)
+          break
+        else
+          missedIndex = j
+        end
+      end
+      if not found then
+        break
+      end
+    end
+    
+    return missedIndex
+  end
+  
   function set:finish()
     print("Call function finish")
     setTurnCallback( false )
-    local missedButton = set:getButtonFromSequence(set.randSequence, #set.randSequence)
-    local playerButton = set:getButtonFromSequence(set.userSequence, #set.userSequence)
+    local missedButton = self:getButtonFromSequence(self.randSequence, self:findLastLostElement(self.randSequence, self.userSequence))
+    local playerButton = self:getButtonFromSequence(self.userSequence, #self.userSequence)
     playerButton:cancel()
     playerButton:switchOn()
     transition.to(missedButton, {
@@ -214,6 +236,10 @@ function shapeSequence.new( options )
         set.numSequence = set.numSequence + 1
         set.userScore = set.userScore + 1
         set.ledPannel:setScore(set.userScore)
+        if set.numSequence >= 25 then
+          set:resetGame()
+          return
+        end
         transition.to( set, { delay = 500, onComplete = function() runNextSequence() end })
       end
     else
