@@ -48,8 +48,6 @@ function shapeSequence.new( options )
         end
       end
     end
-    
-    print(self.randSequence)
   end
   
   local function cleanSequence( sequence )
@@ -92,7 +90,6 @@ function shapeSequence.new( options )
     for i = 1, #set.buttons do 
       set.buttons[i]:switchOff()
     end
-    print("finished")
   end
   
   function showSequence( event )
@@ -142,6 +139,16 @@ function shapeSequence.new( options )
     return self.buttons[sequence[buttonID]]
   end
   
+  function set:getButtonsFromSequence(sequence, buttonIDs)
+    local missedButtons = {}
+    
+    for i = 1, #buttonIDs do
+      table.insert(missedButtons, self.buttons[buttonIDs[i]])
+    end
+    
+    return missedButtons
+  end
+  
   function set:blinkRepeadly()
     for i = 1, #self.buttons do
       self.buttons[i]:cancel()
@@ -149,36 +156,42 @@ function shapeSequence.new( options )
     end
   end
   
-  function set:findLastLostElement( randSequence, userSequence)
-    local missedIndex = nil
+  function set:setDifference( randSequence, userSequence )
+    local diff = {}
+    local z = 1
     
-    for i = 1, #userSequence do
-      local found = false
-      for j = 1, #randSequence do
-        if randSequence[j] == userSequence[i] then
-          found = true
-          table.remove(randSequence, j)
-          break
-        else
-          missedIndex = j
-        end
-      end
-      if not found then
-        break
-      end
+    if userSequence[1] == userSequence[#userSequence] then
+      diff = table.copy(randSequence)
+      return diff
     end
     
-    return missedIndex
+    for x = 1 , #randSequence do
+      local found = false
+      
+      for y = 1 , #userSequence do
+        if randSequence[x] == userSequence[y] then
+          found = true
+        end
+      end
+      
+      if not found then
+        diff[z] = randSequence[x]
+        z = z + 1
+      end
+      
+    end
+    
+    return diff
   end
   
   function set:finish()
-    print("Call function finish")
     setTurnCallback( false )
-    local missedButton = self:getButtonFromSequence(self.randSequence, self:findLastLostElement(self.randSequence, self.userSequence))
+    local diff = self:setDifference(self.randSequence, self.userSequence)
+    local missedButtons = self:getButtonsFromSequence(self.randSequence, diff)
     local playerButton = self:getButtonFromSequence(self.userSequence, #self.userSequence)
     playerButton:cancel()
     playerButton:switchOn()
-    transition.to(missedButton, {
+    transition.to(missedButtons, {
         iterations = 3, 
         time = 1000, 
         onComplete = function() 
@@ -188,7 +201,11 @@ function shapeSequence.new( options )
           set.endGameCallback() 
           set.numSequence = 1
         end,
-        onRepeat = function() missedButton:sequenceBlinking() end
+        onRepeat = function()
+          for i = 1, #missedButtons do
+            missedButtons[i]:sequenceBlinking()
+          end
+        end
       }
     )
   end

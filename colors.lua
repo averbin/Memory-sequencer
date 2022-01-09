@@ -31,11 +31,15 @@ colors =
   },
   ["shapes"] = 
   {
-    {162, 190, 245, 1.0}
+    {162, 190, 245, 1.0},
+    { 70, 142, 218, 1.0},
+    { 218, 190, 70, 1.0}, 
+    { 218, 102, 70, 1.0}, 
+    { 104, 218, 70, 1.0}, 
   },
 }
 
-function convertRGBtoRange( tab )
+function d8gitToArithmetic( tab )
   local convertedColor= {}
   convertedColor[1] = tab[1] / 255
   convertedColor[2] = tab[2] / 255

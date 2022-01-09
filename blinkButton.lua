@@ -90,7 +90,6 @@ function blinkButton.new( options )
   function set:switchOn()
     self.isTurnOn = true
     self.insideRect.alpha = 1.0
-    print("Pressed: " .. self.id)
     --[[
     transition.to(self.insideRect, 
       { 
@@ -107,9 +106,6 @@ function blinkButton.new( options )
   end
   
   function set:switchOff()
-    if self.isTurnOn == false then
-      print("switchOff id : " .. self.id)
-    end 
     self.isTurnOn = false
     self.insideRect.alpha = 0.1
     --[[

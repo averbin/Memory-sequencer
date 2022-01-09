@@ -85,21 +85,15 @@ function grid.new(options)
   -- @param sideMargin - distance between general rect and element
   -- @param elementsMargin - distance between elements
   function calculateRectangleSide(size, count, sideMargin, elementsMargin)
-    print("Size: " .. size)
-    print("count: " .. count)
-    print("side margin: " .. sideMargin)
-    print("Distance between elements: " .. elementsMargin)
     -- size without margin and size between elements
     local generalSize = size - sideMargin - ((count - 1) * elementsMargin) - sideMargin
     local rectSide = generalSize / count
-    print("((size - sideMargin - ((count - 1) * elementsMargin) - sideMargin) / count) Rect width: " .. rectSide)
     return rectSide
   end
 
   --~ @param Calculate next position of element base on x or y + side size + side margin
   function nextPosition(pos, sideSize, sideMargin)
     local result = pos + sideSize + sideMargin
-    print("NextPosition: pos + sideSize + sideMargin = " .. result)
     return result
   end
   
@@ -122,21 +116,15 @@ function grid.new(options)
         for j = 1, columns do
           local color = {}
           if typeOfGame == "shapes" then
-            color = convertRGBtoRange(colors[typeOfGame][1])
+            color = d8gitToArithmetic(colors[typeOfGame][1])
           else
-            color = convertRGBtoRange(colors[typeOfGame][count])
+            color = d8gitToArithmetic(colors[typeOfGame][count])
           end
           
           local button = createButton(group, tostring(count), 
           xPos, yPos, rectWidth, rectHeight, "roundedRect",
           cornerRadius, color, gameCallbackEvent)
         
-          --local element = display.newRect(
-          --  group,
-          --  xPos,
-          --  yPos,
-          --  rectWidth,
-          --  rectHeight)
           button.anchorX = anchorX
           button.anchorY = anchorY
           xPos = nextPosition(button.x, rectWidth, columnMargin)
