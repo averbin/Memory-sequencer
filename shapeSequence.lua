@@ -236,20 +236,12 @@ function shapeSequence.new( options )
     if ( not isExistsElement(set.userSequence, id) ) then
       table.insert(set.userSequence, id)
       button:switchOn()
-    else
-      for i = 1, #set.userSequence do
-        if set.userSequence[i] == id then
-          table.remove( set.userSequence, i)
-          break
-        end
-      end
-      button:switchOff()
-      return
+      button:vibrate()
     end
-    button:vibrate()
     
     if ( isExistsElement(set.randSequence, id)) then
-      if ( #set.userSequence == #set.randSequence ) then
+      if( #set.randSequence == #set.userSequence ) then
+        setTurnCallback( false )
         set.numSequence = set.numSequence + 1
         set.userScore = set.userScore + 1
         set.ledPannel:setScore(set.userScore)
