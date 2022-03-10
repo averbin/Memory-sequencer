@@ -70,10 +70,12 @@ function scene:create( event )
   ninthButton.fill = paint
   ninthButton:addEventListener("tap", gotoNineth)
   
+  paint.filename = "img/shape_board.png"
   local shapesButton = display.newRoundedRect(sceneGroup, centerX + 50 + margin, centerY + 50 + margin, rectWidth, rectHeight, 4)
   shapesButton:setFillColor(0.1, 0.1, 0.1, 1)
   shapesButton:setStrokeColor(0.8, 0.8, 1, 1)
   shapesButton.strokeWidth = 2
+  shapesButton.fill = paint
   shapesButton:addEventListener("tap", gotoShapes)
   
 end
