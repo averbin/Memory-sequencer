@@ -64,6 +64,8 @@ function createGrid( sceneGroup )
     typeOfGame = gameOptions.type
   } 
   
+  print("Options: x " .. options.x .. " y " .. options.y)
+  
   if gameOptions.type == "four" then
     options.rows = 2
     options.columns = 2
@@ -72,6 +74,9 @@ function createGrid( sceneGroup )
   elseif gameOptions.type == "nine" then
     options.rows = 3
     options.columns = 3
+  elseif gameOptions.type == "pairs" then
+    options.rows = 2
+    options.columns = 2
   elseif gameOptions.type == "shapes" then
     options.rows = 5
     options.columns = 5
@@ -109,7 +114,7 @@ function createUI(sceneGroup)
   ledPannel:setScore(0)
   ledPannel:setWidth( 420 )
   
-  gameGrid.y = 30
+  --gameGrid.y = 30
   -- Create back button
   local paint = 
   {

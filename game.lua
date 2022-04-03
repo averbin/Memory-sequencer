@@ -5,6 +5,7 @@
 
 local simpleSequencer = require( "simpleSequence" ) 
 local shapesSequencer = require( "shapeSequence" )
+local pairsSequencer = require( "pairsSequence" )
 local loadsave = require( "loadsave" )
 local ledPannel = require( "ledPannel" )
 local settings = require( "settings" )
@@ -115,6 +116,8 @@ function game.new(options)
       self.sequencer = simpleSequencer.new(options)
     elseif game.type == "shapes" then
       self.sequencer = shapesSequencer.new(options)
+    else --pairs
+      self.sequencer = pairsSequencer.new(options)
     end
   end
   

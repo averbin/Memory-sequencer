@@ -102,38 +102,107 @@ function grid.new(options)
     return pos - (side * anchor) + (sideRect * anchor) + sideMargin 
   end
   
+  function group:createShapeButton()
+    return d8gitToArithmetic(colors[typeOfGame][1])
+  end
+  
+  function shuffle(tbl)
+    for i = #tbl, 2, -1 do
+      local j = math.random(i)
+      tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+    return tbl
+  end
+  
+  function group:createPair()
+    local rectWidth = calculateRectangleSide(width, columns, sideMargin, columnMargin) -- columnSide
+    local rectHeight = calculateRectangleSide(height, rows, sideMargin, rowMargin) -- rowSide
+    
+    local count = 1
+    local pairButtons = {}
+    local nextColor = 1
+    local colorCount = 1
+    for i = 1, rows do
+      for j = 1, columns do
+        if ( nextColor % 2 ) == 0 then
+          nextColor = nextColor + 1
+          count = count + 1
+        end
+        color = d8gitToArithmetic(colors[typeOfGame][nextColor])
+        local button = createButton(group, tostring(count), 
+        0, 0, rectWidth, rectHeight, "roundedRect",
+        cornerRadius, color, gameCallbackEvent)
+        
+        table.insert(pairButtons, button)
+      end 
+    end 
+    
+    pairButtons = shuffle(pairButtons)
+    
+    local yPos = postionUsingAnchor(y, height, anchorY, rectHeight, sideMargin)
+    local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
+    for i = 1, #pairButtons do
+      local button = pairButtons[i]
+      button:switchOn()
+      button.anchorX = anchorX
+      button.anchorY = anchorY
+      print("button x: " .. button.x .. " y:" .. button.y)
+      button.x = xPos
+      button.y = yPos
+      print("button x: " .. button.x .. " y:" .. button.y)
+      xPos = nextPosition(button.x, rectWidth, columnMargin)
+      yPos = button.y
+      table.insert(buttons, button)
+      --count = count + 1
+      yPos = nextPosition(yPos, rectHeight, rowMargin)
+    end
+  end
+  
   -- @Create grid
   function group:create()
     local rectWidth = calculateRectangleSide(width, columns, sideMargin, columnMargin) -- columnSide
     local rectHeight = calculateRectangleSide(height, rows, sideMargin, rowMargin) -- rowSide
     
-    if rows > 0 and columns > 0 then
-      local yPos = postionUsingAnchor(y, height, anchorY, rectHeight, sideMargin)
-      local count = 1
-      for i = 1, rows do
-        local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
-        -- Set position for columns.
-        for j = 1, columns do
-          local color = {}
-          if typeOfGame == "shapes" then
-            color = d8gitToArithmetic(colors[typeOfGame][1])
-          else
-            color = d8gitToArithmetic(colors[typeOfGame][count])
-          end
-          
-          local button = createButton(group, tostring(count), 
-          xPos, yPos, rectWidth, rectHeight, "roundedRect",
-          cornerRadius, color, gameCallbackEvent)
-        
-          button.anchorX = anchorX
-          button.anchorY = anchorY
-          xPos = nextPosition(button.x, rectWidth, columnMargin)
-          yPos = button.y
-          table.insert(buttons, button)
-          count = count + 1
-        end
-      yPos = nextPosition(yPos, rectHeight, rowMargin)
+    if typeOfGame == "pairs" then
+      self:createPair()
+      for i = 1, #buttons do
+        print("Button id: " .. buttons[i].id .. " x: " .. buttons[i].x .. " y: " .. buttons[i].y )
+        --print(buttons)
       end
+      return
+    end
+    
+    local yPos = postionUsingAnchor(y, height, anchorY, rectHeight, sideMargin)
+    local count = 1
+    for i = 1, rows do
+      local xPos = postionUsingAnchor(x, width, anchorX, rectWidth, sideMargin)
+      -- Set position for columns.
+      for j = 1, columns do
+        local color = {}
+        if typeOfGame == "shapes" then
+          color = self:createShapeButton()
+        elseif typeOfGame == "pairs" then
+          color = d8gitToArithmetic(colors[typeOfGame][count])
+          if ( count % 4 ) == 0 then
+            count = 0
+          end
+        else
+          color = d8gitToArithmetic(colors[typeOfGame][count])
+        end
+        
+        local button = createButton(group, tostring(count), 
+        xPos, yPos, rectWidth, rectHeight, "roundedRect",
+        cornerRadius, color, gameCallbackEvent)
+        
+        --button:switchOn()
+        button.anchorX = anchorX
+        button.anchorY = anchorY
+        xPos = nextPosition(button.x, rectWidth, columnMargin)
+        yPos = button.y
+        table.insert(buttons, button)
+        count = count + 1
+      end
+      yPos = nextPosition(yPos, rectHeight, rowMargin)
     end
   end
   

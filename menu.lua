@@ -14,7 +14,8 @@ local function gotoGameBoard()
 end
 
 local function gotoPairs()
-  
+  game.type = "pairs"
+  gotoGameBoard()
 end
 
 local function gotoFourth()
@@ -69,6 +70,13 @@ function scene:create( event )
   ninthButton.strokeWidth = 2
   ninthButton.fill = paint
   ninthButton:addEventListener("tap", gotoNineth)
+  
+  
+  local pairsButton = display.newRoundedRect(sceneGroup, centerX - 50 - margin, centerY + 50 + margin, rectWidth, rectHeight, 4)
+  pairsButton:setFillColor(0.1, 0.1, 0.1, 1)
+  pairsButton:setStrokeColor(0.8, 0.8, 1, 1)
+  pairsButton.strokeWidth = 2
+  pairsButton:addEventListener("tap", gotoPairs)
   
   paint.filename = "img/shape_board.png"
   local shapesButton = display.newRoundedRect(sceneGroup, centerX + 50 + margin, centerY + 50 + margin, rectWidth, rectHeight, 4)
