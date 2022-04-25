@@ -54,12 +54,12 @@ function grid.new(options)
     group = display.newGroup()
   end
 
-  gridField = display.newRect(group, x, y, width, height)
-  gridField.anchorX = anchorX
-  gridField.anchorY = anchorY
-  gridField:setFillColor(0.9, 0.1, 0.2)
-  gridField.isVisible = frameOn
-  group.gridField = gridField
+  local frame = display.newRect(group, x, y, width, height)
+  frame.anchorX = anchorX
+  frame.anchorY = anchorY
+  frame:setFillColor(0.9, 0.1, 0.2)
+  frame.isVisible = frameOn
+  group.frame = frame
   group.buttons = buttons
   
   -- @param size - General width / height
