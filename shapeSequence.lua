@@ -3,6 +3,7 @@
 -- shapeSequence.lua in this file you can find implementation of the game state and type.
 -- 
 -----------------------------------------------------------------------------------------
+local colors = require("colors")
 
 local clock = os.clock
 math.randomseed( os.time() )
@@ -261,6 +262,7 @@ function shapeSequence.new( options )
 
   function set:init()
     for i = 1, #set.buttons do
+      set.buttons[i]:setColor( d8gitToArithmetic(colors[game.type][1]) )
       set.buttons[i]:setCallback(gameCallbackEvent)
     end
   end

@@ -3,6 +3,7 @@
 -- simpleSequence.lua in this file you can find implementation of the game state and type.
 -- 
 -----------------------------------------------------------------------------------------
+local colors = require("colors")
 
 local clock = os.clock
 math.randomseed( os.time() )
@@ -170,6 +171,7 @@ function simpleSequence.new( options )
   
   local function init()
     for i = 1, #set.buttons do
+      set.buttons[i]:setColor( d8gitToArithmetic(colors[game.type][i]) )
       set.buttons[i]:setCallback(gameCallbackEvent)
     end
   end
