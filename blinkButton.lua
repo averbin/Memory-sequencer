@@ -41,7 +41,7 @@ function blinkButton.new( options )
     set.group = display.newGroup()
   end
 
-  local function createToolButton()
+  local function create()
     set.group.id = set.id
     local button = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
     button.id = set.id
@@ -83,6 +83,10 @@ function blinkButton.new( options )
     effects.vibrate()
   end
   
+  function set:setColor( color )
+    self.insideRect:setFillColor(unpack( color ))
+  end
+
   function set:setCallback( callback )
     gameCallbackEvent = callback
   end
@@ -123,8 +127,26 @@ function blinkButton.new( options )
     ]]
   end
 
-  createToolButton()
+  create()
   return set
+end
+
+function createBlinkButtonFunc(group, name, x, y, width, height, shape, cornerRadius, cellColor, gameCallbackEvent)
+  local newButton = blinkButton.new(
+    {
+      name = name,
+      x = x,
+      y = y,
+      width = width,
+      height = height,
+      cornerRadius = cornerRadius,
+      fillColor = cellColor or { 1,	1, 1, 1 },
+      strokeColor = { 0.8, 0.8, 1, 1 },
+      gameCallbackEvent = gameCallbackEvent
+    }
+  )
+  group:insert(newButton.group)
+  return newButton 
 end
 
 return blinkButton
