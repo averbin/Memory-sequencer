@@ -1,5 +1,7 @@
 composer = require("composer")
 game = require("game")
+screen = require( "screen" )
+local grid = require( "grid" )
 
 local screenWidth = display.actualContentWidth
 local screenHeight = display.actualContentHeight
@@ -10,7 +12,7 @@ local scene = composer.newScene()
 
 local function gotoGameBoard()
   composer.removeScene("gameBoard")
-	composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
+  composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
 end
 
 local function gotoPairs()
@@ -35,6 +37,15 @@ local function gotoShapes()
   gotoGameBoard()
 end
 
+function createMenuButtonFunc(group, name, x, y, width, height, shape, cornerRadius, cellColor, gameCallbackEvent)
+  local button = display.newRoundedRect( x, y, width, height, cornerRadius)
+  button:setFillColor(0.1, 0.1, 0.1, 1)
+  button:setStrokeColor(0.8, 0.8, 1, 1)
+  button.strokeWidth = 2
+  group:insert( button )
+  return button
+end
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -42,50 +53,63 @@ end
 -- create()
 function scene:create( event )
   local sceneGroup = self.view
-  local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screenWidth, screenHeight)
-    backgroundImage.x = centerX
-    backgroundImage.y = centerY
+  local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
+    backgroundImage.x = screen.x
+    backgroundImage.y = screen.y
   
   local rectWidth = 100
   local rectHeight = 100
   local margin = 10
-  
-  local paint = 
+  local screen = screen.new()
+  local side = screen:convertPersentToPixels( 75 )
+  print("side: " .. side)
+
+  local gridOptions = 
   {
-    type = "image",
-    filename = "img/fourth_board.png"
+    group = sceneGroup,
+    x = display.contentCenterX,
+    y = display.contentCenterY,
+    width = side,
+    height = side,
+    rows = 2,
+    columns = 2, 
+    sideMargin = 0,
+    rowMargin = 15,
+    columnMargin = 15,
+    frameOn = false,
+    cornerRadius = 4
   }
 
-  local forthButton = display.newRoundedRect(sceneGroup, centerX - 50 - margin, centerY - 50 - margin, rectWidth, rectHeight, 4)
-  forthButton:setFillColor(0.1, 0.1, 0.1, 1)
-  forthButton:setStrokeColor(0.8, 0.8, 1, 1)
-  forthButton.strokeWidth = 2
-  forthButton.fill = paint
-  forthButton:addEventListener("tap", gotoFourth)
+  local gameGrid = grid.new( gridOptions )
+  gameGrid:create( createMenuButtonFunc )
+  buttons = gameGrid:getButtons()
   
-  paint.filename = "img/ninth_board.png"
-  local ninthButton = display.newRoundedRect(sceneGroup, centerX + 50 + margin, centerY - 50 - margin, rectWidth, rectHeight, 4)
-  ninthButton:setFillColor(0.1, 0.1, 0.1, 1)
-  ninthButton:setStrokeColor(0.8, 0.8, 1, 1)
-  ninthButton.strokeWidth = 2
-  ninthButton.fill = paint
-  ninthButton:addEventListener("tap", gotoNineth)
-  
-  
-  local pairsButton = display.newRoundedRect(sceneGroup, centerX - 50 - margin, centerY + 50 + margin, rectWidth, rectHeight, 4)
-  pairsButton:setFillColor(0.1, 0.1, 0.1, 1)
-  pairsButton:setStrokeColor(0.8, 0.8, 1, 1)
-  pairsButton.strokeWidth = 2
-  pairsButton:addEventListener("tap", gotoPairs)
-  
-  paint.filename = "img/shape_board.png"
-  local shapesButton = display.newRoundedRect(sceneGroup, centerX + 50 + margin, centerY + 50 + margin, rectWidth, rectHeight, 4)
-  shapesButton:setFillColor(0.1, 0.1, 0.1, 1)
-  shapesButton:setStrokeColor(0.8, 0.8, 1, 1)
-  shapesButton.strokeWidth = 2
-  shapesButton.fill = paint
-  shapesButton:addEventListener("tap", gotoShapes)
-  
+  local paints = {
+    {
+      filename = "img/fourth_board.png",
+      gotoFunc = gotoFourth
+    }, -- Fourth button
+    {
+      filename = "img/ninth_board.png",
+      gotoFunc = gotoNineth
+    }, -- Nineth button
+    {
+      filename = "",
+      gotoFunc = gotoPairs
+    }, -- Pairs button
+    {
+      filename = "img/shape_board.png",
+      gotoFunc = gotoShapes
+    } -- Shape button
+  }
+
+  for i = 1, #buttons do
+    local button = buttons[i]
+    local paint = { type = "image", filename = paints[i].filename }
+    button.fill = paint
+    button:addEventListener("tap", paints[i].gotoFunc)
+  end
+
 end
  
 -- show()
