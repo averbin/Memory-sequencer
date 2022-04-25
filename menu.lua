@@ -56,19 +56,20 @@ function scene:create( event )
   local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
     backgroundImage.x = screen.x
     backgroundImage.y = screen.y
-  
+
   local rectWidth = 100
   local rectHeight = 100
   local margin = 10
+  local x = screen.x
+  local y = screen.y
   local screen = screen.new()
   local side = screen:convertPersentToPixels( 75 )
-  print("side: " .. side)
 
   local gridOptions = 
   {
     group = sceneGroup,
-    x = display.contentCenterX,
-    y = display.contentCenterY,
+    x = x,
+    y = y,
     width = side,
     height = side,
     rows = 2,
