@@ -9,13 +9,10 @@ local grid = require( "grid" )
 local ledPannel = require( "ledPannel" )
 local gameOptions = require( "game" )
 local settings = require( "settings" )
+local screen = require( "screen" )
 
 local scene = composer.newScene()
 
-local screenWidth = display.actualContentWidth
-local screenHeight = display.actualContentHeight
-local centerX = display.contentCenterX
-local centerY = display.contentCenterY
 gameOptions.isPlayer = false
 local buttonsGroup = nil
 local guiGroup = nil
@@ -39,9 +36,9 @@ end
 
 -- Setting background image
 function createBackground( sceneGroup )
-  local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screenWidth, screenHeight)
-  backgroundImage.x = centerX
-  backgroundImage.y = centerY
+  local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
+  backgroundImage.x = screen.x
+  backgroundImage.y = screen.y
 end
 
 function createGrid( sceneGroup )
@@ -51,8 +48,8 @@ function createGrid( sceneGroup )
   local options = 
   {
     group = buttonsGroup,
-    x = centerX,
-    y = centerY,
+    x = screen.x,
+    y = screen.y,
     width = 250,
     height = 250,
     rows = rows,
@@ -62,10 +59,8 @@ function createGrid( sceneGroup )
     columnMargin = 15,
     frameOn = false,
     typeOfGame = gameOptions.type
-  } 
-  
-  print("Options: x " .. options.x .. " y " .. options.y)
-  
+  }
+
   if gameOptions.type == "four" then
     options.rows = 2
     options.columns = 2
@@ -88,7 +83,7 @@ function createGrid( sceneGroup )
   gameOptions.columns = options.columns
   
   gameGrid = grid.new(options)
-  gameGrid:create()
+  gameGrid:create( createBlinkButtonFunc )
   buttons = gameGrid:getButtons()
   -- Set elements to main sceneGroup
   sceneGroup:insert(buttonsGroup)
@@ -102,7 +97,7 @@ function createUI(sceneGroup)
   options = 
   {
     group = guiGroup,
-    x = centerX,
+    x = screen.x,
     y = 90,
     width = 70,
     height = 128,
@@ -114,14 +109,14 @@ function createUI(sceneGroup)
   ledPannel:setScore(0)
   ledPannel:setWidth( 420 )
   
-  --gameGrid.y = 30
+  gameGrid.y = 30
   -- Create back button
   local paint = 
   {
     type = "image",
     filename = "img/back.png"
   }
-  backButton = display.newRoundedRect(sceneGroup, screenWidth - 35, 15, 50, 50, 4)
+  backButton = display.newRoundedRect(sceneGroup, screen.width - 35, 15, 50, 50, 4)
   backButton:setFillColor(0.1, 0.1, 0.1, 1)
   backButton:setStrokeColor(0.8, 0.8, 1, 1)
   backButton.strokeWidth = 2
