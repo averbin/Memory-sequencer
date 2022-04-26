@@ -53,7 +53,6 @@ function simpleSequence.new( options )
   -- This is the main function with should be run it when we create board
   -- And when we do reset of the game.
   function showSequence( event )
-    print("Count : " .. event.count )
     set.numSequence = event.count
     local thisRect = set.buttons[set.randSequence[set.numSequence]]
     if set.numSequence <= #set.randSequence then
