@@ -3,11 +3,6 @@ game = require("game")
 screen = require( "screen" )
 local grid = require( "grid" )
 
-local screenWidth = display.actualContentWidth
-local screenHeight = display.actualContentHeight
-local centerX = display.contentCenterX
-local centerY = display.contentCenterY
-
 local scene = composer.newScene()
 
 local function gotoGameBoard()
@@ -53,30 +48,28 @@ end
 -- create()
 function scene:create( event )
   local sceneGroup = self.view
+  local buttonMenuGroup = display.newGroup()
   local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
-    backgroundImage.x = screen.x
-    backgroundImage.y = screen.y
+  backgroundImage.x = screen.centerX
+  backgroundImage.y = screen.centerY
 
-  local rectWidth = 100
-  local rectHeight = 100
-  local margin = 10
   local x = screen.x
   local y = screen.y
   local screen = screen.new()
-  local side = screen:convertPersentToPixels( 75 )
+  local side = screen:convertPersentToPixels( 70 )
 
   local gridOptions = 
   {
-    group = sceneGroup,
-    x = x,
-    y = y,
+    group = buttonMenuGroup,
+    x = screen.centerX,
+    y = screen.centerY,
     width = side,
     height = side,
     rows = 2,
     columns = 2, 
     sideMargin = 0,
-    rowMargin = 15,
-    columnMargin = 15,
+    rowMargin = 20,
+    columnMargin = 20,
     frameOn = false,
     cornerRadius = 4
   }
@@ -111,6 +104,12 @@ function scene:create( event )
     button:addEventListener("tap", paints[i].gotoFunc)
   end
 
+  buttonMenuGroup.y = 30
+  
+  local creatorText = display.newText(sceneGroup, "Made by Alexander Verbin",
+      screen.centerX,
+      screen.height - 15, native.systemFont, 12)
+  sceneGroup:insert(buttonMenuGroup)
 end
  
 -- show()
