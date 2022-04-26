@@ -8,12 +8,15 @@ local screen = {}
 
 screen.width = display.actualContentWidth
 screen.height = display.actualContentHeight
-screen.x = display.contentCenterX
-screen.y = display.contentCenterY
---screen.sideInPixels = screen:findSide()
+screen.centerX = display.contentCenterX
+screen.centerY = display.contentCenterY
 
 function screen.new()
   local set = {}
+  set.width = display.actualContentWidth
+  set.height = display.actualContentHeight
+  set.centerX = screen.centerX
+  set.centerY = screen.centerY
 
   function set:findSide()
     local side = 0

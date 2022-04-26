@@ -37,8 +37,8 @@ end
 -- Setting background image
 function createBackground( sceneGroup )
   local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
-  backgroundImage.x = screen.x
-  backgroundImage.y = screen.y
+  backgroundImage.x = screen.centerX
+  backgroundImage.y = screen.centerY
 end
 
 function createGrid( sceneGroup )
@@ -48,8 +48,8 @@ function createGrid( sceneGroup )
   local options = 
   {
     group = buttonsGroup,
-    x = screen.x,
-    y = screen.y,
+    x = screen.centerX,
+    y = screen.centerY,
     width = 250,
     height = 250,
     rows = rows,
@@ -97,7 +97,7 @@ function createUI(sceneGroup)
   options = 
   {
     group = guiGroup,
-    x = screen.x,
+    x = screen.centerX,
     y = 90,
     width = 70,
     height = 128,
