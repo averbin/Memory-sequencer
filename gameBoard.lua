@@ -4,12 +4,13 @@
 -- This table should translate to gameboard.lua
 -----------------------------------------------------------------------------------------
 
-local composer = require( "composer" )
-local grid = require( "grid" )
-local ledPannel = require( "ledPannel" )
-local gameOptions = require( "game" )
-local settings = require( "settings" )
-local screen = require( "screen" )
+local composer = require("composer")
+local grid = require("grid")
+local ledPannel = require("ledPannel")
+local gameOptions = require("game")
+local settings = require("settings")
+local screen = require("screen")
+local colors = require("colors")
 
 local scene = composer.newScene()
 
@@ -118,7 +119,7 @@ function createUI(sceneGroup)
   }
   backButton = display.newRoundedRect(sceneGroup, screen.width - 35, 15, 50, 50, 4)
   backButton:setFillColor(0.1, 0.1, 0.1, 1)
-  backButton:setStrokeColor(0.8, 0.8, 1, 1)
+  backButton:setStrokeColor(unpack(colors['strokeColorButton']))
   backButton.strokeWidth = 2
   backButton.fill = paint
   backButton:addEventListener("tap", gotoMenu)

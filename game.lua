@@ -3,12 +3,12 @@
 -- level.lua in this file you can find implementation of the game state and type.
 -- This table should translate to game.lua
 
-local simpleSequencer = require( "simpleSequence" ) 
-local shapesSequencer = require( "shapeSequence" )
-local pairsSequencer = require( "pairsSequence" )
-local loadsave = require( "loadsave" )
-local ledPannel = require( "ledPannel" )
-local settings = require( "settings" )
+local simpleSequencer = require("simpleSequence")
+local shapesSequencer = require("shapeSequence")
+local pairsSequencer = require("pairsSequence")
+local loadsave = require("loadsave")
+local ledPannel = require("ledPannel")
+local settings = require("settings")
 
 game = 
 {

@@ -44,6 +44,7 @@ colors =
     { 218, 102, 70, 1.0 },
     { 104, 218, 70, 1.0 },
   },
+  ["strokeColorButton"] = { 0.8, 0.8, 1.0, 1.0 },
 }
 
 function d8gitToArithmetic( tab )

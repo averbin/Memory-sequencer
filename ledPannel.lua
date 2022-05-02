@@ -6,6 +6,7 @@
 -----------------------------------------------------------------------------------------
 local ledNumbers = require("lednumber")
 local ledState = require("ledState")
+local colors = require("colors")
 
 local ledPannel = {}
 
@@ -21,7 +22,7 @@ function ledPannel.new( options )
   
   set.withFrame     = options.withFrame
   set.frameColor    = options.frameColor    or { 0, 0, 0, 1 }
-  set.strokeColor   = options.strokeColor   or { 0.8, 0.8, 1, 1 }
+  set.strokeColor   = options.strokeColor   or { unpack(colors['strokeColorButton']) }
   set.cornerRadius  = options.cornerRadius  or 0
   set.frame         = nil
   

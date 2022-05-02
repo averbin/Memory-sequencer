@@ -3,9 +3,9 @@
 -- blinkButton.lua in this file you can find implementation of button table.
 --
 -----------------------------------------------------------------------------------------
-local effects = require( "effects" )
-local game = require( "game" )
-local widget = require( "widget" )
+local effects = require("effects")
+local game = require("game")
+local widget = require("widget")
 
 blinkButton = {}
 

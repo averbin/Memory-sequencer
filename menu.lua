@@ -1,7 +1,8 @@
-composer = require("composer")
-game = require("game")
-screen = require( "screen" )
-local grid = require( "grid" )
+local composer = require("composer")
+local game = require("game")
+local screen = require("screen")
+local grid = require("grid")
+local colors = require("colors")
 
 local scene = composer.newScene()
 
@@ -35,7 +36,7 @@ end
 function createMenuButtonFunc(group, name, x, y, width, height, shape, cornerRadius, cellColor, gameCallbackEvent)
   local button = display.newRoundedRect( x, y, width, height, cornerRadius)
   button:setFillColor(0.1, 0.1, 0.1, 1)
-  button:setStrokeColor(0.8, 0.8, 1, 1)
+  button:setStrokeColor(unpack(colors['strokeColorButton']))
   button.strokeWidth = 2
   group:insert( button )
   return button
@@ -47,17 +48,20 @@ end
 
 -- create()
 function scene:create( event )
+  display.setDefault( "magTextureFilter", "nearest" )
   local sceneGroup = self.view
   local buttonMenuGroup = display.newGroup()
   local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
   backgroundImage.x = screen.centerX
   backgroundImage.y = screen.centerY
 
-  local x = screen.x
-  local y = screen.y
   local screen = screen.new()
   local side = screen:convertPersentToPixels( 70 )
-
+  
+  local title = display.newImageRect(sceneGroup, "img/title.png", side, screen.height * 0.2)
+  title.x = screen.centerX
+  title.y = screen.centerX - ( screen.height * 0.1) - 20
+  
   local gridOptions = 
   {
     group = buttonMenuGroup,
@@ -109,6 +113,8 @@ function scene:create( event )
   local creatorText = display.newText(sceneGroup, "Made by Alexander Verbin",
       screen.centerX,
       screen.height - 15, native.systemFont, 12)
+  creatorText.y = gameGrid.width + gameGrid.width / 2 + screen.height * 0.15
+  creatorText:setFillColor( unpack(colors['strokeColorButton']) )
   sceneGroup:insert(buttonMenuGroup)
 end
  

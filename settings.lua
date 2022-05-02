@@ -3,7 +3,7 @@
 -- settings.lua in this file you can find implementation of the game settings
 --
 -----------------------------------------------------------------------------------------
-local widget = require( "widget" )
+local widget = require("widget")
 
 settings =
 {
