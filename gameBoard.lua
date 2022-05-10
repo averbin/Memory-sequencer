@@ -107,7 +107,7 @@ function createUI(sceneGroup)
   }
 
   ledPannel = ledPannel.new(options)
-  ledPannel:setScore(0)
+  ledPannel:setScore( 0 )
   ledPannel:setWidth( 420 )
   
   gameGrid.y = 30
@@ -117,20 +117,21 @@ function createUI(sceneGroup)
     type = "image",
     filename = "img/back.png"
   }
-  backButton = display.newRoundedRect(sceneGroup, screen.width - 35, 15, 50, 50, 4)
+  backButton = display.newRoundedRect(sceneGroup, screen.width - screen.width * 0.1 - 4, 0, screen.width * 0.1, screen.width * 0.1, 4)
   backButton:setFillColor(0.1, 0.1, 0.1, 1)
   backButton:setStrokeColor(unpack(colors['strokeColorButton']))
   backButton.strokeWidth = 2
   backButton.fill = paint
   backButton:addEventListener("tap", gotoMenu)
+  backButton.y = backButton.height * 0.5
   
   -- Create a settings menu
   local settingsParameters = 
   {
-    x = 35,
-    y = 15,
-    width = 45,
-    height = 45,
+    x = 0,
+    y = 0,
+    width = screen.width * 0.1,
+    height = screen.width * 0.1,
     margin = 10
   }
   
