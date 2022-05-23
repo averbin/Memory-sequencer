@@ -4,6 +4,8 @@
 --
 -----------------------------------------------------------------------------------------
 local widget = require("widget")
+local screen = require("screen")
+local switch = require("switch")
 
 settings =
 {
@@ -52,7 +54,12 @@ function settings.new( options )
       sheetContentHeight = 512
     }
     -- Create settings buttons
-    local settingsCheckboxSheet = graphics.newImageSheet("img/settingsSheet.png", sheetOptions)
+    local opt = {group = group, x = x, y = y + 1, width = width, height = height, initialSwitchState = false, frameOff = "img/settings1.png", frameOn = "img/settings_on1.png", strokeWidth = 2, strokeColor = (colors['strokeColorButton'])}
+    local settingsCheckbox = switch.new( opt )
+    settingsCheckbox:addEventListener("tap", onSettingsSwitchPress)
+
+    -- Create sound
+    local soundCheckboxSheet = graphics.newImageSheet("img/soundSheet.png", sheetOptions)
     local optionsCheckBox =
     {
       left = 0,
@@ -62,18 +69,10 @@ function settings.new( options )
       width = width,
       height = height,
       onPress = onSettingsSwitchPress,
-      sheet = settingsCheckboxSheet,
+      sheet = soundCheckboxSheet,
       frameOff = 1,
       frameOn = 2
     }
-  
-    settingsCheckbox = widget.newSwitch(optionsCheckBox)
-    settingsCheckbox.x = x
-    settingsCheckbox.y = y
-    group:insert(settingsCheckbox )
-  
-    -- Create sound
-    local soundCheckboxSheet = graphics.newImageSheet("img/soundSheet.png", sheetOptions)
     optionsCheckBox.id = "soundCheckbox"
     optionsCheckBox.onPress = onSoundSwitchPress
     optionsCheckBox.sheet = soundCheckboxSheet
