@@ -55,20 +55,27 @@ function scene:create( event )
   backgroundImage.x = screen.centerX
   backgroundImage.y = screen.centerY
 
-  local screen = screen.new()
-  local side = screen:convertPersentToPixels( 70 )
-  
-  local title = display.newImageRect(sceneGroup, "img/title.png", side, screen.height * 0.2)
+  local titleSide = screen:devideHeightByPieces( 3 )
+
+  local title = display.newImageRect(sceneGroup, "img/title.png", titleSide, screen.height * 0.2)
   title.x = screen.centerX
-  title.y = screen.centerX - ( screen.height * 0.1) - 20
-  
+  title.y = ( screen.height * 0.1) + display.topStatusBarContentHeight
+
+  local creatorText = display.newText(sceneGroup, "Made by Alexander Verbin",
+      screen.centerX,
+      screen.centerY, native.systemFont )
+  creatorText.y = screen.bottomSafetyArea
+  creatorText:setFillColor( unpack(colors['strokeColorButton']) )
+  sceneGroup:insert(buttonMenuGroup)
+
+  local gameSide = screen:convertPersentToPixels(90)
   local gridOptions = 
   {
     group = buttonMenuGroup,
     x = screen.centerX,
     y = screen.centerY,
-    width = side,
-    height = side,
+    width = gameSide,
+    height = gameSide,
     rows = 2,
     columns = 2, 
     sideMargin = 0,
@@ -92,7 +99,7 @@ function scene:create( event )
       gotoFunc = gotoNineth
     }, -- Nineth button
     {
-      filename = "",
+      filename = "img/pair_board.png",
       gotoFunc = gotoPairs
     }, -- Pairs button
     {
@@ -108,14 +115,6 @@ function scene:create( event )
     button:addEventListener("tap", paints[i].gotoFunc)
   end
 
-  buttonMenuGroup.y = 30
-  
-  local creatorText = display.newText(sceneGroup, "Made by Alexander Verbin",
-      screen.centerX,
-      screen.height - 15, native.systemFont, 12)
-  creatorText.y = gameGrid.width + gameGrid.width / 2 + screen.height * 0.15
-  creatorText:setFillColor( unpack(colors['strokeColorButton']) )
-  sceneGroup:insert(buttonMenuGroup)
 end
  
 -- show()
