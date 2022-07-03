@@ -5,19 +5,11 @@
 
 application =
 {
-	content =
-	{
-		width = 320,
-		height = 480, 
-		scale = "letterbox",
-		fps = 60,
-		
-		--[[
-		imageSuffix =
-		{
-			    ["@2x"] = 2,
-			    ["@4x"] = 4,
-		},
-		--]]
-	},
+  content =
+  {
+    width = display.actualContentWidth,
+    height = display.actualContentHeight,
+    scale = "letterbox",
+    fps = 60,
+  },
 }
