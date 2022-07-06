@@ -56,6 +56,9 @@ function switch.new( options )
 
     viewOn.isVisible = set.isOn
     viewOff.isVisible = not set.isOn
+
+    set.xPos = x
+    set.yPos = y
   end
 
   create()
