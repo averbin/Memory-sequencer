@@ -6,6 +6,7 @@
 local widget = require("widget")
 local screen = require("screen")
 local switch = require("switch")
+local utils = require("utils")
 
 settings =
 {
@@ -16,12 +17,14 @@ settings =
 function settings.new( options )
   local group = display.newGroup()
   
-  options = options        or {}
-  x       = options.x      or 0
-  y       = options.y      or 0
-  width   = options.width  or 50
-  height  = options.height or 50
-  margin  = options.margin or 10
+  options                 = options        or {}
+  x                       = options.x      or 0
+  y                       = options.y      or 0
+  width                   = options.width  or 50
+  height                  = options.height or 50
+  margin                  = options.margin or 10
+  local soundCheckBox     = {}
+  local vibrationCheckBox = {}
   
   local function onSettingsSwitchPress( event )
     local switch = event.target
@@ -46,9 +49,8 @@ function settings.new( options )
   
   local function create()
     -- Create settings buttons
-    local optionsCheckBox = 
+    local settingsOptions = 
     {
-      group = group,
       x = x,
       y = y,
       width = width,
@@ -59,33 +61,32 @@ function settings.new( options )
       strokeWidth = 2,
       strokeColor = (colors['strokeColorButton'])
     }
-    local settingsCheckbox = switch.new( optionsCheckBox )
+    local settingsCheckbox = switch.new( settingsOptions )
     settingsCheckbox:addEventListener("tap", onSettingsSwitchPress)
 
     -- Create sound
-    optionsCheckBox.frameOff = "img/sound_off.png"
-    optionsCheckBox.frameOn = "img/sound_on.png" 
-    optionsCheckBox.x = settingsCheckbox.x + settingsCheckbox.width + margin
-    local soundCheckBox = switch.new( optionsCheckBox )
+    local soundOptions = utils:shallowcopy( settingsOptions )
+    soundOptions.frameOff = "img/sound_off.png"
+    soundOptions.frameOn = "img/sound_on.png" 
+    soundOptions.x = settingsCheckbox.xPos + settingsCheckbox.width + margin
+
+    soundCheckBox = switch.new( soundOptions )
     soundCheckBox:addEventListener("tap", onSoundSwitchPress)
-    --soundCheckBox.isVisible = false
+    soundCheckBox.isVisible = false
     -- Create vibration
-    --[[
     if system.getInfo("platform") == "android" then
-      local vibrationCheckBoxSheet = graphics.newImageSheet("img/vibrationSheet.png", sheetOptions)
-      optionsCheckBox.id = "vibrationCheckbox"
-      optionsCheckBox.onPress = onVibrationSwitchPress
-      optionsCheckBox.sheet = vibrationCheckBoxSheet
-      optionsCheckBox.initialSwitchState = settings.isVibrationOn
-      
-      vibrationCheckBox = widget.newSwitch(optionsCheckBox)
-      vibrationCheckBox.x = soundCheckBox.x + soundCheckBox.width + margin
-      vibrationCheckBox.y = y
+      local vibrationOptions = utils:shallowcopy( soundOptions )
+      vibrationOptions.frameOff = "img/vibra_off.png"
+      vibrationOptions.frameOn = "img/vibra_on.png"
+
+      vibrationCheckBox = switch.new( vibrationOptions )
+      vibrationCheckBox.x = soundCheckBox.width + margin
       vibrationCheckBox.isVisible = false
       
       group:insert( vibrationCheckBox )
     end
-    ]]
+    group:insert( settingsCheckbox )
+    group:insert( soundCheckBox )
   end
 
   create()
