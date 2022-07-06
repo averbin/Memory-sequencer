@@ -32,4 +32,19 @@ function screen:convertPersentToPixels( persent )
   return self:findSide() * ( persent / 100 )
 end
 
+function screen:update()
+  print("actualContentWidth: " .. display.actualContentWidth)
+  print("actualContentHeight: " .. display.actualContentHeight)
+  print("contentCenterX: " .. display.contentCenterX)
+  print("contentCenterY: " .. display.contentCenterY)
+  print("topStatusBarContentHeight: " .. display.topStatusBarContentHeight)
+  print("bottomSafetyArea: " .. screen.height - screen.topSafetyArea)
+  self.width = display.actualContentWidth
+  self.height = display.actualContentHeight
+  self.centerX = display.contentCenterX
+  self.centerY = display.contentCenterY
+  self.topSafetyArea = display.topStatusBarContentHeight
+  self.bottomSafetyArea = screen.height - screen.topSafetyArea
+end
+
 return screen
