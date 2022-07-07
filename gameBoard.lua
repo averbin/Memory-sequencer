@@ -96,6 +96,7 @@ function createUI(sceneGroup)
   -- Create a settings menu
   local buttonWidth = (screen.width * 0.15)
   local halfButton = (buttonWidth * 0.5 )
+  local oneThird = (buttonWidth / 3 )
   local margin = (screen.width * 0.02)
   local settingsParameters = 
   {
@@ -124,25 +125,21 @@ function createUI(sceneGroup)
     filename = "img/back.png"
   }
   backButton:addEventListener("tap", gotoMenu)
-  
+  local ledPositionY = backButton.y + backButton.height * 2
   -- Create led pannel
-  --[[options = 
+  options = 
   {
     group = guiGroup,
     x = screen.centerX,
-    y = screen.topSafetyArea,
-    width = 70,
-    height = 128,
+    y = ledPositionY,
+    widthElement = buttonWidth,
+    heightElement = buttonWidth + oneThird,
     withFrame = true,
-    cornerRadius = 5
+    cornerRadius = 4
   }
 
   ledPannel = ledPannel.new(options)
   ledPannel:setScore( 0 )
-  ledPannel:setWidth( screen:convertPersentToPixels(100) )
-  
-  --gameGrid.y = 30
-  ]]
 
   -- Insert groups to main sceneGroup
   sceneGroup:insert(settingsMenu)

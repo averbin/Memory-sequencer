@@ -35,8 +35,8 @@ function ledPannel.new( options )
       group = set.group,
       x = x, 
       y = y,
-      width = set.width,
-      height = set.height,
+      width = set.widthElement,
+      height = set.heightElement,
       backgroundImg = "img/numbers/background.png",
       stencilImg = "img/numbers/no_number.png",
       number = number
@@ -53,7 +53,7 @@ function ledPannel.new( options )
     frameColor[#frameColor + 1] = 1.0
     self.frame:setFillColor(unpack(frameColor))
     self.frame:setStrokeColor(unpack(set.strokeColor))
-    self.frame.strokeWidth = 4
+    self.frame.strokeWidth = 2
   end
   
   function set:createGameState()
@@ -76,7 +76,6 @@ function ledPannel.new( options )
   end
   
   function set:setupGroup()
-    self.group:scale(0.6, 0.6)
     self.group.x = self.x
     self.group.y = self.y
   end
