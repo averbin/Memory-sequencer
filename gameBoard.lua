@@ -93,13 +93,44 @@ end
 function createUI(sceneGroup)
   -- UI Group
   guiGroup = display.newGroup()
+  -- Create a settings menu
+  local buttonWidth = (screen.width * 0.15)
+  local halfButton = (buttonWidth * 0.5 )
+  local margin = (screen.width * 0.02)
+  local settingsParameters = 
+  {
+    x = halfButton + margin,
+    y = buttonWidth + screen.topSafetyArea,
+    width = buttonWidth,
+    height = buttonWidth,
+    margin = margin
+  }
+
+  settingsMenu = settings.new(settingsParameters)
+
+  -- Create a back/home button
+  backButton = display.newRoundedRect(settingsMenu,
+      screen.width - halfButton - margin, --x
+      buttonWidth + screen.topSafetyArea, -- y
+      buttonWidth, -- width
+      buttonWidth, -- height
+      4) -- cornerRadius
+  backButton:setFillColor(0.1, 0.1, 0.1, 1)
+  backButton:setStrokeColor(unpack(colors['strokeColorButton']))
+  backButton.strokeWidth = 2
+    -- Create back button
+  backButton.fill = {
+    type = "image",
+    filename = "img/back.png"
+  }
+  backButton:addEventListener("tap", gotoMenu)
   
   -- Create led pannel
-  options = 
+  --[[options = 
   {
     group = guiGroup,
     x = screen.centerX,
-    y = 90,
+    y = screen.topSafetyArea,
     width = 70,
     height = 128,
     withFrame = true,
@@ -108,50 +139,26 @@ function createUI(sceneGroup)
 
   ledPannel = ledPannel.new(options)
   ledPannel:setScore( 0 )
-  ledPannel:setWidth( 420 )
+  ledPannel:setWidth( screen:convertPersentToPixels(100) )
   
-  gameGrid.y = 30
-  -- Create back button
-  local paint = 
-  {
-    type = "image",
-    filename = "img/back.png"
-  }
-  backButton = display.newRoundedRect(sceneGroup, screen.width - screen.width * 0.1 - 4, 0, screen.width * 0.1, screen.width * 0.1, 4)
-  backButton:setFillColor(0.1, 0.1, 0.1, 1)
-  backButton:setStrokeColor(unpack(colors['strokeColorButton']))
-  backButton.strokeWidth = 2
-  backButton.fill = paint
-  backButton:addEventListener("tap", gotoMenu)
-  backButton.y = backButton.height * 0.5
-  
-  -- Create a settings menu
-  local settingsParameters = 
-  {
-    x = 0,
-    y = 0,
-    width = screen.width * 0.1,
-    height = screen.width * 0.1,
-    margin = 10
-  }
-  
-  settingsMenu = settings.new(settingsParameters)
+  --gameGrid.y = 30
+  ]]
+
+  -- Insert groups to main sceneGroup
   sceneGroup:insert(settingsMenu)
-  
-  -- Set elements to main sceneGroup
   sceneGroup:insert(guiGroup)
 end
 
 function createGame(sceneGroup)
   createBackground(sceneGroup)
-  createGrid(sceneGroup)
+  --createGrid(sceneGroup)
   
-  game = gameOptions.new({buttons = buttons })
+  --game = gameOptions.new({buttons = buttons })
   
   createUI(sceneGroup)
-  game.ledPannel = ledPannel
+  --game.ledPannel = ledPannel
   
-  game:init()
+  --game:init()
 end
 
 -- -----------------------------------------------------------------------------------
@@ -160,8 +167,9 @@ end
 
 -- create()
 function scene:create( event )
-    local sceneGroup = self.view
-    createGame(sceneGroup)
+  local sceneGroup = self.view
+  screen:update()
+  createGame(sceneGroup)
 end
  
 -- show()
@@ -172,7 +180,7 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      game:startLoop()
+      --game:startLoop()
       -- Code here runs when the scene is entirely on screen
     end
 end
