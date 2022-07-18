@@ -11,13 +11,19 @@ screen.height = display.actualContentHeight
 screen.centerX = display.contentCenterX
 screen.centerY = display.contentCenterY
 screen.topSafetyArea = display.topStatusBarContentHeight
-screen.bottomSafetyArea = screen.height - screen.topSafetyArea
-screen.safetyHeight = screen.height - screen.topSafetyArea
+screen.bottomSafetyArea = display.safeActualContentHeight
+screen.originX = display.safeScreenOriginX
+screen.originY = display.safeScreenOriginY
 screen.safetyRect = {}
+screen.centerSafeY = ( screen.topSafetyArea + screen.bottomSafetyArea ) / 2
+
+function screen:isHeightMoreThanWidth()
+  return screen.height > screen.width
+end
 
 function screen:findSide()
   local side = 0
-  if screen.height > screen.width then
+  if self:isHeightMoreThanWidth() then
     side = screen.width
   else
     side = screen.height
@@ -34,6 +40,10 @@ function screen:perToPixsWidth( persents )
   return self.width * persents / 100
 end
 
+function calculateCenter()
+  screen.centerSafeY = ( screen.originY + screen.bottomSafetyArea ) / 2
+end
+
 function screen:update()
   print("actualContentWidth: " .. display.actualContentWidth)
   print("actualContentHeight: " .. display.actualContentHeight)
@@ -41,7 +51,6 @@ function screen:update()
   print("contentCenterY: " .. display.contentCenterY)
   print("topStatusBarContentHeight: " .. display.topStatusBarContentHeight)
   print("bottomSafetyArea: " .. screen.height - screen.topSafetyArea)
-  print("safetyHeight: " .. screen.safetyHeight)
   print("safeActualContentHeight :" .. display.safeActualContentHeight )
 end
 
@@ -54,14 +63,10 @@ end
 
 function screen:createSafetyArea()
   self.safetyRect = display.newGroup()
-  local topLine = newLine(self.safetyRect, 0, self.topSafetyArea, self.width, self.topSafetyArea)
-  local bottomLine = newLine(self.safetyRect, 0, self.safetyHeight, self.width, self.safetyHeight)
-  
+
   local blueTopLine = newLine(self.safetyRect, display.safeScreenOriginX, display.safeScreenOriginY, display.safeActualContentWidth, display.safeScreenOriginY)
   blueTopLine:setStrokeColor( 0, 0, 1, 1)
-  local blueBottomLine = newLine(self.safetyRect, display.safeScreenOriginX, display.safeActualContentHeight, display.safeActualContentWidth, display.safeActualContentHeight)
-  blueBottomLine:setStrokeColor( 0, 0, 1, 1)
-  
+
   if safeArea == nil then
     safeArea = display.newRect(self.safetyRect,
       display.safeScreenOriginX,
@@ -73,6 +78,15 @@ function screen:createSafetyArea()
     safeArea.y = display.contentCenterY
     safeArea.alpha = 0.3
   end
+
+end
+
+function screen:findCenterBetweenPoints(x1, y1, x2, y2)
+  return { x = ((x2 + x1) / 2), y = ((y2 + y1) / 2) }
+end
+
+function screen:findCenterBetweenObjects( obj1, obj2 )
+  return self:findCenterBetweenPoints(obj1.x, obj1.y, obj2.x, obj2.y)
 end
 
 return screen
