@@ -23,6 +23,11 @@ local game = nil
 local backButton = nil
 local settingsButton = nil
 
+local buttonWidth = (screen.width * 0.15)
+local halfButton = (buttonWidth * 0.5 )
+local oneThird = (buttonWidth / 3 )
+local margin = screen:perToPixsWidth(2)
+
 
 local function gotoMenu()
   game:stopLoop()
@@ -45,28 +50,32 @@ end
 function createGrid( sceneGroup )
   -- Rect group
   buttonsGroup = display.newGroup()
-  
+
+  local gameSide = screen:findWidth(80)
+  local points = screen:findCenterBetweenPoints(ledPannel.x, ledPannel.y,
+    screen.originX, screen.bottomSafetyArea)
+
   local options = 
   {
     group = buttonsGroup,
     x = screen.centerX,
-    y = screen.centerY,
-    width = 250,
-    height = 250,
+    y = points.y,
+    width = gameSide,
+    height = gameSide,
     rows = rows,
-    columns = columns, 
+    columns = columns,
     sideMargin = 0,
-    rowMargin = 15,
-    columnMargin = 15,
+    rowMargin = screen:perToPixsWidth(5),
+    columnMargin = screen:perToPixsWidth(5),
     frameOn = false,
     typeOfGame = gameOptions.type
   }
+  
+  print("rowMargin: " .. options.rowMargin)
 
   if gameOptions.type == "four" then
     options.rows = 2
     options.columns = 2
-    options.rowMargin = 20
-    options.columnMargin = 20
   elseif gameOptions.type == "nine" then
     options.rows = 3
     options.columns = 3
@@ -76,8 +85,8 @@ function createGrid( sceneGroup )
   elseif gameOptions.type == "shapes" then
     options.rows = 5
     options.columns = 5
-    options.rowMargin = 5
-    options.columnMargin = 5
+    options.rowMargin = screen:perToPixsWidth(2)
+    options.columnMargin = screen:perToPixsWidth(2)
   end
 
   gameOptions.rows = options.rows
@@ -94,14 +103,10 @@ function createUI(sceneGroup)
   -- UI Group
   guiGroup = display.newGroup()
   -- Create a settings menu
-  local buttonWidth = (screen.width * 0.15)
-  local halfButton = (buttonWidth * 0.5 )
-  local oneThird = (buttonWidth / 3 )
-  local margin = (screen.width * 0.02)
   local settingsParameters = 
   {
-    x = halfButton + margin,
-    y = buttonWidth + screen.topSafetyArea,
+    x = screen.originX + halfButton + margin,
+    y = screen.originY + halfButton,
     width = buttonWidth,
     height = buttonWidth,
     margin = margin
@@ -112,7 +117,7 @@ function createUI(sceneGroup)
   -- Create a back/home button
   backButton = display.newRoundedRect(settingsMenu,
       screen.width - halfButton - margin, --x
-      buttonWidth + screen.topSafetyArea, -- y
+      screen.originY + halfButton, -- y
       buttonWidth, -- width
       buttonWidth, -- height
       4) -- cornerRadius
@@ -148,14 +153,12 @@ end
 
 function createGame(sceneGroup)
   createBackground(sceneGroup)
-  --createGrid(sceneGroup)
-  
-  --game = gameOptions.new({buttons = buttons })
-  
   createUI(sceneGroup)
-  --game.ledPannel = ledPannel
-  
-  --game:init()
+  createGrid(sceneGroup)
+  game = gameOptions.new({buttons = buttons })
+  game.ledPannel = ledPannel
+
+  game:init()
 end
 
 -- -----------------------------------------------------------------------------------
@@ -165,7 +168,6 @@ end
 -- create()
 function scene:create( event )
   local sceneGroup = self.view
-  screen:update()
   createGame(sceneGroup)
 end
  
@@ -177,7 +179,7 @@ function scene:show( event )
     if ( phase == "will" ) then
       -- Code here runs when the scene is still off screen (but is about to come on screen)
     elseif ( phase == "did" ) then
-      --game:startLoop()
+      game:startLoop()
       -- Code here runs when the scene is entirely on screen
     end
 end
