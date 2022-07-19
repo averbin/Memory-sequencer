@@ -67,12 +67,8 @@ function scene:create( event )
 
   local center = screen:findCenterBetweenObjects(title, creatorText)
 
-  local gameSide = 0
-  if screen:isHeightMoreThanWidth() then
-    gameSide = screen:perToPixsWidth(90)
-  else
-    gameSide = screen:perToPixsHeight(90)
-  end
+  local gameSide = screen:findWidth(90)
+
   local gridOptions = 
   {
     group = buttonMenuGroup,
