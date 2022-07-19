@@ -134,10 +134,18 @@ function ledPannel.new( options )
     end
   end
   
+  function set:getWidth()
+    return self.group.width
+  end
+
   function set:setWidth( width )
     self.group.width = width
   end
-  
+
+  function set:getHeight()
+    return self.group.height
+  end
+
   function set:setHeight( height )
     self.group.height = height
   end
