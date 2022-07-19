@@ -47,7 +47,7 @@ function blinkButton.new( options )
     button.id = set.id
     button:setFillColor(0.1, 0.1, 0.1, 1)
     button:setStrokeColor(unpack(set.strokeColor))
-    button.strokeWidth = 2
+    button.strokeWidth = 4
     --button.isVisible = false
     
     local insideRect = display.newRoundedRect(set.group, set.x, set.y, set.width, set.height, set.cornerRadius)
