@@ -89,4 +89,16 @@ function screen:findCenterBetweenObjects( obj1, obj2 )
   return self:findCenterBetweenPoints(obj1.x, obj1.y, obj2.x, obj2.y)
 end
 
+function screen:findWidth( percent )
+  local gameSide = 0
+
+  if screen:isHeightMoreThanWidth() then
+    gameSide = screen:perToPixsWidth( percent )
+  else
+    gameSide = screen:perToPixsHeight( percent )
+  end
+
+  return gameSide
+end
+
 return screen
