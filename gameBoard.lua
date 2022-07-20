@@ -26,7 +26,7 @@ local settingsButton = nil
 local buttonWidth = (screen.width * 0.15)
 local halfButton = (buttonWidth * 0.5 )
 local oneThird = (buttonWidth / 3 )
-local margin = screen:perToPixsWidth(2)
+local margin = screen:perToPixsWidth(5)
 
 
 local function gotoMenu()
@@ -51,7 +51,7 @@ function createGrid( sceneGroup )
   -- Rect group
   buttonsGroup = display.newGroup()
 
-  local gameSide = screen:findWidth(80)
+  local gameSide = screen:findWidth(90)
   local points = screen:findCenterBetweenPoints(ledPannel.x, ledPannel.y,
     screen.originX, screen.bottomSafetyArea)
 
@@ -70,8 +70,6 @@ function createGrid( sceneGroup )
     frameOn = false,
     typeOfGame = gameOptions.type
   }
-  
-  print("rowMargin: " .. options.rowMargin)
 
   if gameOptions.type == "four" then
     options.rows = 2
