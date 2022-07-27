@@ -17,14 +17,15 @@ settings =
 function settings.new( options )
   local group = display.newGroup()
   
-  options                 = options        or {}
-  x                       = options.x      or 0
-  y                       = options.y      or 0
-  width                   = options.width  or 50
-  height                  = options.height or 50
-  margin                  = options.margin or 10
-  local soundCheckBox     = {}
-  local vibrationCheckBox = {}
+  local options                 = options             or {}
+  local x                       = options.x           or 0
+  local y                       = options.y           or 0
+  local width                   = options.width       or 50
+  local height                  = options.height      or 50
+  local margin                  = options.margin      or 10
+  local strokeWidth             = options.strokeWidth or 0
+  local soundCheckBox           = {}
+  local vibrationCheckBox       = {}
   
   local function onSettingsSwitchPress( event )
     local switch = event.target
@@ -58,7 +59,7 @@ function settings.new( options )
       initialSwitchState = false,
       frameOff = "img/settings.png",
       frameOn = "img/settings_on.png",
-      strokeWidth = 2,
+      strokeWidth = strokeWidth,
       strokeColor = (colors['strokeColorButton'])
     }
     local settingsCheckbox = switch.new( settingsOptions )
