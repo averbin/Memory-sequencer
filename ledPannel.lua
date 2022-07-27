@@ -53,7 +53,7 @@ function ledPannel.new( options )
     frameColor[#frameColor + 1] = 1.0
     self.frame:setFillColor(unpack(frameColor))
     self.frame:setStrokeColor(unpack(set.strokeColor))
-    self.frame.strokeWidth = 2
+    self.frame.strokeWidth = 4
   end
   
   function set:createGameState()
