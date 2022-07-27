@@ -53,21 +53,23 @@ function scene:create( event )
   local backgroundImage = display.newImageRect(sceneGroup, "img/background.png", screen.width, screen.height)
   backgroundImage.x = screen.centerX
   backgroundImage.y = screen.centerY
+  local layoutTopMargin = screen:perToPixsHeight(1)
+  local layoutBottomMargin = layoutTopMargin
 
   local title = display.newImageRect(sceneGroup, "img/title.png", screen:perToPixsWidth(80), screen:perToPixsHeight(20))
   title.x = screen.centerX
-  title.y = screen.topSafetyArea + title.height * 0.5
+  title.y = screen.topSafetyArea + title.height * 0.5 + layoutTopMargin
 
   local creatorText = display.newText(sceneGroup, "Made by Alexander Verbin",
       screen.centerX,
       screen.centerY, native.systemFont )
-  creatorText.y = screen.bottomSafetyArea - creatorText.height * 0.5
+  creatorText.y = screen.bottomSafetyArea - creatorText.height * 0.5 - layoutBottomMargin
   creatorText:setFillColor( unpack(colors['strokeColorButton']) )
   sceneGroup:insert(buttonMenuGroup)
 
   local center = screen:findCenterBetweenObjects(title, creatorText)
 
-  local gameSide = screen:findWidth(90)
+  local gameSide = screen:findWidth(85)
 
   local gridOptions = 
   {
