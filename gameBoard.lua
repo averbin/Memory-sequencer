@@ -27,6 +27,7 @@ local buttonWidth = (screen.width * 0.15)
 local halfButton = (buttonWidth * 0.5 )
 local oneThird = (buttonWidth / 3 )
 local margin = screen:perToPixsWidth(5)
+local verticalSpace = screen:perToPixsHeight(10)
 
 
 local function gotoMenu()
@@ -51,15 +52,17 @@ function createGrid( sceneGroup )
   -- Rect group
   buttonsGroup = display.newGroup()
 
-  local gameSide = screen:findWidth(90)
-  local points = screen:findCenterBetweenPoints(ledPannel.x, ledPannel.y,
-    screen.originX, screen.bottomSafetyArea)
+  local gameSide = screen:findWidth(85)
+  --local points = screen:findCenterBetweenPoints(ledPannel.x, ledPannel.y,
+    --screen.originX, screen.bottomSafetyArea)
+  
+  local yPos = ledPannel.y + ledPannel:getHeight() + margin + gameSide / 2
 
   local options = 
   {
     group = buttonsGroup,
     x = screen.centerX,
-    y = points.y,
+    y = yPos, -- points.y
     width = gameSide,
     height = gameSide,
     rows = rows,
@@ -100,32 +103,37 @@ end
 function createUI(sceneGroup)
   -- UI Group
   guiGroup = display.newGroup()
+  local layoutTopMargin = screen:perToPixsHeight(1)
+  local layoutBottomMargin = layoutTopMargin
+  local strokeWidth = 4
+  local topPositionY = screen.originY + halfButton + strokeWidth
   -- Create a settings menu
   local settingsParameters = 
   {
-    x = screen.originX + halfButton + margin,
-    y = screen.originY + halfButton,
+    x = screen.originX + halfButton + strokeWidth, --  + margin
+    y = topPositionY, -- + layoutTopMargin
     width = buttonWidth,
     height = buttonWidth,
-    margin = margin
+    margin = margin,
+    strokeWidth = strokeWidth
   }
 
   settingsMenu = settings.new(settingsParameters)
 
   -- Create a back/home button
   backButton = display.newRoundedRect(settingsMenu,
-      screen.width - halfButton - margin, --x
-      screen.originY + halfButton, -- y
+      screen.width - halfButton - strokeWidth, --x; - margin
+      topPositionY, -- y; + layoutTopMargin
       buttonWidth, -- width
       buttonWidth, -- height
-      4) -- cornerRadius
+      strokeWidth) -- cornerRadius
   backButton:setFillColor(0.1, 0.1, 0.1, 1)
   backButton:setStrokeColor(unpack(colors['strokeColorButton']))
-  backButton.strokeWidth = 2
+  backButton.strokeWidth = strokeWidth
     -- Create back button
   backButton.fill = {
     type = "image",
-    filename = "img/back.png"
+    filename = "img/homeButton.png"
   }
   backButton:addEventListener("tap", gotoMenu)
   local ledPositionY = backButton.y + backButton.height * 2
@@ -134,7 +142,7 @@ function createUI(sceneGroup)
   {
     group = guiGroup,
     x = screen.centerX,
-    y = ledPositionY,
+    y = topPositionY + backButton.height + buttonWidth / 2,
     widthElement = buttonWidth,
     heightElement = buttonWidth + oneThird,
     withFrame = true,
