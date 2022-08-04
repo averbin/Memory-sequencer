@@ -31,6 +31,9 @@ local verticalSpace = screen:perToPixsHeight(10)
 
 
 local function gotoMenu()
+  if backButton then
+    backButton:setStrokeColor(unpack(colors['strokeColorButtonOn']))
+  end
   game:stopLoop()
   composer.removeScene("menu")
   composer.gotoScene("menu", { time=800, effect="crossFade" })
