@@ -10,22 +10,22 @@ local utils = require("utils")
 
 settings =
 {
-  isSoundOn = true;
-  isVibrationOn = true;
+  isSoundOn = true,
+  isVibrationOn = true
 }
 
 function settings.new( options )
   local group = display.newGroup()
   
-  local options                 = options             or {}
-  local x                       = options.x           or 0
-  local y                       = options.y           or 0
-  local width                   = options.width       or 50
-  local height                  = options.height      or 50
-  local margin                  = options.margin      or 10
-  local strokeWidth             = options.strokeWidth or 0
-  local soundCheckBox           = {}
-  local vibrationCheckBox       = {}
+  local opt               = options         or {}
+  local x                 = opt.x           or 0
+  local y                 = opt.y           or 0
+  local width             = opt.width       or 50
+  local height            = opt.height      or 50
+  local margin            = opt.margin      or 10
+  local strokeWidth       = opt.strokeWidth or 0
+  local soundCheckBox     = {}
+  local vibrationCheckBox = {}
   
   local function onSettingsSwitchPress( event )
     local switch = event.target
@@ -83,6 +83,7 @@ function settings.new( options )
       vibrationCheckBox = switch.new( vibrationOptions )
       vibrationCheckBox.x = soundCheckBox.width + margin
       vibrationCheckBox.isVisible = false
+      vibrationCheckBox:addEventListener("tap", onVibrationSwitchPress)
       
       group:insert( vibrationCheckBox )
     end
