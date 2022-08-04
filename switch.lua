@@ -16,7 +16,8 @@ function switch.new( options )
   local frameOff           = opt.frameOff              or ""
   local frameOn            = opt.frameOn               or ""
   local strokeWidth        = opt.strokeWidth           or 0
-  local strokeColor        = opt.strokeColor           or (colors['strokeColorButton'])
+  local strokeColorOn      = opt.strokeColorOn         or (colors['strokeColorButtonOn'])
+  local strokeColorOff      = opt.strokeColorOff       or (colors['strokeColorButtonOff'])
 
   local function setViews()
     set.viewOn.isVisible = set.isOn
@@ -41,7 +42,7 @@ function switch.new( options )
     }
     local viewOff = display.newRoundedRect( set, x, y, width, height, 4 )
     viewOff.strokeWidth = strokeWidth
-    viewOff:setStrokeColor( unpack(strokeColor) )
+    viewOff:setStrokeColor( unpack(strokeColorOff) )
     viewOff.fill = paint
     viewOff:addEventListener("tap", viewOffTapped)
     set.viewOff = viewOff
@@ -49,7 +50,7 @@ function switch.new( options )
     paint.filename = frameOn
     local viewOn = display.newRoundedRect( set, x, y, width, height, 4 )
     viewOn.strokeWidth = strokeWidth
-    viewOn:setStrokeColor( unpack(strokeColor) )
+    viewOn:setStrokeColor( unpack(strokeColorOn) )
     viewOn.fill = paint
     viewOn:addEventListener("tap", viewOnTapped)
     set.viewOn = viewOn
