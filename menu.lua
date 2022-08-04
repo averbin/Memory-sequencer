@@ -11,6 +11,10 @@ local function gotoGameBoard()
   composer.gotoScene( "gameBoard", { time=800, effect="crossFade" } )
 end
 
+local function setOnStrokeColor( obj )
+  obj:setStrokeColor(unpack(colors['strokeColorButtonOn']))
+end
+
 local function gotoPairs()
   game.type = "pairs"
   gotoGameBoard()
